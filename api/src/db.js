@@ -7,7 +7,7 @@ const path = require('path');
 
 // se traen las credenciales
 const {
-  DB_USER, DB_PASSWORD, DB_HOST,
+  DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
 } = process.env;
 
 // sequelize + SQL
