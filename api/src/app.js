@@ -3,8 +3,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const { Test  } = require("./db")
-
 
 const routes = require('./routes/index')
 

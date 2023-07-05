@@ -5,12 +5,12 @@ const { getAllVideogames, getVideogamesById, getVideogamesByName, postVideogames
 
 
 videogamesRouter.get('/', async ( req, res ) => {
-    const { name } =req.query;
+    const { name, page, page_size, order, field  } =req.query;
     
     if(name){
         try {
     
-            const response = await getVideogamesByName( name );
+            const response = await getVideogamesByName( name, page, page_size, order, field );
     
             res.status(200).json(response);
     
@@ -21,7 +21,7 @@ videogamesRouter.get('/', async ( req, res ) => {
     }
     else{
         try {
-            const allVideogames= await getAllVideogames();
+            const allVideogames= await getAllVideogames(page, page_size, order, field);
 
             res.status(200).json(allVideogames);
         } catch (error) {
