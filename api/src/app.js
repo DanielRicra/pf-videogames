@@ -5,8 +5,10 @@ const morgan = require('morgan');
 
 const { Test  } = require("./db")
 
-const routes = require('./routes/index.js');
-//require('./db.js');
+
+const routes = require('./routes/index')
+
+
 
 const server = express();
 
