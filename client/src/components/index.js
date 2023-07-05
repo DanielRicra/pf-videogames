@@ -4,6 +4,7 @@ import VideoGameCard from './VideoGameCard'
 import VideoGameCardList from './VideoGameCardList'
 import Carrousel from './Carrousel'
 import PaginationBar from './PaginationBar'
+import Loading from './Loading'
 
 export {
   FilterBar,
@@ -12,4 +13,5 @@ export {
   VideoGameCardList,
   Carrousel,
   PaginationBar,
+  Loading,
 }
