@@ -2,18 +2,42 @@ const { Videogame, Genre, Tag } = require('../db')
 const { Op } = require('sequelize');
 const videogame = require('../apiData/Videogame.json')
 
-const getAllVideogames = async ( page, page_size, order, field, filter ) => {
+const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter) => {
     try {
-        
-        let allVideogames = await Videogame.findAll({ include: [Genre , Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0})
-        if(!allVideogames.length){
-            videogamesUpload()
-            allVideogames = await Videogame.findAll({ include: [Genre , Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0})
-        }
-        return allVideogames
+        const videogameOptions = {
+            include: [
+                {
+                    model: Genre,
+                    where: {}
+                },
+                {
+                    model: Tag,
+                    where: {}
+                }
+            ],
+            order: [[field ? field : 'name', order ? order : 'ASC']],
+            limit: page_size ? page_size : 10,
+            offset: page ? (page - 1) * (page_size ? page_size : 10) : 0
+        };
 
+        if (genreFilter) {
+            videogameOptions.include[0].where.name = genreFilter;
+        }
+
+        if (tagFilter) {
+            videogameOptions.include[1].where.name = tagFilter;
+        }
+
+        let allVideogames = await Videogame.findAll(videogameOptions);
+
+        if (!allVideogames.length) {
+            videogamesUpload();
+            allVideogames = await Videogame.findAll(videogameOptions);
+        }
+
+        return allVideogames;
     } catch (error) {
-        return {error: error.message}
+        return { error: error.message };
     }
 };
 
@@ -28,16 +52,38 @@ const getVideogamesById = async ( searchedId ) =>{
     }
 }
 
-const getVideogamesByName = async ( searchedName,page, page_size, order, field ) =>{
+const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter ) =>{
     try{
-        let videogamesFound = await Videogame.findAll({
+        const videogameOptions = {
             where:{
                 name: {
                     [Op.iLike]: '%'+searchedName+'%',
                 }
             },
-            include: [Genre, Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0
-        });
+            include: [
+                {
+                    model: Genre,
+                    where: {}
+                },
+                {
+                    model: Tag,
+                    where: {}
+                }
+            ],
+            order: [[field ? field : 'name', order ? order : 'ASC']],
+            limit: page_size ? page_size : 10,
+            offset: page ? (page - 1) * (page_size ? page_size : 10) : 0
+        };
+
+        if (genreFilter) {
+            videogameOptions.include[0].where.name = genreFilter;
+        }
+
+        if (tagFilter) {
+            videogameOptions.include[1].where.name = tagFilter;
+        }
+        
+        let videogamesFound = await Videogame.findAll(videogameOptions);
         return videogamesFound;
     }
     catch (error) {
