@@ -1,7 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import Detail from './pages/Detail'
-import Search from './pages/Search'
+import { Create, Detail, Home, NotFound, Search } from './pages'
 
 function App() {
   return (
@@ -11,6 +9,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/search' element={<Search />} />
           <Route path='/detail/:id' element={<Detail />} />
+          <Route path='/create' element={<Create />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
     </div>

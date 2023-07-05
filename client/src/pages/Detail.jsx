@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import { Loading } from "../components";
 // import del componente NavBar
-
 
 // import de las actions getDetail, clearDetail
 
