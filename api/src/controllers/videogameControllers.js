@@ -2,13 +2,13 @@ const { Videogame, Genre, Tag } = require('../db')
 const { Op } = require('sequelize');
 const videogame = require('../apiData/Videogame.json')
 
-const getAllVideogames = async () => {
+const getAllVideogames = async ( page, page_size, order, field, filter ) => {
     try {
         
-        let allVideogames = await Videogame.findAll({ include: [Genre , Tag]})
+        let allVideogames = await Videogame.findAll({ include: [Genre , Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0})
         if(!allVideogames.length){
             videogamesUpload()
-            allVideogames = await Videogame.findAll({ include: [Genre , Tag]})
+            allVideogames = await Videogame.findAll({ include: [Genre , Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0})
         }
         return allVideogames
 
@@ -28,7 +28,7 @@ const getVideogamesById = async ( searchedId ) =>{
     }
 }
 
-const getVideogamesByName = async ( searchedName ) =>{
+const getVideogamesByName = async ( searchedName,page, page_size, order, field ) =>{
     try{
         let videogamesFound = await Videogame.findAll({
             where:{
@@ -36,7 +36,7 @@ const getVideogamesByName = async ( searchedName ) =>{
                     [Op.iLike]: '%'+searchedName+'%',
                 }
             },
-            include: [Genre, Tag]
+            include: [Genre, Tag], order:[[field?field:'name',order?order:'ASC']], limit: page_size?page_size:10, offset:page?(page-1)*(page_size?page_size:10):0
         });
         return videogamesFound;
     }
