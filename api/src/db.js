@@ -7,11 +7,11 @@ const path = require('path');
 
 // se traen las credenciales
 const {
-  DB_USER, DB_PASSWORD, DB_HOST,
+  DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
 } = process.env;
 
 // sequelize + SQL
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/prueba`, {
+const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pf`, {
   logging: false, // set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
@@ -35,11 +35,24 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Test } = sequelize.models;
+const { Videogame, Genre, User, Review, Tag  } = sequelize.models;
 
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
+
+User.hasMany(Review, { foreignKey: 'userId' });
+Review.belongsTo(User, { foreignKey: 'userId' });
+
+Genre.belongsToMany(Videogame, { through: 'Videogame_Genre' });
+Videogame.belongsToMany(Genre, { through: 'Videogame_Genre' });
+
+Videogame.hasMany(Review, { foreignKey: 'videogameId' });
+Review.belongsTo(Videogame, { foreignKey: 'videogameId' });
+
+Videogame.belongsToMany(Tag, { through: 'Videogame_Tag' });
+Tag.belongsToMany(Videogame, { through: 'Videogame_Tag' });
+
 
 module.exports = {
   ...sequelize.models,
