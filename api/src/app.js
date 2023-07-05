@@ -5,7 +5,9 @@ const morgan = require('morgan');
 
 const { Test  } = require("./db")
 
+
 const routes = require('./routes/index')
+
 
 
 const server = express();
@@ -30,7 +32,7 @@ server.use(express.json())
 server.use('/', routes);
 
 // Peticion de prueba sin routing
-server.post('/prueba', async (req, res) => {
+/*server.post('/prueba', async (req, res) => {
     try {
         await Test.create()
         res.status(200).send("creacion de prueba exitosa")
@@ -38,7 +40,7 @@ server.post('/prueba', async (req, res) => {
     } catch (error) {
         res.status(400).send({ error: error.message })
     }
-});
+});*/
 
 // Error catching endware.
 server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
