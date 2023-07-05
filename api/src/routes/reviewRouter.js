@@ -24,15 +24,10 @@ router.get('/:id', async (req, res) => {
 });
 
 // Crear una nueva reseña
-router.post('/', async (req, res) => {
-  try {
-    const { score, text } = req.body;
-    const newReview = await postReview(score, text);
-    res.status(201).json(newReview);
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-});
+
+router.post('/:videogameId', (req, res) => postReview(req, res));
+
+
 
 // Borrar una reseña
 router.delete('/:id', async (req, res) => {
@@ -50,11 +45,12 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { score, text } = req.body;
-    const updatedReview = await putReview(id, score, text);
+    const updatedReview = await updateReview(id, { score, text }); // Modificar esta línea
     res.status(200).json(updatedReview);
   } catch (error) {
     res.status(400).send(error.message);
   }
 });
+
 
 module.exports = router;
