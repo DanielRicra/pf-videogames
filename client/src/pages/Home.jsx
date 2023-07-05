@@ -1,7 +1,10 @@
-import Carrousel from '../components/Carrousel'
-import { videogames } from '../utils/dumbData'
+import { useSelector } from 'react-redux';
+import Carrousel from '../components/Carrousel';
+import { videogames } from '../utils/dumbData';
 
 const Home = () => {
+  const { user } = useSelector((state) => state.users);
+  console.log('🚀 ~ file: Home.jsx:7 ~ Home ~ user:', user);
   return (
     <div className='text-black min-h-screen'>
       <div className='font-medium mb-5 text-7xl whitespace-normal ml-12'>
