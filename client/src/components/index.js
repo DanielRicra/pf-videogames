@@ -7,7 +7,7 @@ import PaginationBar from './PaginationBar'
 import BoxInput from './BoxInput'
 import TextField from './TextField'
 import Loading from './Loading'
-import NavBar from './navBar'
+import NavBar from './NavBar'
 
 export {
   FilterBar,
