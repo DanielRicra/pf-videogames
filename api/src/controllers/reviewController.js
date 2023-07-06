@@ -1,67 +1,83 @@
 
-const { Review } = require('../db');
+const { Review, Videogame } = require('../db');
 
 // Obtener todas las reviews
-const getReviews = async () => {
+const getReviews = async (req, res) => {
   try {
     const reviews = await Review.findAll();
-    return reviews;
+    res.status(200).json(reviews);
   } catch (error) {
-    throw new Error('Error al obtener las reviews');
+    res.status(404).send(error.message);
   }
 };
 
 // Obtener una review por su ID
-const getReviewById = async (id) => {
+const getReviewById = async (req, res) => {
   try {
+    const { id } = req.params;
     const review = await Review.findByPk(id);
     if (!review) {
       throw new Error('No se encontró ninguna review con ese ID');
     }
-    return review;
+    res.status(200).json(review);
   } catch (error) {
-    throw new Error('Error al obtener la review');
+    res.status(404).send(error.message);
   }
 };
 
 // Crear una nueva review
-const postReview = async (score, text) => {
+const postReview = async (req, res) => {
   try {
+    const { score, text } = req.body;
+    const { videogameId } = req.params;
+
+    // Verificar si el videojuego existe
+    const videogame = await Videogame.findByPk(videogameId);
+    if (!videogame) {
+      throw new Error('No se encontró el videojuego');
+    }
+
+    // Crear la nueva reseña y establecer la relación con el videojuego
     const newReview = await Review.create({
       score,
       text,
+      videogameId,
     });
-    return newReview;
+
+    res.status(201).json(newReview);
   } catch (error) {
-    throw new Error('Error al crear la review');
+    res.status(400).send(error.message);
   }
 };
 
 // Borrar una review por su ID
-const deleteReview = async (id) => {
+const deleteReview = async (req, res) => {
   try {
+    const { id } = req.params;
     const review = await Review.findByPk(id);
     if (!review) {
       throw new Error('No se encontró ninguna review con ese ID');
     }
     await review.destroy();
-    return 'Review eliminada exitosamente';
+    res.sendStatus(204);
   } catch (error) {
-    throw new Error('Error al borrar la review');
+    res.status(404).send(error.message);
   }
 };
 
 // Modificar una review por su ID
-const updateReview = async (id, newData) => {
+const updateReview = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { score, text } = req.body;
     const review = await Review.findByPk(id);
     if (!review) {
       throw new Error('No se encontró ninguna review con ese ID');
     }
-    await review.update(newData);
-    return 'Review actualizada exitosamente';
+    await review.update({ score, text });
+    res.status(200).json(review);
   } catch (error) {
-    throw new Error('Error al actualizar la review');
+    res.status(400).send(error.message);
   }
 };
 
