@@ -7,7 +7,7 @@ import PaginationBar from './PaginationBar'
 import BoxInput from './BoxInput'
 import TextField from './TextField'
 import Loading from './Loading'
-
+import NavBar from './navBar'
 
 export {
   FilterBar,
@@ -17,6 +17,7 @@ export {
   Carrousel,
   BoxInput,
   TextField,
+  NavBar,
   PaginationBar,
   Loading,
 }
