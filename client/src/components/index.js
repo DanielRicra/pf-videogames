@@ -8,11 +8,13 @@ import BoxInput from './BoxInput'
 import TextField from './TextField'
 import Loading from './Loading'
 import NavBar from './NavBar'
+import VideoGameCardImage from './VideoGameCardImage'
 
 export {
   FilterBar,
   SortBar,
   VideoGameCard,
+  VideoGameCardImage,
   VideoGameCardList,
   Carrousel,
   BoxInput,
