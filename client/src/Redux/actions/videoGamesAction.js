@@ -1,4 +1,4 @@
-import { setLoading } from '../Reducers/userReducer'
+import { setLoading } from '../videogame/videoGameSlice'
 
 export const createVideoGame = () => {
   return async (dispatch) => {
