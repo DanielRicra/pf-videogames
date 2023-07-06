@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Footer from '../components/Footer'
+
 import {
   FilterBar,
   PaginationBar,
@@ -15,6 +17,7 @@ const Search = () => {
   }
 
   return (
+    <>
     <div className='min-h-screen flex'>
       <div className='min-w-[300px]'>
         <FilterBar />
@@ -30,6 +33,8 @@ const Search = () => {
         />
       </div>
     </div>
+    <Footer />
+    </>
   )
 }
 export default Search
