@@ -9,7 +9,7 @@ router.get('/', (req, res) => getReviews(req, res));
 router.get('/:id', (req, res) => getReviewById(req, res));
 
 // Crear una nueva reseña
-router.post('/:videogameId', (req, res) => postReview(req, res));
+router.post('/', (req, res) => postReview(req, res));
 
 // Obtiene las reviews que concidan con videogameId
 router.get('/:videogameId', (req, res) => getReviewsByVideogameId(req, res));
