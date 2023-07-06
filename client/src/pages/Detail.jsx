@@ -83,7 +83,7 @@ const Detail = () => {
         </div>
 
         <div className="text-3xl text-yellow-500 mx-[77rem] my-[-3rem]">
-          Rating
+          
         </div>
 
         {/* Pasa el ID del videojuego a ReviewForm */}
