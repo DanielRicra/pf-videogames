@@ -24,7 +24,7 @@ const Home = () => {
         </Link>
       </div>
 
-      <Carrousel cards={videogames} />
+      <Carrousel videGames={videogames} />
       <br />
 
       <div className='font-medium text-6xl mt-12 flex justify-center items-center'>
