@@ -6,6 +6,8 @@ import Carrousel from './Carrousel'
 import PaginationBar from './PaginationBar'
 import BoxInput from './BoxInput'
 import TextField from './TextField'
+import Loading from './Loading'
+
 
 export {
   FilterBar,
@@ -16,4 +18,5 @@ export {
   BoxInput,
   TextField,
   PaginationBar,
+  Loading,
 }
