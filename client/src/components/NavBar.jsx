@@ -1,26 +1,35 @@
-import SearchBar from "./searchBar"
-export default function NavBar(){
-    return(
-        <nav className = 'h-28 flex items-center'>
-            
-            <div className='w-1/3 flex justify-center'>
-                <div className='flex w-1/1.3 ml-36'> 
-                    <SearchBar/>
-                </div>
-            </div>
+import { Link } from 'react-router-dom'
+import { HeartIcon, ShoppingCartIcon, UserIcon } from './icons'
+import SearchBar from './SearchBar'
 
-            {/* logo */}
-            <div className='w-1/3 flex justify-center'>
-                <img src="https://i.ibb.co/n7sdW1S/pseudologo.png" alt="pseudologo" border="0" className='h-20 opacity-90 hover:opacity-80'/>
-            </div>
-            
-            {/* seccion de iconos (favoritos, sign-in, carrito) */}
-            <div className="flex w-1/3 justify-start">
-                <img src="https://i.ibb.co/NLMstPJ/favorites-icon.png" alt="favorites-icon" border="0" className="h-6 w-6 filter invert opacity-90 hover:opacity-75 ml-32"/>
-                <img src="https://i.ibb.co/NjQSCSL/user-icon.png" alt="user-icon" border="0" className="h-6 w-6 filter invert ml-10 opacity-90 hover:opacity-75"/>
-                <img src="https://i.ibb.co/VYQpfSY/shopping-cart-icon.png" alt="shopping-cart-icon" border="0" className="h-6 w-6 filter invert ml-10 opacity-90 hover:opacity-75"/>
-            </div>
-            
-        </nav>
-    )
+const NavBar = () => {
+  return (
+    <nav className='h-24 flex items-center px-14'>
+      <div className='flex-1 flex justify-start'>
+        <SearchBar />
+      </div>
+
+      <div className='flex justify-center'>
+        <Link to='/' className=''>
+          <p className='text-4xl font-bold text-center text-white'>
+            Game<span className='text-purple-400'>Store</span>
+          </p>
+        </Link>
+      </div>
+
+      <div className='flex gap-2 flex-1 justify-end items-center'>
+        <Link to='/favorites' className=''>
+          <HeartIcon className='cursor-pointer hover:opacity-80 h-7 w-7' />
+        </Link>
+        <Link to='/profile' className=''>
+          <UserIcon className='cursor-pointer hover:opacity-80 h-7 w-7' />
+        </Link>
+        <Link to='/cart' className=''>
+          <ShoppingCartIcon className='cursor-pointer hover:opacity-80 h-7 w-7' />
+        </Link>
+      </div>
+    </nav>
+  )
 }
+
+export default NavBar
