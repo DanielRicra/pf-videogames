@@ -5,9 +5,7 @@ const morgan = require('morgan');
 
 const routes = require('./routes/index')
 
-
 const server = express();
-
 
 server.name = 'API';
 

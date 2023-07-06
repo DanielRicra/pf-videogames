@@ -44,8 +44,8 @@ const { Videogame, Genre, User, Review, Tag  } = sequelize.models;
 User.hasMany(Review, { foreignKey: 'userId' });
 Review.belongsTo(User, { foreignKey: 'userId' });
 
-Genre.belongsToMany(Videogame, { through: 'Videogame_Genre' });
-Videogame.belongsToMany(Genre, { through: 'Videogame_Genre' });
+Genre.belongsToMany(Videogame, { through: 'Videogame_Genre'});
+Videogame.belongsToMany(Genre, { through: 'Videogame_Genre'});
 
 Videogame.hasMany(Review, { foreignKey: 'videogameId' });
 Review.belongsTo(Videogame, { foreignKey: 'videogameId' });
