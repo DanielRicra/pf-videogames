@@ -1,15 +1,33 @@
-export default function SearchBar(){
-    return(
-        <div className="flex justify-center">
-            <form className="flex w-auto h-8 border-2 border-white-400 rounded-md opacity-82">
-                
-                <input placeholder="search ..." className="flex-grow px-2 outline-none bg-transparent opacity-50 caret-white text-white text-sm" />
-                
-                <button type="submit" className="px-3">
-                    <img src="https://i.ibb.co/zX7N8qH/search-icon.png" alt="search-icon" className="h-5 w-5 filter invert opacity-80 hover:opacity-90" />
-                </button>
+import { useRef } from 'react'
+import { SearchIcon } from './icons'
+import { useNavigate } from 'react-router-dom'
 
-            </form>
-        </div>
-    )
+const SearchBar = () => {
+  const inputRef = useRef(null)
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (inputRef.current?.value.trim() === '') {
+      return
+    }
+    navigate(`/search/?query=${inputRef.current.value}`)
+  }
+    
+  return (
+    <form onSubmit={handleSubmit} className='flex border-2 py-2 border-white-400 rounded-lg bg-[rgba(0,0,0,0.25)] w-full md:w-[280px] lg:w-[350px] 2xl:w-[420px]'>
+      <input
+        ref={inputRef}
+        placeholder='Search ...'
+        className='flex-grow px-3 text-lg outline-none bg-transparent caret-white text-white'
+      />
+
+      <button type='submit' className='px-3'>
+        <SearchIcon />
+      </button>
+    </form>
+  )
 }
+
+export default SearchBar
