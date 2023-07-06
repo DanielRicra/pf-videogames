@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import Carrousel from '../components/Carrousel'
+import Footer from '../components/Footer'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 
@@ -30,6 +31,8 @@ const Home = () => {
       <div className='font-medium text-6xl mt-12 flex justify-center items-center'>
         <h2>Join the community</h2>
       </div>
+
+      <Footer />
     </div>
   )
 }
