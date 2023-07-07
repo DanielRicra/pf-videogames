@@ -1,5 +1,6 @@
 const { Videogame, Genre, Tag } = require('../db')
 const { Op } = require('sequelize');
+
 const axios = require ('axios')
 const sharp = require('sharp');
 const cloudinary = require('cloudinary').v2;
@@ -56,7 +57,6 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
             videogamesUpload();
             allVideogames = await Videogame.findAll(videogameOptions);/*videogameOptions*/
         }
-
         return allVideogames;
     } catch (error) {
         return { error: error.message };
@@ -149,7 +149,6 @@ const postVideogames = async (videogame) => {
     }
     
 }
-
 
 videogamesUpload = async () => {
     try {

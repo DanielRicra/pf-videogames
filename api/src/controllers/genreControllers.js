@@ -2,13 +2,11 @@ const { Genre }= require('../db');
 const genre = require('../apiData/Genre.json')
 const { Op } = require('sequelize');
 
+
 const getGenres = async () => {
     try {
         let allGenres = await Genre.findAll();
-        if(!allGenres.length){
-            genreUpload()
-            allGenres = await Genre.findAll()
-        }
+
         return allGenres;
     } catch (error) {
         return {error: error.message}
