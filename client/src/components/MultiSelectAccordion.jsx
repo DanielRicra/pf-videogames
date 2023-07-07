@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import CustomCheckBox from './CustomCheckBox';
+import { IconChevronDown } from '@tabler/icons-react'
+import CustomCheckBox from './CustomCheckBox'
 
 const MultiSelectAccordion = ({
   addToSelectedFilters,
@@ -7,46 +7,25 @@ const MultiSelectAccordion = ({
   options,
   styles,
 }) => {
-  const [collapsep, setCollapsep] = useState(true);
   return (
     <div className='flex flex-col gap-2 overflow-hidden' style={styles}>
       <label
-        className='flex w-ful justify-between items-center cursor-pointer'
+        className='flex w-full justify-between items-center cursor-pointer accordion-text-container'
         htmlFor={`accordion-title-${title}`}
       >
         <input
-          className='opacity-0 -z-10 absolute'
           type='checkbox'
           name='accordion-title'
           id={`accordion-title-${title}`}
-          onClick={() => setCollapsep(!collapsep)}
+          className='opacity-0 absolute hidden -z-10 peer'
         />
-        <h3 className='font-medium m-0 text-xs text-black'>{title}</h3>
-        <p className='text-black'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            className={`${collapsep ? 'rotate-0' : 'rotate-180'}`}
-            viewBox='0 0 24 24'
-            stroke-width='2'
-            stroke='currentColor'
-            fill='none'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-          >
-            <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-            <path d='M6 9l6 6l6 -6' />
-          </svg>
-        </p>
+        <h3 className='text-xl font-medium m-0'>{title}</h3>
+        <IconChevronDown className='transition-transform duration-300 ease-in peer-checked:rotate-180' />
       </label>
 
       <div
-        className={`${
-          collapsep
-            ? 'flex flex-col gap-0 h-0 p-0 opacity-0'
-            : 'h-auto gap-2 opacity-100'
-        }`}
+        className='flex flex-col gap-0 h-0 p-0 transition-all duration-300 opacity-0 ease-in max-h-[300px] overflow-y-auto accordion-content-container'
+        style={{ '--height': options.length * 30 + 'px' }}
       >
         {options.map((option) => (
           <CustomCheckBox
@@ -58,7 +37,7 @@ const MultiSelectAccordion = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MultiSelectAccordion;
+export default MultiSelectAccordion

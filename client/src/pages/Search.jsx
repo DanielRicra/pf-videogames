@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
-import Footer from '../components/Footer'
-
 import {
   FilterBar,
   Loading,
   PaginationBar,
   SortBar,
   VideoGameCardList,
+  Footer
 } from '../components'
 import { fetchVideogames } from '../services/videoGameService'
 
@@ -25,7 +24,7 @@ const Search = () => {
 
   return (
     <>
-    <div className='min-h-[calc(100vh-96px)] font-[system-ui] flex p-2 md:px-10 lg:px-14 md:py-6 lg:py-10'>
+    <div className='min-h-[calc(100vh-96px)] font-[system-ui] flex p-2 md:px-10 lg:px-14 md:py-6 lg:py-10 gap-4 lg:gap-8'>
 
       <div className='min-w-[300px]'>
         <FilterBar />
