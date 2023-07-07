@@ -11,6 +11,7 @@ import NavBar from './NavBar'
 import VideoGameCardImage from './VideoGameCardImage'
 import ReviewCard from './ReviewCard'
 import ReviewForm from './ReviewForm'
+import Footer from './Footer'
 
 export {
   FilterBar,
@@ -25,5 +26,6 @@ export {
   PaginationBar,
   Loading,
   ReviewCard,
-  ReviewForm
+  ReviewForm,
+  Footer,
 }
