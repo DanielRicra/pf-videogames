@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
+
+import Footer from '../components/Footer'
+
 import {
   FilterBar,
   Loading,
@@ -21,7 +24,9 @@ const Search = () => {
   }
 
   return (
+    <>
     <div className='min-h-[calc(100vh-96px)] font-[system-ui] flex p-2 md:px-10 lg:px-14 md:py-6 lg:py-10'>
+
       <div className='min-w-[300px]'>
         <FilterBar />
       </div>
@@ -54,6 +59,8 @@ const Search = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   )
 }
 export default Search

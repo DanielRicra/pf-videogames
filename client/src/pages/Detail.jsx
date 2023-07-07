@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { IconHeart } from '@tabler/icons-react';
+import { IconShoppingCartPlus } from '@tabler/icons-react';
+import Footer from '../components/Footer'
 
 import { Loading } from "../components";
 // import del componente NavBar
@@ -57,9 +60,9 @@ const Detail = () => {
           <div className="container1">
             <img className="mx-[5rem] my-[5rem]" src="https://cdn.akamai.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg?t=1650554420" alt="{videogame.name}" title="{videogame.name}" />
 
-            <div className="">
-              <button className="text-3xl mx-[10rem] my-[1rem] mt-[0.5rem]" onClick={() => navigate(`/favorites`)}> Fav </button>
-              <button className="text-3xl mx-[10rem] my-[-1rem]" onClick={() => navigate(`/cart`)}> Buy </button>
+            <div className="flex justify-between px-[21rem]">
+              <button className="h-[4rem] mx-[-15.5rem] my-[-4rem]" onClick={() => navigate(`/favorites`)}> <IconHeart className="w-full h-full"/> </button>
+              <button className="h-[4rem] mx-[7rem] my-[-4rem]" onClick={() => navigate(`/cart`)}> <IconShoppingCartPlus className="w-full h-full" /> </button>
             </div>
           </div>
 
@@ -87,7 +90,9 @@ const Detail = () => {
         <div className="text-3xl text-yellow-500 mx-[77rem] my-[-3rem]">
           Rating
         </div>
+
       </div>
+      <Footer />
     </>
   )
 }
