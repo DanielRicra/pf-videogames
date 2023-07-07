@@ -36,11 +36,6 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
             order: [[field ? field : 'name', order ? order : 'ASC']],
             limit: page_size ? page_size : 10,
             offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-            where: {
-              stock: {
-                  [Op.gt]: 0
-              }
-            }
         };
 
         if (genreFilter) {
@@ -57,6 +52,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
             videogamesUpload();
             allVideogames = await Videogame.findAll(videogameOptions);
         }*/
+
         return allVideogames;
     } catch (error) {
         return { error: error.message };
@@ -95,11 +91,6 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
             order: [[field ? field : 'name', order ? order : 'ASC']],
             limit: page_size ? page_size : 10,
             offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-            where: {
-              stock: {
-                  [Op.gt]: 0
-              }
-            }
         };
 
         if (genreFilter) {
