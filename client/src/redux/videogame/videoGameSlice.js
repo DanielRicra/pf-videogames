@@ -2,13 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   videoGames: [],
+  detail: {}
 };
 
-export const videoGamesSlice = createSlice({
+const videoGamesSlice = createSlice({
   name: 'videoGames',
   initialState,
   reducers: {
-    setVideosgames: (state, action) => {
+    setVideoGames: (state, action) => {
       state.user = action.payload;
     },
     setLoading: (state, action) => {
@@ -17,7 +18,11 @@ export const videoGamesSlice = createSlice({
     setError: (state, action) => {
       state.userError = action.payload;
     },
+    currentVideogame: (state, action) => {
+      state.detail = action.payload
+    }
   },
 });
 
-export const { setVideosgames, setLoading, setError } = videoGamesSlice.actions;
+export const { setVideoGames, setLoading, setError, currentVideogame } = videoGamesSlice.actions;
+export default videoGamesSlice.reducer;
