@@ -1,19 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: 'jhonson',
-  userError: null,
-  userLoading: false,
-  token: '',
+  videoGames: [],
 };
 
-export const userSlice = createSlice({
-  name: 'users',
+const videoGamesSlice = createSlice({
+  name: 'videoGames',
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    setVideoGames: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem('userData', JSON.stringify(action.payload));
     },
     setLoading: (state, action) => {
       state.userLoading = action.payload;
@@ -24,4 +20,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setLoading, setError } = userSlice.actions;
+export const { setVideoGames, setLoading, setError } = videoGamesSlice.actions;
+export default videoGamesSlice.reducer;
