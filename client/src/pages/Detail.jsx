@@ -98,7 +98,7 @@ const Detail = () => {
 
         </div>
 
-        <ReviewForm onSubmit={handleSubmitReview} videogameId={id} />
+        {/*  <ReviewForm onSubmit={handleSubmitReview} videogameId={id} /> */}
 
         <div className="flex flex-col mt-10">
           {reviews.map(review => (
