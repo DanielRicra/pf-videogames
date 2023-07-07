@@ -12,7 +12,11 @@ router.get('/:id', (req, res) => getReviewById(req, res));
 router.get('/videogame/:videogameId', (req, res) => getReviewsByVideogameId(req, res));
 
 // Crear una nueva reseña
-router.post('/', (req, res) => postReview(req, res));
+router.post('/', (req, res) => {
+    const { score, text, videogameId } = req.body;
+    postReview(score, text, videogameId, req, res);
+  });
+  
 
 // Borrar una reseña por su ID
 router.delete('/:id', (req, res) => deleteReview(req, res));

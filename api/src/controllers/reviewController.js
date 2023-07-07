@@ -37,11 +37,8 @@ const getReviewsByVideogameId = async (req, res) => {
 
 
 // Crear una nueva review
-const postReview = async (req, res) => {
+const postReview = async (score, text, videogameId, req, res) => {
   try {
-    const { score, text } = req.body;
-    const { videogameId } = req.params;
-
     // Verificar si el videojuego existe
     const videogame = await Videogame.findByPk(videogameId);
     if (!videogame) {
@@ -60,6 +57,7 @@ const postReview = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
 
 // Borrar una review por su ID
 const deleteReview = async (req, res) => {

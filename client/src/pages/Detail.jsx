@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { IconHeart } from '@tabler/icons-react';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
-import Footer from '../components/Footer'
+import Footer from '../components/Footer';
 import { ReviewCard, ReviewForm } from "../components";
-import { fetchReviews } from "../Redux/actions/reviewAction";
+import { fetchReviews, postReview } from "../Redux/actions/reviewAction";
+
 
 // import del componente NavBar
 
@@ -13,13 +14,17 @@ import { fetchReviews } from "../Redux/actions/reviewAction";
 
 const Detail = () => {
   const { id } = useParams();
-  const reviews = useSelector(state => state?.review?.reviews || []);
+  const reviews = useSelector(state => state.review.reviews || []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchReviews(id));
   }, [dispatch, id]);
+
+  const handleSubmitReview = (review) => {
+    dispatch(postReview(review));
+  };
 
 
   // const [currentId, setCurrentId] = useState(id);
@@ -63,7 +68,7 @@ const Detail = () => {
             <img className="mx-[5rem] my-[5rem]" src="https://cdn.akamai.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg?t=1650554420" alt="{videogame.name}" title="{videogame.name}" />
 
             <div className="flex justify-between px-[21rem]">
-              <button className="h-[4rem] mx-[-15.5rem] my-[-4rem]" onClick={() => navigate(`/favorites`)}> <IconHeart className="w-full h-full"/> </button>
+              <button className="h-[4rem] mx-[-15.5rem] my-[-4rem]" onClick={() => navigate(`/favorites`)}> <IconHeart className="w-full h-full" /> </button>
               <button className="h-[4rem] mx-[7rem] my-[-4rem]" onClick={() => navigate(`/cart`)}> <IconShoppingCartPlus className="w-full h-full" /> </button>
             </div>
           </div>
@@ -90,10 +95,10 @@ const Detail = () => {
         </div>
 
         <div className="text-3xl text-yellow-500 mx-[77rem] my-[-3rem]">
-          Rating
+
         </div>
 
-        <ReviewForm videogameId={id} />
+        <ReviewForm onSubmit={handleSubmitReview} videogameId={id} />
 
         <div className="flex flex-col mt-10">
           {reviews.map(review => (

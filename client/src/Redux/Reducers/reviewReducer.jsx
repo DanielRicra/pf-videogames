@@ -1,5 +1,5 @@
 
-import { ADD_REVIEW, SET_ERROR, SET_REVIEWS } from "./reviewAction";
+import { ADD_REVIEW, SET_ERROR, SET_REVIEWS } from "../actions/reviewAction";
 
 const initialState = {
   reviews: [],
