@@ -150,7 +150,7 @@ const postVideogames = async (videogame) => {
     
 }
 
-videogamesUpload = async () => {
+/*videogamesUpload = async () => {
     try {
       let uniqueArr = Object.values(videogame.reduce((accumulator, obj) => {
         accumulator[obj.id] = obj;
@@ -206,7 +206,7 @@ videogamesUpload = async () => {
   const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-
+*/
 module.exports = {
     getAllVideogames,
     getVideogamesById,
