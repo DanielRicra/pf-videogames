@@ -53,10 +53,10 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
 
         let allVideogames = await Videogame.findAll(videogameOptions);/**/
 
-        if (!allVideogames.length) {
+        /*if (!allVideogames.length) {
             videogamesUpload();
-            allVideogames = await Videogame.findAll(videogameOptions);/*videogameOptions*/
-        }
+            allVideogames = await Videogame.findAll(videogameOptions);
+        }*/
         return allVideogames;
     } catch (error) {
         return { error: error.message };
@@ -150,7 +150,7 @@ const postVideogames = async (videogame) => {
     
 }
 
-videogamesUpload = async () => {
+/*videogamesUpload = async () => {
     try {
       let uniqueArr = Object.values(videogame.reduce((accumulator, obj) => {
         accumulator[obj.id] = obj;
@@ -206,7 +206,7 @@ videogamesUpload = async () => {
   const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-
+*/
 module.exports = {
     getAllVideogames,
     getVideogamesById,
