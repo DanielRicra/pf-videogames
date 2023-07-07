@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   videoGames: [],
+  detail: {}
 };
 
 const videoGamesSlice = createSlice({
@@ -17,8 +18,11 @@ const videoGamesSlice = createSlice({
     setError: (state, action) => {
       state.userError = action.payload;
     },
+    currentVideogame: (state, action) => {
+      state.detail = action.payload
+    }
   },
 });
 
-export const { setVideoGames, setLoading, setError } = videoGamesSlice.actions;
+export const { setVideoGames, setLoading, setError, currentVideogame } = videoGamesSlice.actions;
 export default videoGamesSlice.reducer;
