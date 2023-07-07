@@ -1,4 +1,3 @@
-
 const { Review, Videogame } = require('../db');
 
 // Obtener todas las reviews

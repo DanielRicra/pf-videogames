@@ -4,18 +4,22 @@ import { useState, useEffect } from "react";
 import { IconHeart } from '@tabler/icons-react';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
 import Footer from '../components/Footer'
-// import { fetchVideogame } from "../redux/actions/videoGamesAction";
+import { ReviewCard, ReviewForm } from "../components";
+import { fetchReviews } from "../Redux/actions/reviewAction";
 
-import { Loading } from "../components";
 // import del componente NavBar
 
 // import de las actions getDetail, clearDetail
 
 const Detail = () => {
-  // const { id } = useParams();
-  // const videogame = useSelector(state => state.detail)
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const { id } = useParams();
+  const reviews = useSelector(state => state?.review?.reviews || []);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(fetchReviews(id));
+  }, [dispatch, id]);
 
 
   // const [currentId, setCurrentId] = useState(id);
@@ -54,9 +58,7 @@ const Detail = () => {
 
       </div> */}
       <div className="wrapper">
-
         <div className="flex">
-
           <div className="container1">
             <img className="mx-[5rem] my-[5rem]" src="https://cdn.akamai.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg?t=1650554420" alt="{videogame.name}" title="{videogame.name}" />
 
@@ -91,10 +93,17 @@ const Detail = () => {
           Rating
         </div>
 
+        <ReviewForm videogameId={id} />
+
+        <div className="flex flex-col mt-10">
+          {reviews.map(review => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
+        </div>
       </div>
       <Footer />
     </>
   )
 }
 
-export default Detail
+export default Detail;
