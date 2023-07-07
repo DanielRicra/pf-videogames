@@ -36,11 +36,6 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
             order: [[field ? field : 'name', order ? order : 'ASC']],
             limit: page_size ? page_size : 10,
             offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-            where: {
-              stock: {
-                  [Op.gt]: 0
-              }
-            }
         };
 
         if (genreFilter) {
@@ -53,10 +48,11 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
 
         let allVideogames = await Videogame.findAll(videogameOptions);/**/
 
-        if (!allVideogames.length) {
+        /*if (!allVideogames.length) {
             videogamesUpload();
-            allVideogames = await Videogame.findAll(videogameOptions);/*videogameOptions*/
-        }
+            allVideogames = await Videogame.findAll(videogameOptions);
+        }*/
+
         return allVideogames;
     } catch (error) {
         return { error: error.message };
@@ -95,11 +91,6 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
             order: [[field ? field : 'name', order ? order : 'ASC']],
             limit: page_size ? page_size : 10,
             offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-            where: {
-              stock: {
-                  [Op.gt]: 0
-              }
-            }
         };
 
         if (genreFilter) {
@@ -150,7 +141,7 @@ const postVideogames = async (videogame) => {
     
 }
 
-videogamesUpload = async () => {
+/*videogamesUpload = async () => {
     try {
       let uniqueArr = Object.values(videogame.reduce((accumulator, obj) => {
         accumulator[obj.id] = obj;
@@ -206,7 +197,7 @@ videogamesUpload = async () => {
   const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-
+*/
 module.exports = {
     getAllVideogames,
     getVideogamesById,
