@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { IconHeart } from '@tabler/icons-react';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
 import Footer from '../components/Footer'
+// import { fetchVideogame } from "../redux/actions/videoGamesAction";
 
 import { Loading } from "../components";
 // import del componente NavBar
@@ -14,7 +15,7 @@ const Detail = () => {
   // const { id } = useParams();
   // const videogame = useSelector(state => state.detail)
   // const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
   // const [currentId, setCurrentId] = useState(id);
@@ -33,13 +34,12 @@ const Detail = () => {
 
 
   // if (loading) {
-  //   return <Loading />;
-  // }
+  //    return <Loading />;
+  //  }
 
   return (
     <>
-      {/* <NavBar /> 
-      <div class="tailwind (container)">
+      {/* <div class="tailwind (container)">
 
           <img class="" src={videogame.img} alt={videogame.name}/>
           // fav button
