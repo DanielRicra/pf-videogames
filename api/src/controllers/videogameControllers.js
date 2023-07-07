@@ -53,10 +53,10 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
 
         let allVideogames = await Videogame.findAll(videogameOptions);/**/
 
-        if (!allVideogames.length) {
+        /*if (!allVideogames.length) {
             videogamesUpload();
-            allVideogames = await Videogame.findAll(videogameOptions);/*videogameOptions*/
-        }
+            allVideogames = await Videogame.findAll(videogameOptions);
+        }*/
         return allVideogames;
     } catch (error) {
         return { error: error.message };
