@@ -1,6 +1,10 @@
 const server = require('./src/app.js')
 const { conn, Videogame, Tag, Genre } = require('./src/db.js')
-const { uploadVideogames, uploadTags, uploadGenres } = require('./src/utils/helpers.js')
+const {
+  uploadVideogames,
+  uploadTags,
+  uploadGenres,
+} = require('./src/utils/helpers.js')
 
 const PORT = 3001
 
