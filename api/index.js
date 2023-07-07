@@ -1,9 +1,15 @@
-const server = require('./src/app.js');
-const { conn } = require('./src/db.js');
+const server = require('./src/app.js')
+const { conn, Videogame, Tag, Genre } = require('./src/db.js')
+const { uploadTags, uploadGenres } = require('./src/utils/helpers.js')
+
+const PORT = 3001
 
 // Syncing all the models at once.
-conn.sync({ force: false }).then(() => {
-  server.listen(3001, () => {
-    console.log('%s listening at 3001'); // eslint-disable-line no-console
-  });
-});
+conn.sync({ force: true }).then(() => {
+  uploadGenres(Genre)
+  uploadTags(Tag)
+
+  server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`)
+  })
+})
