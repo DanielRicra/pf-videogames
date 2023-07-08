@@ -1,7 +1,8 @@
 const { Genre }= require('../db');
 const genre = require('../apiData/Genre.json')
 const { Op } = require('sequelize');
-
+const Sequelize = require('sequelize')
+const shortid = require('shortid')
 
 const getGenres = async () => {
     try {
@@ -28,49 +29,33 @@ const genreUpload = () => {
 
   const postGenres = async (genre) => { 
     try {
-        
         const { name } = genre;
-
-        if(  !name ) throw new Error('Faltan datos obligatorios')
-
-        const normalizedComparisonName = name.replace(/[^\w]/g, '');
-
-        // Consulta para encontrar el registro específico en base al string de comparación
-        let genreFound = await Genre.findOne({
-        where: {
-            name: {
-                [Op.substring]: normalizedComparisonName,
-            }
-        }
+        // Normalizar el nombre del género (eliminando todos los espacios)
+        const normalizedName = name.replace(/\s/g, '');
+      
+        const existingGenre = await Genre.findOne({
+          where: Sequelize.where(
+            Sequelize.fn('LOWER', Sequelize.fn('REPLACE', Sequelize.col('name'), ' ', '')),
+            Sequelize.fn('LOWER', normalizedName)
+          )
         });
-
-        if (genreFound) {
-            const normalizedStoredName = genreFound.name.replace(/[^\w]/g, '');
-            console.log(normalizedComparisonName)
-            console.log(normalizedStoredName)
-            if (normalizedStoredName === normalizedComparisonName) {
-                console.log("El género existe en la base de datos.");
-                return genreFound;
-              }
-        return genreFound;
+      
+        if (existingGenre) {
+          // El género similar ya existe en la base de datos
+          console.log('El género similar ya existe en la base de datos.');
+          return { message: 'El género similar ya existe en la base de datos.' };
         }
-
-        else {
-        console.log("El género no existe en la base de datos.");
-
-        const now = Date.now();
-        const id = now.toString();
-
-        let newGenre = await Genre.create({
-            name, id
-        });
-        return newGenre;
-        }
-
-    } catch (error) {
-        return {error: error.message};
-    }
-    
+      
+        const uniqueID = Date.now();
+        const newGenre = await Genre.create({ name: normalizedName, id: uniqueID });
+      
+        console.log('Nuevo género creado:', newGenre.name);
+        return { message: 'Nuevo género creado', genre: newGenre };
+      } catch (error) {
+        console.error('Error al buscar o crear el género:', error);
+        return { error: 'Error al buscar o crear el género' };
+      }
+      
 }
 
 module.exports = {
