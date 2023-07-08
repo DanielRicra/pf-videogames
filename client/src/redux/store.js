@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     users: userReducer,
     cart: cartReducer,
-    videoGame: videoGameReducer,
+    videoGames: videoGameReducer,
   },
 })
 
