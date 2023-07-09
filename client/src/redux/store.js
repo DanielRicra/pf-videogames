@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './user/userSlice'
 import cartReducer from './cart/cartSlice'
-import videoGameReducer from './videogame/videoGameSlice'
+import videoGamesReducer from './videogame/videoGameSlice'
 
 const store = configureStore({
   reducer: {
     users: userReducer,
     cart: cartReducer,
-    videoGame: videoGameReducer,
+    videoGames: videoGamesReducer,
   },
 })
 
