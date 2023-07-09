@@ -11,9 +11,11 @@ import {
 } from '../components'
 import { fetchVideogames } from '../services/videoGameService'
 import { useSelector } from 'react-redux'
+import { getSearchQuery } from '../redux/videogame/videoGameSlice'
 
 const Search = () => {
   const [currentPage, setCurrentPage] = useState(1)
+  const searchQuery = useSelector(getSearchQuery)
   const { genresFilter, tagsFilter } = useSelector((state) => state.videoGames)
   const [url, setUrl] = useState('http://localhost:3001/videogames?')
   useEffect(() => {
@@ -49,7 +51,7 @@ const Search = () => {
   }, [genresFilter, tagsFilter])
 
   const { data, error, isLoading } = useSWRImmutable(
-    `${url}&page=${currentPage}`,
+    `${url}&name=${searchQuery}&page=${currentPage}`,
     fetchVideogames
   )
 
@@ -64,7 +66,10 @@ const Search = () => {
           <FilterBar />
         </div>
         <div className='flex flex-col flex-1'>
-          <p>results of:</p>
+          <p className='text-xl font-semibold text-left mb-4'>
+            Showing {data?.length ?? 0} results of: {searchQuery}
+          </p>
+
           <SortBar />
 
           {error ? (
@@ -78,11 +83,15 @@ const Search = () => {
               <Loading />
             </div>
           ) : (
-            <VideoGameCardList videogames={data} />
+            <VideoGameCardList
+              videogames={data}
+              message={`There are no VideoGames with name: ${searchQuery}`}
+            />
           )}
 
           <div className='flex justify-center my-4'>
-            {!error && (
+            {!error && data?.length > 9 && (
+
               <PaginationBar
                 currentPage={currentPage}
                 totalPages={5}

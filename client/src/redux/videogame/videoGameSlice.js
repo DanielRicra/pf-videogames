@@ -7,6 +7,7 @@ const initialState = {
   tagsFilter: [],
   videoLoading: false,
   videoError: false,
+  searchQuery: '',
 }
 
 const videoGamesSlice = createSlice({
@@ -31,15 +32,22 @@ const videoGamesSlice = createSlice({
     setTagFilter: (state, action) => {
       state.tagsFilter = action.payload
     },
+     setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload
+    },
   },
 })
 
+export const getSearchQuery = (state) => state.videoGames.searchQuery
+export const getVideoGames = (state) => state.videoGames.videoGames
+
 export const {
-  setTagFilter,
-  setGenreFilter,
   setVideoGames,
   setLoading,
   setError,
   currentVideogame,
+  setSearchQuery,
+  setTagFilter,
+  setGenreFilter,
 } = videoGamesSlice.actions
 export default videoGamesSlice.reducer
