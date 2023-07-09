@@ -8,8 +8,8 @@ const store = configureStore({
   reducer: {
     users: userReducer,
     cart: cartReducer,
-    videoGame: videoGameReducer,
     review: reviewReducer,
+    videoGames: videoGameReducer,
   },
 })
 
