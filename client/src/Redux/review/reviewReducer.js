@@ -1,10 +1,9 @@
-
-import { ADD_REVIEW, SET_ERROR, SET_REVIEWS } from "../actions/reviewAction";
+import { ADD_REVIEW, SET_ERROR, SET_REVIEWS } from '../actions/reviewAction'
 
 const initialState = {
   reviews: [],
   error: null,
-};
+}
 
 const reviewReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -13,21 +12,21 @@ const reviewReducer = (state = initialState, action) => {
         ...state,
         reviews: [...state.reviews, action.payload],
         error: null,
-      };
+      }
     case SET_REVIEWS:
       return {
         ...state,
         reviews: action.payload,
         error: null,
-      };
+      }
     case SET_ERROR:
       return {
         ...state,
         error: action.payload,
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reviewReducer;
+export default reviewReducer
