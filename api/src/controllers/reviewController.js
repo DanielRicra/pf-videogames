@@ -1,4 +1,3 @@
-
 const { Review, Videogame } = require('../db');
 
 // Obtener todas las reviews
@@ -25,12 +24,21 @@ const getReviewById = async (req, res) => {
   }
 };
 
-// Crear una nueva review
-const postReview = async (req, res) => {
+// Obtener todas las reviews por videogameId
+const getReviewsByVideogameId = async (req, res) => {
   try {
-    const { score, text } = req.body;
     const { videogameId } = req.params;
+    const reviews = await Review.findAll({ where: { videogameId } });
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+};
 
+
+// Crear una nueva review
+const postReview = async (score, text, videogameId, req, res) => {
+  try {
     // Verificar si el videojuego existe
     const videogame = await Videogame.findByPk(videogameId);
     if (!videogame) {
@@ -49,6 +57,7 @@ const postReview = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
 
 // Borrar una review por su ID
 const deleteReview = async (req, res) => {
@@ -87,4 +96,5 @@ module.exports = {
   postReview,
   deleteReview,
   updateReview,
+  getReviewsByVideogameId,
 };

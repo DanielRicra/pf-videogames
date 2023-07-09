@@ -9,6 +9,8 @@ import TextField from './TextField'
 import Loading from './Loading'
 import NavBar from './NavBar'
 import VideoGameCardImage from './VideoGameCardImage'
+import ReviewCard from './ReviewCard'
+import ReviewForm from './ReviewForm'
 import Footer from './Footer'
 
 export {
@@ -23,5 +25,7 @@ export {
   NavBar,
   PaginationBar,
   Loading,
+  ReviewCard,
+  ReviewForm,
   Footer,
 }

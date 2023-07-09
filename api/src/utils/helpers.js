@@ -1,7 +1,6 @@
 const videogames = require('../apiData/Videogame.json')
 const tags = require('../apiData/Tag.json')
 const genres = require('../apiData/Genre.json')
-const {Tag, Videogame, Genre} = require ('../db')
 
 const uploadVideogames = (Videogame) => {
   try {
