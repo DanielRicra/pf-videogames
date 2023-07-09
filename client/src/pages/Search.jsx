@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import {
@@ -16,9 +16,42 @@ import { getSearchQuery } from '../redux/videogame/videoGameSlice'
 const Search = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const searchQuery = useSelector(getSearchQuery)
+  const { genresFilter, tagsFilter } = useSelector((state) => state.videoGames)
+  const [url, setUrl] = useState('http://localhost:3001/videogames?')
+  useEffect(() => {
+    let myUrl = ''
+    let genres = ''
+    let tags = ''
+
+    genresFilter.length > 0
+      ? genresFilter.forEach((gn, ind) => {
+          ind === 0
+            ? (genres = `genreFilter=${gn}`)
+            : (genres = `${genres}&genreFilter=${gn}`)
+          myUrl = `http://localhost:3001/videogames?${genres}`
+        })
+      : null
+
+    tagsFilter.length > 0
+      ? tagsFilter.forEach((tg, ind) => {
+          ind === 0
+            ? (tags = `tagFilter=${tg}`)
+            : (tags = `${tags}&tagFilter=${tg}`)
+          myUrl = `http://localhost:3001/videogames?${tags}`
+        })
+      : null
+
+    if (genresFilter.length > 0 && tagsFilter.length > 0) {
+      myUrl = `http://localhost:3001/videogames?${genres}&${tags}`
+    } else if (genresFilter.length == 0 && tagsFilter.length == 0) {
+      myUrl = 'http://localhost:3001/videogames?'
+    }
+
+    myUrl !== '' ? setUrl(myUrl) : null
+  }, [genresFilter, tagsFilter])
 
   const { data, error, isLoading } = useSWRImmutable(
-    `http://localhost:3001/videogames?name=${searchQuery}&page=${currentPage}`,
+    `${url}&name=${searchQuery}&page=${currentPage}`,
     fetchVideogames
   )
 
@@ -36,6 +69,7 @@ const Search = () => {
           <p className='text-xl font-semibold text-left mb-4'>
             Showing {data?.length ?? 0} results of: {searchQuery}
           </p>
+
           <SortBar />
 
           {error ? (
@@ -57,6 +91,7 @@ const Search = () => {
 
           <div className='flex justify-center my-4'>
             {!error && data?.length > 9 && (
+
               <PaginationBar
                 currentPage={currentPage}
                 totalPages={5}

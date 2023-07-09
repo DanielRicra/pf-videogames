@@ -1,32 +1,44 @@
-import { useState } from 'react'
-import MultiSelectAccordion from './MultiSelectAccordion'
+import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
 import { useTags } from '../hooks/useTags'
 import { useGenres } from '../hooks/useGenres'
+import MultiSelectAccordion from './MultiSelectAccordion'
+import { GenreFilter, TagFilter } from '../redux/actions/videoGamesAction'
 
 const FiltersSidebar = () => {
-  const [selectedFilters, setSelectedFilters] = useState([])
-  const [sourceFilters, setSourceFilters] = useState([])
+  const [genreFilters, setGenreFilters] = useState([])
+  const [tagFilters, setTagFilters] = useState([])
   const { isTagsLoading, tags } = useTags()
   const { isGenresLoading, genres } = useGenres()
+  const dispatch = useDispatch()
 
-  const addToSelectedFilters = (e) => {
+  const addToGenreFilters = (e) => {
     const { checked, name } = e.target
 
     if (checked) {
-      setSelectedFilters((prev) => [...prev, name])
+      setGenreFilters((prev) => [...prev, name])
     } else {
-      setSelectedFilters(selectedFilters.filter((item) => item !== name))
+      setGenreFilters(genreFilters.filter((item) => item !== name))
     }
   }
 
-  const addToSourceFilters = (e) => {
+  const addToTagFilters = (e) => {
     const { checked, name } = e.target
     if (checked) {
-      setSourceFilters((prev) => [...prev, name])
+      setTagFilters((prev) => [...prev, name])
     } else {
-      setSourceFilters(sourceFilters.filter((item) => item !== name))
+      setTagFilters(tagFilters.filter((item) => item !== name))
     }
   }
+
+  useEffect(() => {
+    dispatch(TagFilter(tagFilters))
+    /* paginate(1); */
+  }, [tagFilters, dispatch])
+
+  useEffect(() => {
+    dispatch(GenreFilter(genreFilters))
+  }, [genreFilters, dispatch])
 
   return (
     <div className='flex flex-col rounded-lg bg-[#bdbcbc] p-4 text-black max-w-xs'>
@@ -46,7 +58,9 @@ const FiltersSidebar = () => {
               className='rounded-md w-20 p-2'
             />
           </div>
-          <span className='text-center font-bold text-2xl translate-y-6'>-</span>
+          <span className='text-center font-bold text-2xl translate-y-6'>
+            -
+          </span>
           <div className='flex flex-col'>
             <label htmlFor='to-price' className='text-base'>
               To
@@ -59,14 +73,14 @@ const FiltersSidebar = () => {
       <MultiSelectAccordion
         title='Genre'
         options={genres ?? []}
-        addToSelectedFilters={addToSelectedFilters}
+        addToSelectedFilters={addToGenreFilters}
       />
       <p className='animate-pulse'>{isGenresLoading && 'Fetching genres...'}</p>
 
       <MultiSelectAccordion
         title='Tags'
         options={tags?.slice(0, 15) ?? []}
-        addToSelectedFilters={addToSourceFilters}
+        addToSelectedFilters={addToTagFilters}
       />
       <p className='animate-pulse'>{isTagsLoading && 'Fetching tags...'}</p>
     </div>
