@@ -3,6 +3,9 @@ import {
   currentVideogame,
   setGenreFilter,
   setTagFilter,
+  
+  setSortType,
+  setVideoGames,
 } from '../videogame/videoGameSlice'
 import axios from 'axios'
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
+import { useSelector, useDispatch } from 'react-redux'
 
 import {
   FilterBar,
@@ -9,14 +10,20 @@ import {
   VideoGameCardList,
   Footer,
 } from '../components'
-import { fetchVideogames } from '../services/videoGameService'
-import { useSelector } from 'react-redux'
+import * as videoGameService from '../services/videoGameService'
 import { getSearchQuery } from '../redux/videogame/videoGameSlice'
 
+import { getSortType, getSortOrder } from '../redux/videogame/videoGameSlice'
+
 const Search = () => {
+  const dispatch = useDispatch()
   const [currentPage, setCurrentPage] = useState(1)
   const searchQuery = useSelector(getSearchQuery)
   const { genresFilter, tagsFilter } = useSelector((state) => state.videoGames)
+
+  const sortType = useSelector(getSortType)
+  const sortOrder = useSelector(getSortOrder)
+
   const [url, setUrl] = useState('http://localhost:3001/videogames?')
   useEffect(() => {
     let myUrl = ''
@@ -51,13 +58,19 @@ const Search = () => {
   }, [genresFilter, tagsFilter])
 
   const { data, error, isLoading } = useSWRImmutable(
-    `${url}&name=${searchQuery}&page=${currentPage}`,
-    fetchVideogames
+    `${url}&name=${searchQuery}&page=${currentPage}&field=${sortType}&order=${sortOrder}`,
+    videoGameService.fetchVideogames
   )
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber)
   }
+
+  const sortTypeHandler = (parameter) => {
+    dispatch(setSortType(parameter));
+    dispatch(fetchByParameter(parameter));
+  };
+  console.log(data)
 
   return (
     <>
@@ -66,11 +79,12 @@ const Search = () => {
           <FilterBar />
         </div>
         <div className='flex flex-col flex-1'>
+          <SortBar sortTypeHandler={sortTypeHandler}/>
+
           <p className='text-xl font-semibold text-left mb-4'>
-            Showing {data?.length ?? 0} results of: {searchQuery}
+            Showing {data?.length ?? 0} results: {searchQuery}
           </p>
 
-          <SortBar />
 
           {error ? (
             <div className='flex justify-center my-6'>
