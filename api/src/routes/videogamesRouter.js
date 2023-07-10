@@ -40,7 +40,7 @@ videogamesRouter.get('/:id', async ( req, res) => {
         res.status(200).json(response);
 
     } catch (error) {
-        res.status(404).send(error.message);
+        res.status(404).send({ error: error.message });
     }
 })
 
