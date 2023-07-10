@@ -18,38 +18,6 @@ export const videogames = [
     rating: 4.66,
     price: '36.39',
     stock: null,
-    genres: [
-      {
-        name: 'Adventure',
-        id: '3',
-        Videogame_Genre: {
-          createdAt: '2023-07-10T01:39:51.523Z',
-          updatedAt: '2023-07-10T01:39:51.523Z',
-          genreId: '3',
-          videogameId: '3328',
-        },
-      },
-      {
-        name: 'Action',
-        id: '4',
-        Videogame_Genre: {
-          createdAt: '2023-07-10T01:39:51.523Z',
-          updatedAt: '2023-07-10T01:39:51.523Z',
-          genreId: '4',
-          videogameId: '3328',
-        },
-      },
-      {
-        name: 'RPG',
-        id: '5',
-        Videogame_Genre: {
-          createdAt: '2023-07-10T01:39:51.523Z',
-          updatedAt: '2023-07-10T01:39:51.523Z',
-          genreId: '5',
-          videogameId: '3328',
-        },
-      },
-    ],
   },
   {
     name: 'Portal 2',
@@ -60,28 +28,6 @@ export const videogames = [
     rating: 4.61,
     price: '12.40',
     stock: null,
-    genres: [
-      {
-        name: 'Shooter',
-        id: '2',
-        Videogame_Genre: {
-          createdAt: '2023-07-10T01:39:51.559Z',
-          updatedAt: '2023-07-10T01:39:51.559Z',
-          genreId: '2',
-          videogameId: '4200',
-        },
-      },
-      {
-        name: 'Puzzle',
-        id: '7',
-        Videogame_Genre: {
-          createdAt: '2023-07-10T01:39:51.559Z',
-          updatedAt: '2023-07-10T01:39:51.559Z',
-          genreId: '7',
-          videogameId: '4200',
-        },
-      },
-    ],
   },
   {
     name: 'Red Dead Redemption 2',
