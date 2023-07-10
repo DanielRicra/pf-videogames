@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { ShoppingCartIcon } from './icons';
+import { Link } from 'react-router-dom'
+import { ShoppingCartIcon } from './icons'
 
 const VideoGameCard = ({ card }) => {
   return (
@@ -41,6 +41,6 @@ const VideoGameCard = ({ card }) => {
         </Link>
       </div>
     </div>
-  );
-};
-export default VideoGameCard;
+  )
+}
+export default VideoGameCard

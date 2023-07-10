@@ -1,4 +1,4 @@
-import CustomCheckBox from './CustomCheckBox';
+import CustomCheckBox from './CustomCheckBox'
 
 const MultiSelectAccordion = ({
   addToSelectedFilters,
@@ -38,7 +38,7 @@ const MultiSelectAccordion = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MultiSelectAccordion;
+export default MultiSelectAccordion

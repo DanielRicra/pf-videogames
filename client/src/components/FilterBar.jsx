@@ -1,44 +1,44 @@
-import { useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useTags } from '../hooks/useTags';
-import { useGenres } from '../hooks/useGenres';
-import MultiSelectAccordion from './MultiSelectAccordion';
-import { GenreFilter, TagFilter } from '../redux/actions/videoGamesAction';
+import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useTags } from '../hooks/useTags'
+import { useGenres } from '../hooks/useGenres'
+import MultiSelectAccordion from './MultiSelectAccordion'
+import { GenreFilter, TagFilter } from '../redux/actions/videoGamesAction'
 
 const FiltersSidebar = () => {
-  const [genreFilters, setGenreFilters] = useState([]);
-  const [tagFilters, setTagFilters] = useState([]);
-  const { isTagsLoading, tags } = useTags();
-  const { isGenresLoading, genres } = useGenres();
-  const dispatch = useDispatch();
+  const [genreFilters, setGenreFilters] = useState([])
+  const [tagFilters, setTagFilters] = useState([])
+  const { isTagsLoading, tags } = useTags()
+  const { isGenresLoading, genres } = useGenres()
+  const dispatch = useDispatch()
 
   const addToGenreFilters = (e) => {
-    const { checked, name } = e.target;
+    const { checked, name } = e.target
 
     if (checked) {
-      setGenreFilters((prev) => [...prev, name]);
+      setGenreFilters((prev) => [...prev, name])
     } else {
-      setGenreFilters(genreFilters.filter((item) => item !== name));
+      setGenreFilters(genreFilters.filter((item) => item !== name))
     }
-  };
+  }
 
   const addToTagFilters = (e) => {
-    const { checked, name } = e.target;
+    const { checked, name } = e.target
     if (checked) {
-      setTagFilters((prev) => [...prev, name]);
+      setTagFilters((prev) => [...prev, name])
     } else {
-      setTagFilters(tagFilters.filter((item) => item !== name));
+      setTagFilters(tagFilters.filter((item) => item !== name))
     }
-  };
+  }
 
   useEffect(() => {
-    dispatch(TagFilter(tagFilters));
+    dispatch(TagFilter(tagFilters))
     /* paginate(1); */
-  }, [tagFilters, dispatch]);
+  }, [tagFilters, dispatch])
 
   useEffect(() => {
-    dispatch(GenreFilter(genreFilters));
-  }, [genreFilters, dispatch]);
+    dispatch(GenreFilter(genreFilters))
+  }, [genreFilters, dispatch])
 
   return (
     <div className='flex flex-col rounded-lg bg-white gap-3 w-11/12 p-4 text-purple-900 max-w-xs'>
@@ -84,7 +84,7 @@ const FiltersSidebar = () => {
       />
       <p className='animate-pulse'>{isTagsLoading && 'Fetching tags...'}</p>
     </div>
-  );
-};
+  )
+}
 
-export default FiltersSidebar;
+export default FiltersSidebar
