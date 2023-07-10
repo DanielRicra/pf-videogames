@@ -37,7 +37,7 @@ const SortBar = () => {
   }, [dispatch, toogle])
 
   return (
-    <div className="flex flex-col">
+    <div className="flex">
       <select
         onChange={(event) => sortTypeHandler(event.target.value)}
         className="border rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 my-4 font-mono"
@@ -47,7 +47,9 @@ const SortBar = () => {
         <option value="rating" className="border px-2 py-1"> By rating </option>
         {/*<option value="price" className="border px-2 py-1"> By price </option>*/}
       </select>
-      <button onClick={toogle}>{tooggleSort ? 'ASC' : 'DESC'}</button>
+      <button className="border rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 my-4 font-mono mx-[1rem]" onClick={toogle}>
+        {tooggleSort ? 'Ascending order' : 'Descending order'}
+      </button>
     </div>
   );
 };
