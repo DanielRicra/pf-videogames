@@ -1,5 +1,4 @@
-import { IconChevronDown } from '@tabler/icons-react'
-import CustomCheckBox from './CustomCheckBox'
+import CustomCheckBox from './CustomCheckBox';
 
 const MultiSelectAccordion = ({
   addToSelectedFilters,
@@ -8,7 +7,10 @@ const MultiSelectAccordion = ({
   styles,
 }) => {
   return (
-    <div className='flex flex-col gap-2 overflow-hidden' style={styles}>
+    <div
+      className='flex flex-col rounded-md px-[10px] py-[3px] border gap-2 overflow-hidden  justify-center '
+      style={styles}
+    >
       <label
         className='flex w-full justify-between items-center cursor-pointer accordion-text-container'
         htmlFor={`accordion-title-${title}`}
@@ -20,7 +22,6 @@ const MultiSelectAccordion = ({
           className='opacity-0 absolute hidden -z-10 peer'
         />
         <h3 className='text-xl font-medium m-0'>{title}</h3>
-        <IconChevronDown className='transition-transform duration-300 ease-in peer-checked:rotate-180' />
       </label>
 
       <div
@@ -37,7 +38,7 @@ const MultiSelectAccordion = ({
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MultiSelectAccordion
+export default MultiSelectAccordion;
