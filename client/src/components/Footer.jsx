@@ -10,9 +10,9 @@ const Footer = () => {
     return (
         <>
 
-            <div className='container px-[1rem] flex h-[2rem] mt-[8rem] justify-between -mb-[0.3rem] border-[0.2rem] border-violet-600 bg-violet-900'>
+            <div className='container p-[1rem] flex h-[2rem] mt-[8rem] justify-between -mb-[0.3rem] border-[0.2rem] border-purple-900 bg-violet-900'>
 
-                <div className="flex gap-[8rem] items-center">
+                <div className="flex gap-[5rem] items-center">
                     <button className='font-serif font-light text-[0.8rem] underline' onClick={() => { navigate('/contacts') }}>
                         Contacts
                     </button>
@@ -27,7 +27,7 @@ const Footer = () => {
                     </button>
                 </div>
                 
-                <div className="flex my-[0.1rem] mr-[1rem] gap-[0.3rem]">
+                <div className="flex my-[-0.7rem] mr-[0.1rem] gap-[0.3rem]">
                     <a href="https://www.instagram.com/" target="_blank">
                     <IconBrandInstagram />
                     </a>

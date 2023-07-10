@@ -25,9 +25,14 @@ const videoGamesSlice = createSlice({
     setError: (state, action) => {
       state.videoError = action.payload
     },
+
     currentVideogame: (state, action) => {
       state.detail = action.payload
     },
+    // clearCurrentVideogame: (state, action) => {
+    //   state.detail = action.payload
+    // },
+    
     setGenreFilter: (state, action) => {
       state.genresFilter = action.payload
     },
@@ -44,7 +49,7 @@ const videoGamesSlice = createSlice({
 
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload
-    }
+    },
   },
 })
 
@@ -59,6 +64,7 @@ export const {
   setLoading,
   setError,
   currentVideogame,
+  // clearCurrentVideogame,
   setSearchQuery,
   setTagFilter,
   setGenreFilter,
