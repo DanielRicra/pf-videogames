@@ -8,6 +8,8 @@ const initialState = {
   videoLoading: false,
   videoError: false,
   searchQuery: '',
+  sortType: '',
+  sortOrder: '',
 }
 
 const videoGamesSlice = createSlice({
@@ -23,17 +25,30 @@ const videoGamesSlice = createSlice({
     setError: (state, action) => {
       state.videoError = action.payload
     },
+
     currentVideogame: (state, action) => {
       state.detail = action.payload
     },
+    // clearCurrentVideogame: (state, action) => {
+    //   state.detail = action.payload
+    // },
+    
     setGenreFilter: (state, action) => {
       state.genresFilter = action.payload
     },
     setTagFilter: (state, action) => {
       state.tagsFilter = action.payload
     },
-     setSearchQuery: (state, action) => {
+    setSearchQuery: (state, action) => {
       state.searchQuery = action.payload
+    },
+
+    setSortType: (state, action) => {
+      state.sortType = action.payload
+    },
+
+    setSortOrder: (state, action) => {
+      state.sortOrder = action.payload
     },
   },
 })
@@ -41,13 +56,19 @@ const videoGamesSlice = createSlice({
 export const getSearchQuery = (state) => state.videoGames.searchQuery
 export const getVideoGames = (state) => state.videoGames.videoGames
 
+export const getSortType = (state) => state.videoGames.sortType
+export const getSortOrder = (state) => state.videoGames.sortOrder
+
 export const {
   setVideoGames,
   setLoading,
   setError,
   currentVideogame,
+  // clearCurrentVideogame,
   setSearchQuery,
   setTagFilter,
   setGenreFilter,
+  setSortType,
+  setSortOrder,
 } = videoGamesSlice.actions
 export default videoGamesSlice.reducer

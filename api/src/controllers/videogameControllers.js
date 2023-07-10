@@ -62,11 +62,15 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
 const getVideogamesById = async ( searchedId ) =>{
     try{
         let dbVideogame = await Videogame.findByPk(searchedId,{ include: [Genre , Tag]});
+
+        if (!dbVideogame) {
+          throw new Error('Videogame not found');
+        }
         
         return dbVideogame
     }
     catch (error) {
-        return {error: error.message}
+        throw new Error(error.message || 'Something went wrong')
     }
 }
 

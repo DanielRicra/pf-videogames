@@ -1,11 +1,9 @@
-import { useSelector } from 'react-redux'
 import Carrousel from '../components/Carrousel'
 import Footer from '../components/Footer'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
-  const { user } = useSelector((state) => state.users)
 
   return (
     <div className='text-white min-h-screen py-14'>
