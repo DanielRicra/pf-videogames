@@ -1,63 +1,64 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { IconHeart } from '@tabler/icons-react'
-import { IconShoppingCartPlus } from '@tabler/icons-react'
-import Footer from '../components/Footer'
-import { ReviewCard, ReviewForm } from '../components'
-import { fetchReviews, postReview } from '../redux/actions/reviewAction'
-import axios, { AxiosError } from 'axios'
-import Loading from '../components/Loading'
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { IconHeart } from '@tabler/icons-react';
+import { IconShoppingCartPlus } from '@tabler/icons-react';
+import Footer from '../components/Footer';
+import { ReviewCard, ReviewForm } from '../components';
+import { fetchReviews, postReview } from '../redux/actions/reviewAction';
+import axios, { AxiosError } from 'axios';
+import Loading from '../components/Loading';
 
 const Detail = () => {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const reviews = useSelector((state) => state.review.reviews || [])
-  const [game, setGame] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const reviews = useSelector((state) => state.review.reviews || []);
+  const [game, setGame] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchReviews(id))
+    dispatch(fetchReviews(id));
 
     const fetchVideogameById = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       try {
-        const response = await axios(`http://localhost:3001/videogames/${id}`)
+        const response = await axios(`http://localhost:3001/videogames/${id}`);
 
-        setGame(response.data)
+        setGame(response.data);
       } catch (error) {
         if (error instanceof AxiosError) {
-          setError(error.response?.data?.error ?? 'Something when wrong!')
+          setError(error.response?.data?.error ?? 'Something when wrong!');
         } else {
-          setError(error.message ?? 'Something when wrong!')
+          setError(error.message ?? 'Something when wrong!');
         }
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchVideogameById()
-  }, [dispatch, id])
+    };
+    fetchVideogameById();
+  }, [dispatch, id]);
 
-  // const handleSubmitReview = (review) => {
-  //   dispatch(postReview(review))
-  // }
+  const handleSubmitReview = (review) => {
+    dispatch(postReview(review));
+  };
 
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   if (error) {
     return (
       <div className='flex justify-center items-center w-full min-h-[calc(100vh-96px)]'>
-        <span className='text-red-500 font-bold text-3xl p-4 rounded-lg bg-[rgba(0,0,0,0.4)]'>{error}</span>
+        <span className='text-red-500 font-bold text-3xl p-4 rounded-lg bg-[rgba(0,0,0,0.4)]'>
+          {error}
+        </span>
       </div>
-    )
+    );
   }
-
 
   return (
     <>
@@ -123,7 +124,7 @@ const Detail = () => {
           </div>
         </div>
 
-        {/* <ReviewForm onSubmit={handleSubmitReview} videogameId={id} /> */}
+        <ReviewForm onSubmit={handleSubmitReview} videogameId={id} />
 
         <div className='flex flex-col mt-10'>
           {reviews.map((review) => (
@@ -133,7 +134,7 @@ const Detail = () => {
       </div>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default Detail
+export default Detail;
