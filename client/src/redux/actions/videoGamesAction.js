@@ -1,5 +1,14 @@
-import { setLoading, currentVideogame } from '../videogame/videoGameSlice';
-import axios from 'axios';
+import {
+  setLoading,
+  currentVideogame,
+  // clearCurrentVideogame,
+  setGenreFilter,
+  setTagFilter,
+  
+  setSortType,
+  setVideoGames,
+} from '../videogame/videoGameSlice'
+import axios from 'axios'
 
 export const createVideoGame = () => {
   return async (dispatch) => {
@@ -12,9 +21,28 @@ export const createVideoGame = () => {
   }
 }
 
-export const fetchVideogame = (id) => {
+// export const fetchVideogame = (id) => {
+//   return async (dispatch) => {
+//     const response = await axios(`http://localhost:3001/videogames/${id}`)
+//     dispatch(currentVideogame(response.data))
+//   }
+// }
+
+// export const clearVideogame = () => {
+//   return async (dispatch) => {
+//     dispatch(clearCurrentVideogame(response.data))
+//   }
+// }
+
+
+export const GenreFilter = (data) => {
   return async (dispatch) => {
-    const response = await axios(`https://localhost:3001/videogames/${id}`)
-    dispatch(currentVideogame(response.data))
+    dispatch(setGenreFilter(data))
+  }
+}
+
+export const TagFilter = (data) => {
+  return async (dispatch) => {
+    dispatch(setTagFilter(data))
   }
 }

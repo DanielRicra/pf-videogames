@@ -39,7 +39,7 @@ const Carrousel = ({ videGames }) => {
       >
         {videGames.map((videoGame) => (
           <SwiperSlide key={videoGame.id} className='swiper-slide'>
-            <VideoGameCardImage videoGame={videoGame} key={videoGame.id} />
+            <VideoGameCardImage videoGame={videoGame} />
           </SwiperSlide>
         ))}
       </Swiper>
