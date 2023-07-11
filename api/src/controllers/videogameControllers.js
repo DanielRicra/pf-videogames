@@ -9,13 +9,13 @@ const MAX_HEIGHT = 1080; // Alto máximo permitido
 const MAX_RETRY_COUNT = 10;
 const RETRY_DELAY = 10000;
 const {
-    TU_CLOUD_NAME, TU_API_KEY, TU_API_SECRET
+    CLOUD_NAME, API_KEY, API_SECRET
   } = process.env;
 
 cloudinary.config({
-  cloud_name: `${TU_CLOUD_NAME}`,
-  api_key: `${TU_API_KEY}`,
-  api_secret: `${TU_API_SECRET}`
+  cloud_name: `${CLOUD_NAME}`,
+  api_key: `${API_KEY}`,
+  api_secret: `${API_SECRET}`
 });
 
 const videogame = require('../apiData/Videogame.json')
@@ -62,11 +62,15 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
 const getVideogamesById = async ( searchedId ) =>{
     try{
         let dbVideogame = await Videogame.findByPk(searchedId,{ include: [Genre , Tag]});
+
+        if (!dbVideogame) {
+          throw new Error('Videogame not found');
+        }
         
         return dbVideogame
     }
     catch (error) {
-        return {error: error.message}
+        throw new Error(error.message || 'Something went wrong')
     }
 }
 
@@ -112,11 +116,10 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
 const postVideogames = async (videogame) => { 
     try {
         
-        let { name,image, description, releaseDate, rating, genres, tags, price, stock } = videogame;
-        const now = Date.now();
-        const id = now.toString();
+        let { name,image, description, releaseDate, rating, genres, tags, price} = videogame;
+        const id = Date.now();
 
-        if(  !name || !image || !description || !releaseDate || !rating || !price || !stock || !genres.length || !tags.length ) throw new Error('Faltan datos obligatorios')
+        if(  !name || !image || !description || !releaseDate || !rating || !price || !genres.length || !tags.length ) throw new Error('Faltan datos obligatorios')
         
         const response = await cloudinary.uploader.upload(image, { folder: 'Videogames' }, (error) => {
             if (error) {
@@ -126,7 +129,7 @@ const postVideogames = async (videogame) => {
 
         image=response.secure_url
         let newVideogame = await Videogame.create({
-            name,id,image, description, releaseDate, rating, price, stock
+            name,id,image, description, releaseDate, rating, price
         });
 
 

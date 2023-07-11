@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import Carrousel from '../components/Carrousel'
 import Footer from '../components/Footer'
 import { videogames } from '../utils/dumbData'
