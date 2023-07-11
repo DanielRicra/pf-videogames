@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import { Create, Detail, Home, NotFound, Search } from './pages'
+import { Cart, Create, Detail, Home, NotFound, Search } from './pages'
 import { Layout } from './components'
 
 function App() {
@@ -16,6 +16,7 @@ function App() {
             <Route path='/search' element={<Search />} />
             <Route path='/detail/:id' element={<Detail />} />
             <Route path='/create' element={<Create />} />
+            <Route path='/cart' element={<Cart />} />
           </Route>
           <Route path='*' element={<NotFound />} />
         </Routes>

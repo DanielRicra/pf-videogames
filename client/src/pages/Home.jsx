@@ -10,7 +10,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Loading } from '../components'
 
 const Home = () => {
-  const { user } = useSelector((state) => state.users)
   const { isAuthenticated, isLoading } = useAuth0()
 
   if (isLoading) return <Loading />
