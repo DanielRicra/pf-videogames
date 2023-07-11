@@ -1,4 +1,4 @@
-export const getCartProducts = () => {
+export const getCartItemsFromStorage = () => {
   const rawValue = localStorage.getItem('shopping-cart')
   if (rawValue) {
     try {

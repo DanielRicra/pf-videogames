@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { HeartIcon, ShoppingCartIcon, UserIcon } from './icons'
-import SearchBar from './SearchBar'
+import { HeartIcon, ShoppingCartIcon, UserIcon } from '../icons'
+import SearchBar from '../SearchBar'
 
 const NavBar = () => {
   return (

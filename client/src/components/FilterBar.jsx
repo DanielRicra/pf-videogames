@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useTags } from '../hooks/useTags'
 import { useGenres } from '../hooks/useGenres'
 import MultiSelectAccordion from './MultiSelectAccordion'
-import { GenreFilter, TagFilter } from '../redux/actions/videoGamesAction'
+import { setGenreFilter, setTagFilter } from '../redux/videogame/videoGameSlice'
 
-const FiltersSidebar = () => {
+const FiltersSidebar = ({ paginate }) => {
   const [genreFilters, setGenreFilters] = useState([])
   const [tagFilters, setTagFilters] = useState([])
   const { isTagsLoading, tags } = useTags()
@@ -32,17 +33,18 @@ const FiltersSidebar = () => {
   }
 
   useEffect(() => {
-    dispatch(TagFilter(tagFilters))
-    /* paginate(1); */
-  }, [tagFilters, dispatch])
+    dispatch(setTagFilter(tagFilters))
+    paginate(1)
+  }, [tagFilters])
 
   useEffect(() => {
-    dispatch(GenreFilter(genreFilters))
-  }, [genreFilters, dispatch])
+    dispatch(setGenreFilter(genreFilters))
+    paginate(1)
+  }, [genreFilters])
 
   return (
     <div className='flex flex-col rounded-lg bg-white gap-3 w-11/12 p-4 text-purple-900 max-w-xs'>
-      <h2 className='text-2xl text-center mb-4 font-medium'>Filter by</h2>
+      <h2 className='text-2xl text-left mb-2 font-medium'>Filter by</h2>
 
       <div className='flex items-start flex-col'>
         <h3 className='font-medium text-purple-900 text-xl capitalize mb-3'>
@@ -55,7 +57,7 @@ const FiltersSidebar = () => {
               id='from-price'
               placeholder='From'
               type='text'
-              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
+              className='w-full placeholder:text-gray-600 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 p-2'
             />
           </div>
           <span className='text-center font-bold text-2xl'>-</span>
@@ -64,7 +66,7 @@ const FiltersSidebar = () => {
               id='to-price'
               type='text'
               placeholder='To'
-              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
+              className='w-full placeholder:text-gray-600 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 p-2'
             />
           </div>
         </div>
@@ -79,7 +81,7 @@ const FiltersSidebar = () => {
 
       <MultiSelectAccordion
         title='Tags'
-        options={tags?.slice(0, 15) ?? []}
+        options={tags ?? []}
         addToSelectedFilters={addToTagFilters}
       />
       <p className='animate-pulse'>{isTagsLoading && 'Fetching tags...'}</p>

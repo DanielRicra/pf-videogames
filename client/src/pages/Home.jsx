@@ -1,5 +1,4 @@
 import Carrousel from '../components/Carrousel'
-import Footer from '../components/Footer'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 
@@ -11,7 +10,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Loading } from '../components'
 
 const Home = () => {
-  const { user } = useSelector((state) => state.users)
   const { isAuthenticated, isLoading } = useAuth0()
 
   if (isLoading) return <Loading />
@@ -37,16 +35,13 @@ const Home = () => {
       <Carrousel videGames={videogames} />
       <br />
 
-      <div className='font-medium text-6xl mt-12 flex justify-center items-center'>
+      <div className='font-medium text-6xl mt-12 flex justify-center items-center min-h-screen'>
         <h2>Join the community</h2>
       </div>
 
-      {
-        isAuthenticated ? <LogoutButton /> : <LoginButton />
-      }
+      { isAuthenticated ? <LogoutButton /> : <LoginButton /> }
+      
       <Profile />
-
-      <Footer />
     </div>
   )
 }

@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.accordion-content-container {
-  height: var(--height);
-  gap: 0.5rem;
-  opacity: 1;
-}
-
-.accordion-content-container {
-  transition: all 300ms ease-in;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
 }
