@@ -23,6 +23,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
     "sharp": "^0.32.1",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "stripe": "^12.12.0"
   }
 }
