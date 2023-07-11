@@ -2,7 +2,18 @@ import Carrousel from '../components/Carrousel'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 
+import LoginButton from '../components/LoginButton'
+import Profile from '../components/Profile'
+import LogoutButton from '../components/LogoutButton'
+import { useAuth0 } from '@auth0/auth0-react'
+
+import { Loading } from '../components'
+
 const Home = () => {
+  const { user } = useSelector((state) => state.users)
+  const { isAuthenticated, isLoading } = useAuth0()
+
+  if (isLoading) return <Loading />
 
   return (
     <div className='text-white min-h-screen py-14'>
@@ -28,6 +39,10 @@ const Home = () => {
       <div className='font-medium text-6xl mt-12 flex justify-center items-center min-h-screen'>
         <h2>Join the community</h2>
       </div>
+
+      { isAuthenticated ? <LogoutButton /> : <LoginButton /> }
+      
+      <Profile />
     </div>
   )
 }
