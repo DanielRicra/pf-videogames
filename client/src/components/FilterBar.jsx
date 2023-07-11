@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useTags } from '../hooks/useTags'
 import { useGenres } from '../hooks/useGenres'
 import MultiSelectAccordion from './MultiSelectAccordion'
-import { GenreFilter, TagFilter } from '../redux/actions/videoGamesAction'
+import { setGenreFilter, setTagFilter } from '../redux/videogame/videoGameSlice'
 
-const FiltersSidebar = () => {
+const FiltersSidebar = ({ paginate }) => {
   const [genreFilters, setGenreFilters] = useState([])
   const [tagFilters, setTagFilters] = useState([])
   const { isTagsLoading, tags } = useTags()
@@ -32,13 +33,14 @@ const FiltersSidebar = () => {
   }
 
   useEffect(() => {
-    dispatch(TagFilter(tagFilters))
-    /* paginate(1); */
-  }, [tagFilters, dispatch])
+    dispatch(setTagFilter(tagFilters))
+    paginate(1)
+  }, [tagFilters])
 
   useEffect(() => {
-    dispatch(GenreFilter(genreFilters))
-  }, [genreFilters, dispatch])
+    dispatch(setGenreFilter(genreFilters))
+    paginate(1)
+  }, [genreFilters])
 
   return (
     <div className='flex flex-col rounded-lg bg-[#bdbcbc] p-4 text-black max-w-xs'>
@@ -79,7 +81,7 @@ const FiltersSidebar = () => {
 
       <MultiSelectAccordion
         title='Tags'
-        options={tags?.slice(0, 15) ?? []}
+        options={tags ?? []}
         addToSelectedFilters={addToTagFilters}
       />
       <p className='animate-pulse'>{isTagsLoading && 'Fetching tags...'}</p>
