@@ -1,5 +1,4 @@
 import Carrousel from '../components/Carrousel'
-import Footer from '../components/Footer'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 
@@ -26,11 +25,9 @@ const Home = () => {
       <Carrousel videGames={videogames} />
       <br />
 
-      <div className='font-medium text-6xl mt-12 flex justify-center items-center'>
+      <div className='font-medium text-6xl mt-12 flex justify-center items-center min-h-screen'>
         <h2>Join the community</h2>
       </div>
-
-      <Footer />
     </div>
   )
 }

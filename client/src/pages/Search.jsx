@@ -8,7 +8,6 @@ import {
   PaginationBar,
   SortBar,
   VideoGameCardList,
-  Footer,
 } from '../components'
 import * as videoGameService from '../services/videoGameService'
 import { getSearchQuery } from '../redux/videogame/videoGameSlice'
@@ -24,6 +23,7 @@ const Search = () => {
   const sortOrder = useSelector(getSortOrder)
 
   const [url, setUrl] = useState('http://localhost:3001/videogames?')
+
   useEffect(() => {
     let myUrl = ''
     let genres = ''
@@ -96,7 +96,7 @@ const Search = () => {
             />
           )}
 
-          <div className='flex justify-center my-4'>
+          <div className='flex justify-center my-4 mt-8'>
             {!error && data?.length > 9 && (
 
               <PaginationBar
@@ -108,7 +108,6 @@ const Search = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   )
 }
