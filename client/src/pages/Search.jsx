@@ -69,7 +69,7 @@ const Search = () => {
     <>
       <div className='min-h-[calc(100vh-96px)] font-[system-ui] flex p-2 md:px-10 lg:px-14 md:py-6 lg:py-10 gap-4 lg:gap-8'>
         <div className='min-w-[300px]'>
-          <FilterBar />
+          <FilterBar paginate={paginate} />
         </div>
         <div className='flex flex-col flex-1'>
           <SortBar />
