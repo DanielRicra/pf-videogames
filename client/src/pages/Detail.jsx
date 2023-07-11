@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { IconHeart } from '@tabler/icons-react'
 import { IconShoppingCartPlus } from '@tabler/icons-react'
-import Footer from '../components/Footer'
 import { ReviewCard, ReviewForm } from '../components'
 import { fetchReviews, postReview } from '../redux/actions/reviewAction'
 import axios, { AxiosError } from 'axios'
@@ -131,7 +130,6 @@ const Detail = () => {
           ))}
         </div>
       </div>
-      <Footer />
     </>
   )
 }
