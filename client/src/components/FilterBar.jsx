@@ -43,31 +43,31 @@ const FiltersSidebar = ({ paginate }) => {
   }, [genreFilters])
 
   return (
-    <div className='flex flex-col rounded-lg bg-[#bdbcbc] p-4 text-black max-w-xs'>
-      <h2 className='text-2xl mb-4 font-medium'>Filter by</h2>
+    <div className='flex flex-col rounded-lg bg-white gap-3 w-11/12 p-4 text-purple-900 max-w-xs'>
+      <h2 className='text-2xl text-center mb-4 font-medium'>Filter by</h2>
 
       <div className='flex items-start flex-col'>
-        <h3 className='font-medium text-xl capitalize m-0'>price</h3>
+        <h3 className='font-medium text-purple-900 text-xl capitalize mb-3'>
+          price
+        </h3>
 
         <div className='flex flex-row gap-2 mb-2'>
           <div className='flex flex-col'>
-            <label htmlFor='from-price' className='text-base'>
-              From
-            </label>
             <input
               id='from-price'
+              placeholder='From'
               type='text'
-              className='rounded-md w-20 p-2'
+              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
             />
           </div>
-          <span className='text-center font-bold text-2xl translate-y-6'>
-            -
-          </span>
+          <span className='text-center font-bold text-2xl'>-</span>
           <div className='flex flex-col'>
-            <label htmlFor='to-price' className='text-base'>
-              To
-            </label>
-            <input id='to-price' type='text' className='rounded-md w-20 p-2' />
+            <input
+              id='to-price'
+              type='text'
+              placeholder='To'
+              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
+            />
           </div>
         </div>
       </div>
