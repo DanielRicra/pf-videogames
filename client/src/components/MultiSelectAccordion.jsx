@@ -12,7 +12,7 @@ const MultiSelectAccordion = ({
       style={styles}
     >
       <label
-        className='flex w-full justify-between items-center cursor-pointer accordion-text-container'
+        className='flex w-full justify-between items-center'
         htmlFor={`accordion-title-${title}`}
       >
         <input
@@ -25,8 +25,8 @@ const MultiSelectAccordion = ({
       </label>
 
       <div
-        className='flex flex-col gap-0 h-0 p-0 transition-all duration-300 opacity-0 ease-in max-h-[300px] overflow-y-auto accordion-content-container'
-        style={{ '--height': options.length * 30 + 'px' }}
+        className='flex flex-col max-h-[300px] overflow-y-auto gap-2'
+        style={{ 'height': options.length * 30 + 'px' }}
       >
         {options.map((option) => (
           <CustomCheckBox

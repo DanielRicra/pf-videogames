@@ -44,7 +44,7 @@ const FiltersSidebar = ({ paginate }) => {
 
   return (
     <div className='flex flex-col rounded-lg bg-white gap-3 w-11/12 p-4 text-purple-900 max-w-xs'>
-      <h2 className='text-2xl text-center mb-4 font-medium'>Filter by</h2>
+      <h2 className='text-2xl text-left mb-2 font-medium'>Filter by</h2>
 
       <div className='flex items-start flex-col'>
         <h3 className='font-medium text-purple-900 text-xl capitalize mb-3'>
@@ -57,7 +57,7 @@ const FiltersSidebar = ({ paginate }) => {
               id='from-price'
               placeholder='From'
               type='text'
-              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
+              className='w-full placeholder:text-gray-600 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 p-2'
             />
           </div>
           <span className='text-center font-bold text-2xl'>-</span>
@@ -66,7 +66,7 @@ const FiltersSidebar = ({ paginate }) => {
               id='to-price'
               type='text'
               placeholder='To'
-              className='w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-20 p-2'
+              className='w-full placeholder:text-gray-600 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 p-2'
             />
           </div>
         </div>
