@@ -1,4 +1,4 @@
-import Create from './Create'
+import Create from './Create/Create'
 import Detail from './Detail'
 import Home from './Home'
 import Search from './Search'
