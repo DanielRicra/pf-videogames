@@ -6,7 +6,7 @@ const LogoutButton = () => {
 
     return (
         <>
-            <button onClick={() => logout()}>-- LOG OUT BUTTON --</button>
+            <button className="flex w-[4rem] text-[0.8rem] font-semibold justify-center bg-purple-600 border-purple-700 hover:bg-purple-700 hover:border-purple-600 transition duration-200 ease-in border-[0.2rem] rounded-[0.5rem] mx-[88rem] my-[-5rem]" onClick={() => logout()}>Log out</button>
         </>
     )
 }

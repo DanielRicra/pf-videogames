@@ -9,7 +9,7 @@ const NotFound = () => {
           Oops! this page does not exist
         </div>
         <img src={crash} className='h-[15rem]' />
-
+   
         <Link
           to='/'
           className='flex text-[1.3rem] font-semibold justify-center bg-blue-600 rounded-[0.5rem] p-3 px-6 my-3'

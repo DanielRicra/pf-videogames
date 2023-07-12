@@ -11,6 +11,11 @@ export const getCardShowAmount = (screenWidth) => {
   return 5
 }
 
+export const toTitleCase = (str) => {
+  let result = str[0].toUpperCase() + str.slice(1).toLowerCase()
+  return result
+}
+
 export const convertImageFileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
