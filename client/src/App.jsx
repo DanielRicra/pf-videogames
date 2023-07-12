@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { Cart, Create, Detail, Home, NotFound, Search } from './pages'
+import Profile from './pages/Profile'
 import { Layout } from './components'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path='/detail/:id' element={<Detail />} />
             <Route path='/create' element={<Create />} />
             <Route path='/cart' element={<Cart />} />
+            <Route path='/profile' element={<Profile />} />
           </Route>
           <Route path='*' element={<NotFound />} />
         </Routes>
