@@ -12,7 +12,7 @@
   "rules": {
     "react-refresh/only-export-components": "warn",
     "quotes": ["error", "single"],
-    "semi": "off",
+    "semi": ["error", "never"],
     "react/prop-types": "off"
   }
 }

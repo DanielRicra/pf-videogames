@@ -8,7 +8,6 @@ import {
   PaginationBar,
   SortBar,
   VideoGameCardList,
-  Footer,
 } from '../components'
 import * as videoGameService from '../services/videoGameService'
 import { getSearchQuery } from '../redux/videogame/videoGameSlice'
@@ -24,6 +23,7 @@ const Search = () => {
   const sortOrder = useSelector(getSortOrder)
 
   const [url, setUrl] = useState('http://localhost:3001/videogames?')
+
   useEffect(() => {
     let myUrl = ''
     let genres = ''
@@ -69,13 +69,13 @@ const Search = () => {
     <>
       <div className='min-h-[calc(100vh-96px)] font-[system-ui] flex p-2 md:px-10 lg:px-14 md:py-6 lg:py-10 gap-4 lg:gap-8'>
         <div className='min-w-[300px]'>
-          <FilterBar />
+          <FilterBar paginate={paginate} />
         </div>
         <div className='flex flex-col flex-1'>
           <SortBar />
 
           <p className='text-xl font-semibold text-left mb-4'>
-            Showing {data?.length ?? 0} results: {searchQuery}
+            Showing {data?.totalVideogames} results
           </p>
 
 
@@ -91,24 +91,22 @@ const Search = () => {
             </div>
           ) : (
             <VideoGameCardList
-              videogames={data}
+              videogames={data?.videogames ?? []}
               message={`There are no VideoGames with name: ${searchQuery}`}
             />
           )}
 
-          <div className='flex justify-center my-4'>
-            {!error && data?.length > 9 && (
-
+          <div className='flex justify-center my-4 mt-8'>
+            {!error && (
               <PaginationBar
                 currentPage={currentPage}
-                totalPages={5}
+                totalPages={Math.round((data?.totalVideogames ?? 10) / 10)}
                 paginate={paginate}
               />
             )}
           </div>
         </div>
       </div>
-      <Footer />
     </>
   )
 }

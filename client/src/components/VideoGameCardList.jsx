@@ -11,7 +11,7 @@ const VideoGameCardList = ({ videogames = [], message }) => {
         </div>
       )}
       {videogames.map((videoGame) => (
-        <VideoGameCard key={videoGame.id} card={videoGame} />
+        <VideoGameCard key={videoGame.id} videogame={videoGame} />
       ))}
     </div>
   )
