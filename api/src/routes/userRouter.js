@@ -30,15 +30,7 @@ userRouter.get('/:id', async (req, res) => {
 });
 
 // Crear un nuevo usuario
-userRouter.post('/', async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    const newUser = await postUser(name, email, password);
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-});
+userRouter.post('/postUser', postUser);
 
 // Borrar un usuario por su ID
 userRouter.delete('/:id', async (req, res) => {
