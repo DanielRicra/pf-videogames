@@ -7,7 +7,7 @@ const { getAllVideogames, getVideogamesById, getVideogamesByName, postVideogames
 videogamesRouter.get('/', async ( req, res ) => {
     const { name, page, page_size, order, field, genreFilter, tagFilter } =req.query;
     
-    if(name){
+    if(name !== undefined){
         try {
     
             const response = await getVideogamesByName( name, page, page_size, order, field, genreFilter, tagFilter );

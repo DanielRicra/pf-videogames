@@ -115,56 +115,56 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
     try{
       const defaultPageSize = 10;
       const defaultPage = 1;
-        const videogameOptions = {
-            where:{
-                name: {
-                    [Op.iLike]: '%'+searchedName+'%',
-                }
-            },
-            include: [
-                {
-                    model: Genre,
-                    where: {}
-                },
-                {
-                    model: Tag,
-                    where: {}
-                }
-            ],
-            order: [[field ? field : 'name', order ? order : 'ASC']],
-            limit: page_size ? page_size : 10,
-            offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-        };
-
-        if (genreFilter) {
-            videogameOptions.include[0].where.name = genreFilter;
-        }
-
-        if (tagFilter) {
-            videogameOptions.include[1].where.name = tagFilter;
-        }
-        const countOptions = {
-          distinct: true,
-          col: 'id',
+      const videogameOptions = {
           where:{
-            name: {
-                [Op.iLike]: '%'+searchedName+'%',
-            }
+              name: {
+                  [Op.iLike]: '%'+searchedName+'%',
+              }
           },
           include: [
               {
                   model: Genre,
-                  where: genreFilter ? { name: genreFilter } : {}
+                  where: {}
               },
               {
                   model: Tag,
-                  where: tagFilter ? { name: tagFilter } : {}
+                  where: {}
               }
-          ]
-        };
+          ],
+          order: [[field ? field : 'name', order ? order : 'ASC']],
+          limit: page_size ? page_size : 10,
+          offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
+      };
+
+      if (genreFilter) {
+          videogameOptions.include[0].where.name = genreFilter;
+      }
+
+      if (tagFilter) {
+          videogameOptions.include[1].where.name = tagFilter;
+      }
+      const countOptions = {
+        distinct: true,
+        col: 'id',
+        where:{
+          name: {
+              [Op.iLike]: '%'+searchedName+'%',
+          }
+        },
+        include: [
+            {
+                model: Genre,
+                where: genreFilter ? { name: genreFilter } : {}
+            },
+            {
+                model: Tag,
+                where: tagFilter ? { name: tagFilter } : {}
+            }
+        ]
+      };
         
-        const videogamesFound = await Videogame.findAll(videogameOptions);
-        const totalVideogames = await Videogame.count(countOptions);
+      const videogamesFound = await Videogame.findAll(videogameOptions);
+      const totalVideogames = await Videogame.count(countOptions);
 
       const result = {
           totalVideogames: totalVideogames,
@@ -184,9 +184,8 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
       if (currentPage > defaultPage) {
           result.prevPage = currentPage - 1;
       }
-      
-        //return result;
-        return allVideogames;
+      //return result;
+      return result;
     }
     catch (error) {
         return {error: error.message}
