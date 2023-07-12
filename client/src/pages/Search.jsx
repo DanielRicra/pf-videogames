@@ -75,7 +75,7 @@ const Search = () => {
           <SortBar />
 
           <p className='text-xl font-semibold text-left mb-4'>
-            Showing {data?.length ?? 0} results: {searchQuery}
+            Showing {data?.totalVideogames} results
           </p>
 
 
@@ -91,17 +91,16 @@ const Search = () => {
             </div>
           ) : (
             <VideoGameCardList
-              videogames={data}
+              videogames={data?.videogames ?? []}
               message={`There are no VideoGames with name: ${searchQuery}`}
             />
           )}
 
           <div className='flex justify-center my-4 mt-8'>
-            {!error && data?.length > 9 && (
-
+            {!error && (
               <PaginationBar
                 currentPage={currentPage}
-                totalPages={5}
+                totalPages={Math.round((data?.totalVideogames ?? 10) / 10)}
                 paginate={paginate}
               />
             )}

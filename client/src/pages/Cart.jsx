@@ -1,6 +1,7 @@
 import { IconTrashFilled } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCartItems, removeFromCart } from '../redux/cart/cartSlice'
+import { formatMoney } from '../utils/helpers'
 
 const Cart = () => {
   const cartItems = useSelector(getCartItems)
@@ -38,14 +39,15 @@ const Cart = () => {
         <div className='w-full flex flex-col'>
           <div className='flex items-center justify-between w-full my-3 border-b-2 border-purple-600'>
             <p>Total VideoGames: {cartItems.length}</p>
-            <p className='text-2xl'>
-              Total Price{' '}
+            <p className='text-2xl flex gap-2'>
+              <p>Total Price:</p>
               <span className='font-semibold text-purple-800'>
-                {cartItems.reduce(
-                  (acc, item) => acc + parseFloat(item.price),
-                  0
-                )}{' '}
-                $
+                {formatMoney(
+                  cartItems.reduce(
+                    (acc, item) => acc + parseFloat(item.price),
+                    0
+                  )
+                )}
               </span>
             </p>
           </div>

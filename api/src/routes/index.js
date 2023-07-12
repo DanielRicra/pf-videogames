@@ -7,6 +7,8 @@ const reviewRouter = require('./reviewRouter')
 const tagRouter = require('./tagRouter')
 const userRouter = require('./userRouter')
 const paymentRouter = require('./paymentRouter')
+const cartRouter = require('./cartRouter');
+
 
 const router = Router()
 
@@ -19,5 +21,6 @@ router.use('/review', reviewRouter)
 router.use('/tag', tagRouter)
 router.use('/user', userRouter)
 router.use('/payment', paymentRouter)
+router.use('/cart', cartRouter)
 
 module.exports = router

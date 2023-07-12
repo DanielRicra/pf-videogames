@@ -19,3 +19,12 @@ export const convertImageFileToBase64 = (file) => {
     reader.onerror = (error) => reject(error)
   })
 }
+
+const CURRENCY_FORMATTER = new Intl.NumberFormat(undefined, {
+  currency: 'USD',
+  style: 'currency',
+})
+
+export function formatMoney(amount) {
+  return CURRENCY_FORMATTER.format(amount)
+}

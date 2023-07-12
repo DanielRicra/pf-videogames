@@ -25,6 +25,7 @@ module.exports = (sequelize) => {
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       defaultValue: [],
     },
+    }
   },
   {
     timestamps: false
