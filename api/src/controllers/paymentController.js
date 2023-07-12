@@ -4,28 +4,29 @@ const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK } = process.env
 const stripe = new Stripe(STRIPE_PRIVATE_KEY)
 
 const createSession = async (req, res) => {
+  const { userId, cartItems } = req.body
+
   const customer = await stripe.customers.create({
     metadata: {
-      userId: req.body.userId,
-      cart: JSON.stringify(req.body),
+      userId: userId,
     },
   })
   try {
-    const line_items = req.body.map((item) => {
+    const line_items = cartItems.map((item) => {
       return {
         price_data: {
           currency: 'usd',
           product_data: {
             name: item.name,
             images: [item.image],
-            description: item.desc,
+            description: item.description,
             metadata: {
               id: item.id,
             },
           },
-          unit_amount: item.price * 100,
+          unit_amount: parseInt(item.price * 100),
         },
-        quantity: item.cartQuantity,
+        quantity: 1,
       }
     })
     const session = await stripe.checkout.sessions.create({
@@ -38,7 +39,7 @@ const createSession = async (req, res) => {
 
     return res.json({ url: session.url })
   } catch (error) {
-    return res.status(500).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -77,14 +78,6 @@ const webhook = (req, res) => {
     stripe.customers
       .retrieve(data.customer)
       .then(async (customer) => {
-        console.log(
-          '🚀 ~ file: paymentController.js:80 ~ .then ~ customer:',
-          customer
-        )
-        console.log(
-          '🚀 ~ file: paymentController.js:80 ~ .then ~ customer:',
-          data
-        )
         /* try {
           // CREATE ORDER
           createOrder(customer, data)
