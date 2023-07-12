@@ -16,7 +16,7 @@ const Cart = () => {
         <div className='w-full flex flex-col'>
           <div className='flex items-center justify-between w-full my-3 border-b-2 border-gray-400'>
             <p>Total VideoGames: {cartItems.length}</p>
-            <p className='text-2xl flex gap-2'>
+            <div className='text-2xl flex gap-2'>
               <p>Total Price:</p>
               <span className='font-semibold text-purple-800'>
                 {formatMoney(
@@ -26,7 +26,7 @@ const Cart = () => {
                   )
                 )}
               </span>
-            </p>
+            </div>
           </div>
 
           <button
