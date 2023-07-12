@@ -72,7 +72,7 @@ const associateCart = async (req,res) =>{
     }
 
     videogamesId.map( async videogame =>{
-      await Cart.addVideogame(videogame)
+      await cart.addVideogame(videogame)
     })
 
     return res.status(200).json({ message: 'Carrito asociado al user con email' + userEmail });
