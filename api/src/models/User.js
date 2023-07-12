@@ -16,7 +16,15 @@ module.exports = (sequelize) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    nickname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    friends: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      defaultValue: [],
+    },
   },
   {
     timestamps: false

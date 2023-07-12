@@ -1,4 +1,6 @@
 const { User } = require('../db');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Obtener todos los usuarios
 const getUsers = async () => {
@@ -10,24 +12,52 @@ const getUsers = async () => {
   }
 };
 
-// Obtener un usuario por su ID
-const getUserById = async (id) => {
+// Obtener un usuario por su email
+const getUserByEmail = async (email) => {
   try {
-    const user = await User.findByPk(id);
-    if (!user) throw new Error('Usuario no encontrado');
+    const user = await User.findOne({ where: { email } });
     return user;
   } catch (error) {
-    throw new Error('Error al obtener el usuario por ID');
+    throw new Error('Error al obtener el usuario por email');
   }
 };
 
 // Crear un nuevo usuario
-const postUser = async (name, email, password) => {
+const postUser = async (req, res) => {
   try {
-    const newUser = await User.create({ name, email, password });
-    return newUser;
+    const { email, name } = req.body;
+
+    const [user, created] = await User.findOrCreate({
+      where: { email },
+      defaults: { name: req.body.name, email, nickname: req.body.nickname },
+    });
+
+    if (created) {
+      // Enviar correo electrónico de bienvenida
+      const msg = {
+        to: email,
+        from: 'pfvideogames@gmail.com',
+        subject: '¡Bienvenido a GameStore!',
+        text: `¡Hola ${name}! Bienvenido a GameStore. Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!`,
+        html: `<p>¡Hola ${name}! Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!</p>`,
+      };
+
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Correo electrónico enviado');
+        })
+        .catch((error) => {
+          console.error('Error al enviar el correo electrónico:', error);
+        });
+
+      return res.status(201).json({ user, message: 'Usuario creado' });
+    } else {
+      return res.status(200).json({ user, message: 'Usuario existente' });
+    }
   } catch (error) {
-    throw new Error('Error al crear el usuario');
+    console.error('Error al crear o buscar el usuario:', error);
+    return res.status(500).send('Error al crear o buscar el usuario');
   }
 };
 
@@ -61,7 +91,7 @@ const deleteUser = async (id) => {
   
   module.exports = {
     getUsers,
-    getUserById,
+    getUserByEmail,
     postUser,
     deleteUser,
     updateUser,

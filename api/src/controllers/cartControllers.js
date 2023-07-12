@@ -20,7 +20,7 @@ const addToCart = async (req, res) => {
     }
 
     // Obtener el carrito del usuario o crear uno nuevo si no existe
-    let cart = await Cart.findOne({ where: { userId: user.id } });
+    let cart = await Cart.findOne({ where: { userId: user.id , status: true } });
 
     if (!cart) {
       cart = await Cart.create({ userId: user.id });
@@ -42,7 +42,9 @@ const removeFromCart = async (req, res) => {
 
     // Verificar si el usuario y el videojuego existen
     const user = await User.findOne({ where: { email: userEmail } });
-    const cart = await Cart.findOne({ where: { userId: user.id } });
+
+    const cart = await Cart.findOne({ where: { userId: user.id , status: true } });
+
     const videogame = await Videogame.findByPk(videogameId);
 
     if (!cart || !videogame) {
@@ -59,7 +61,52 @@ const removeFromCart = async (req, res) => {
   }
 };
 
+const associateCart = async (req,res) =>{
+  try{
+
+    const { userEmail, videogamesId } =req.body
+
+    const user = await User.findOne({ where: { email: userEmail } });
+    const cart = await Cart.findOne({ where: { userId: user.id, status: true } });
+
+    if (!cart) {
+      cart = await Cart.create({ userId: user.id });
+    }
+
+    videogamesId.map( async videogame =>{
+      await cart.addVideogame(videogame)
+    })
+
+    return res.status(200).json({ message: 'Carrito asociado al user con email' + userEmail });
+
+  }catch(error){
+    console.error('Error al asociar el carrito')
+    return res.status(500).json({error: 'Error interno del servidor'})
+  }
+}
+
+const getCart = async (req,res) =>{
+  try{
+    const { userEmail } = req.body
+
+    const user = await User.findOne({ where: { email: userEmail } });
+    const cart = await Cart.findOne({ where: { userId: user.id, status: true } , include: Videogame});
+
+    if (!cart) {
+      cart = await Cart.create({ userId: user.id });
+    }
+
+    return cart
+
+  } catch(error){
+    console.error('Error al buscar el carrito')
+    return res.status(500).json({error: 'Error interno del servidor'})
+  }
+}
+
 module.exports = {
   addToCart,
-  removeFromCart
+  removeFromCart,
+  associateCart,
+  getCart
 };

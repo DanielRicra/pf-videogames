@@ -40,14 +40,14 @@ const SortBar = () => {
     <div className="flex">
       <select
         onChange={(event) => sortTypeHandler(event.target.value)}
-        className="border rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 my-4 font-mono"
+        className="rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 hover:bg-violet-700 transition duration-200 my-4 font-mono"
       >
         <option value="name" className="border px-2 py-1"> By name </option>
         <option value="releaseDate" className="border px-2 py-1"> By releaseDate </option>
         <option value="rating" className="border px-2 py-1"> By rating </option>
         {/*<option value="price" className="border px-2 py-1"> By price </option>*/}
       </select>
-      <button className="border rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 my-4 font-mono mx-[1rem]" onClick={toogle}>
+      <button className="rounded-[0.3rem] w-[11rem] px-2 py-1 bg-violet-900 hover:bg-violet-700 transition duration-200 my-4 font-mono mx-[1rem]" onClick={toogle}>
         {tooggleSort ? 'Ascending order' : 'Descending order'}
       </button>
     </div>
@@ -55,3 +55,4 @@ const SortBar = () => {
 };
 
 export default SortBar
+
