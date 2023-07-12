@@ -1,4 +1,6 @@
 const { User } = require('../db');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Obtener todos los usuarios
 const getUsers = async () => {
@@ -10,7 +12,6 @@ const getUsers = async () => {
   }
 };
 
-// Obtener un usuario por su email
 // Obtener un usuario por su email
 const getUserByEmail = async (email) => {
   try {
@@ -24,7 +25,7 @@ const getUserByEmail = async (email) => {
 // Crear un nuevo usuario
 const postUser = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, name } = req.body;
 
     const [user, created] = await User.findOrCreate({
       where: { email },
@@ -32,11 +33,30 @@ const postUser = async (req, res) => {
     });
 
     if (created) {
-      return res.status(201).json(user);
+      // Enviar correo electrónico de bienvenida
+      const msg = {
+        to: email,
+        from: 'pfvideogames@gmail.com',
+        subject: '¡Bienvenido a GameStore!',
+        text: `¡Hola ${name}! Bienvenido a GameStore. Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!`,
+        html: `<p>¡Hola ${name}! Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!</p>`,
+      };
+
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Correo electrónico enviado');
+        })
+        .catch((error) => {
+          console.error('Error al enviar el correo electrónico:', error);
+        });
+
+      return res.status(201).json({ user, message: 'Usuario creado' });
     } else {
-      return res.status(200).json(user);
+      return res.status(200).json({ user, message: 'Usuario existente' });
     }
   } catch (error) {
+    console.error('Error al crear o buscar el usuario:', error);
     return res.status(500).send('Error al crear o buscar el usuario');
   }
 };
