@@ -7,11 +7,12 @@ import PaginationBar from './PaginationBar'
 import BoxInput from './BoxInput'
 import TextField from './TextField'
 import Loading from './Loading'
-import NavBar from './NavBar'
+import NavBar from './Layout/NavBar'
 import VideoGameCardImage from './VideoGameCardImage'
 import ReviewCard from './ReviewCard'
 import ReviewForm from './ReviewForm'
-import Footer from './Footer'
+import Footer from './Layout/Footer'
+import Layout from './Layout/Layout'
 
 export {
   FilterBar,
@@ -28,4 +29,5 @@ export {
   ReviewCard,
   ReviewForm,
   Footer,
+  Layout
 }

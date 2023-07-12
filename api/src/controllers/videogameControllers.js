@@ -9,69 +9,111 @@ const MAX_HEIGHT = 1080; // Alto máximo permitido
 const MAX_RETRY_COUNT = 10;
 const RETRY_DELAY = 10000;
 const {
-    TU_CLOUD_NAME, TU_API_KEY, TU_API_SECRET
+    CLOUD_NAME, API_KEY, API_SECRET
   } = process.env;
 
 cloudinary.config({
-  cloud_name: `${TU_CLOUD_NAME}`,
-  api_key: `${TU_API_KEY}`,
-  api_secret: `${TU_API_SECRET}`
+  cloud_name: `${CLOUD_NAME}`,
+  api_key: `${API_KEY}`,
+  api_secret: `${API_SECRET}`
 });
 
 const videogame = require('../apiData/Videogame.json')
 
 const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter) => {
-    try {
-        const videogameOptions = {
-            include: [
-                {
-                    model: Genre,
-                    where: {}
-                },
-                {
-                    model: Tag,
-                    where: {}
-                }
-            ],
-            order: [[field ? field : 'name', order ? order : 'ASC']],
-            limit: page_size ? page_size : 10,
-            offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
-        };
+  try {
+      const defaultPageSize = 10;
+      const defaultPage = 1;
 
-        if (genreFilter) {
-            videogameOptions.include[0].where.name = genreFilter;
-        }
+      const videogameOptions = {
+          include: [
+              {
+                  model: Genre,
+                  where: {}
+              },
+              {
+                  model: Tag,
+                  where: {}
+              }
+          ],
+          order: [[field ? field : 'name', order ? order : 'ASC']],
+          limit: page_size ? page_size : defaultPageSize,
+          offset: page ? (page - 1) * (page_size ? page_size : defaultPageSize) : 0,
+      };
 
-        if (tagFilter) {
-            videogameOptions.include[1].where.name = tagFilter;
-        }
+      if (genreFilter) {
+          videogameOptions.include[0].where.name = genreFilter;
+      }
 
-        let allVideogames = await Videogame.findAll(videogameOptions);/**/
+      if (tagFilter) {
+          videogameOptions.include[1].where.name = tagFilter;
+      }
 
-        /*if (!allVideogames.length) {
-            videogamesUpload();
-            allVideogames = await Videogame.findAll(videogameOptions);
-        }*/
+      const countOptions = {
+          distinct: true,
+          col: 'id',
+          include: [
+              {
+                  model: Genre,
+                  where: genreFilter ? { name: genreFilter } : {}
+              },
+              {
+                  model: Tag,
+                  where: tagFilter ? { name: tagFilter } : {}
+              }
+          ]
+      };
 
-        return allVideogames;
-    } catch (error) {
-        return { error: error.message };
-    }
+      const allVideogames = await Videogame.findAll(videogameOptions);
+      const totalVideogames = await Videogame.count(countOptions);
+
+      const result = {
+          totalVideogames: totalVideogames,
+          nextPage: null,
+          prevPage: null,
+          videogames: allVideogames
+      };
+
+
+      const currentPage = page ? parseInt(page) : defaultPage;
+      const totalPages = Math.ceil(totalVideogames / (page_size ? parseInt(page_size) : defaultPageSize));
+
+      if (currentPage < totalPages) {
+          result.nextPage = currentPage + 1;
+      }
+
+      if (currentPage > defaultPage) {
+          result.prevPage = currentPage - 1;
+      }
+
+
+      return result;
+  } catch (error) {
+      return { error: error.message };
+  }
 };
+
+
 
 const getVideogamesById = async ( searchedId ) =>{
     try{
         let dbVideogame = await Videogame.findByPk(searchedId,{ include: [Genre , Tag]});
+
+        if (!dbVideogame) {
+          throw new Error('Videogame not found');
+        }
         
         return dbVideogame
     }
     catch (error) {
-        return {error: error.message}
+        throw new Error(error.message || 'Something went wrong')
     }
 }
 
 const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter ) =>{
     try{
+      const defaultPageSize = 10;
+      const defaultPage = 1;
         const videogameOptions = {
             where:{
                 name: {
@@ -100,9 +142,49 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
         if (tagFilter) {
             videogameOptions.include[1].where.name = tagFilter;
         }
+        const countOptions = {
+          distinct: true,
+          col: 'id',
+          where:{
+            name: {
+                [Op.iLike]: '%'+searchedName+'%',
+            }
+          },
+          include: [
+              {
+                  model: Genre,
+                  where: genreFilter ? { name: genreFilter } : {}
+              },
+              {
+                  model: Tag,
+                  where: tagFilter ? { name: tagFilter } : {}
+              }
+          ]
+        };
         
-        let videogamesFound = await Videogame.findAll(videogameOptions);
-        return videogamesFound;
+        const videogamesFound = await Videogame.findAll(videogameOptions);
+        const totalVideogames = await Videogame.count(countOptions);
+
+      const result = {
+          totalVideogames: totalVideogames,
+          nextPage: null,
+          prevPage: null,
+          videogames: videogamesFound
+      };
+
+      
+      const currentPage = page ? parseInt(page) : defaultPage;
+      const totalPages = Math.ceil(totalVideogames / (page_size ? parseInt(page_size) : defaultPageSize));
+
+      if (currentPage < totalPages) {
+          result.nextPage = currentPage + 1;
+      }
+
+      if (currentPage > defaultPage) {
+          result.prevPage = currentPage - 1;
+      }
+      
+        return result;
     }
     catch (error) {
         return {error: error.message}
@@ -112,11 +194,10 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
 const postVideogames = async (videogame) => { 
     try {
         
-        let { name,image, description, releaseDate, rating, genres, tags, price, stock } = videogame;
-        const now = Date.now();
-        const id = now.toString();
+        let { name,image, description, releaseDate, rating, genres, tags, price} = videogame;
+        const id = Date.now();
 
-        if(  !name || !image || !description || !releaseDate || !rating || !price || !stock || !genres.length || !tags.length ) throw new Error('Faltan datos obligatorios')
+        if(  !name || !image || !description || !releaseDate || !rating || !price || !genres.length || !tags.length ) throw new Error('Faltan datos obligatorios')
         
         const response = await cloudinary.uploader.upload(image, { folder: 'Videogames' }, (error) => {
             if (error) {
@@ -126,7 +207,7 @@ const postVideogames = async (videogame) => {
 
         image=response.secure_url
         let newVideogame = await Videogame.create({
-            name,id,image, description, releaseDate, rating, price, stock
+            name,id,image, description, releaseDate, rating, price
         });
 
 
