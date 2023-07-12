@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from './icons'
 import { twMerge } from 'tailwind-merge'
 
-const Pagination = ({ currentPage, totalPages, paginate }) => {
+const Pagination = ({ currentPage, totalPages = 1, paginate }) => {
   const previous = () => {
     if (currentPage > 1) {
       paginate(currentPage - 1)
@@ -15,7 +15,7 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
   }
 
   return (
-    <ul className='list-none flex items-center'>
+    <ul className='list-none flex items-center flex-wrap'>
       <li className='flex justify-center items-center'>
         <span
           onClick={previous}
