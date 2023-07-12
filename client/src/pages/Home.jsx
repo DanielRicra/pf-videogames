@@ -1,3 +1,7 @@
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react'
+
 import Carrousel from '../components/Carrousel'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
@@ -5,12 +9,31 @@ import { Link } from 'react-router-dom'
 import LoginButton from '../components/LoginButton'
 import Profile from '../components/Profile'
 import LogoutButton from '../components/LogoutButton'
-import { useAuth0 } from '@auth0/auth0-react'
-
 import { Loading } from '../components'
 
 const Home = () => {
-  const { isAuthenticated, isLoading } = useAuth0()
+  const { isAuthenticated, isLoading, user } = useAuth0()
+
+  useEffect(() => {
+    const createUser = async () => {
+      try {
+        if (isAuthenticated) {
+          const postData = {
+            name: user.name,
+            email: user.email,
+            nickname: user.nickname,
+          };
+    
+              await axios.post('http://localhost:3001/user/postUser', postData)
+    
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    createUser()
+  }, [isAuthenticated, user])
 
   if (isLoading) return <Loading />
 
@@ -39,10 +62,11 @@ const Home = () => {
         <h2>Join the community</h2>
       </div>
 
-      { isAuthenticated ? <LogoutButton /> : <LoginButton /> }
-      
+      {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+
       <Profile />
     </div>
   )
 }
+
 export default Home
