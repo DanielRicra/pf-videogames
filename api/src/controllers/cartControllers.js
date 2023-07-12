@@ -83,7 +83,28 @@ const associateCart = async (req,res) =>{
   }
 }
 
+const getCart = async (req,res) =>{
+  try{
+    const { userEmail } = req.body
+
+    const user = await User.findOne({ where: { email: userEmail } });
+    const cart = await Cart.findOne({ where: { userId: user.id, status: true } , include: Videogame});
+
+    if (!cart) {
+      cart = await Cart.create({ userId: user.id });
+    }
+
+    return cart
+
+  } catch(error){
+    console.error('Error al buscar el carrito')
+    return res.status(500).json({error: 'Error interno del servidor'})
+  }
+}
+
 module.exports = {
   addToCart,
-  removeFromCart
+  removeFromCart,
+  associateCart,
+  getCart
 };
