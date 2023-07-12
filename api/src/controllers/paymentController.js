@@ -77,6 +77,14 @@ const webhook = (req, res) => {
     stripe.customers
       .retrieve(data.customer)
       .then(async (customer) => {
+        console.log(
+          '🚀 ~ file: paymentController.js:80 ~ .then ~ customer:',
+          customer
+        )
+        console.log(
+          '🚀 ~ file: paymentController.js:80 ~ .then ~ customer:',
+          data
+        )
         /* try {
           // CREATE ORDER
           createOrder(customer, data)
