@@ -5,7 +5,8 @@ const videogamesRouter = require ('./videogamesRouter');
 const genreRouter = require ('./genreRouter');
 const reviewRouter = require ('./reviewRouter')
 const tagRouter = require ('./tagRouter')
-const userRouter = require ('./userRouter')
+const userRouter = require ('./userRouter');
+const cartRouter = require('./cartRouter');
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use('/genre', genreRouter)
 router.use('/review', reviewRouter)
 router.use('/tag', tagRouter)
 router.use('/user', userRouter)
+router.use('/cart', cartRouter)
 
 
 
