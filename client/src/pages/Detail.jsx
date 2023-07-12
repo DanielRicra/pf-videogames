@@ -63,8 +63,9 @@ const Detail = () => {
       <div className='wrapper'>
         <div className='flex'>
           <div className='container1'>
+
             <img
-              className='mx-[3rem] my-[5rem] h-[25rem]'
+              className='mx-[3rem] my-[5rem] h-[25rem] rounded-[1rem]'
               src={game.image}
               alt={game.name}
               title={game.name}
@@ -72,33 +73,34 @@ const Detail = () => {
 
             <div className='flex justify-between px-[23rem]'>
               <button
-                className='h-[4rem] mx-[-19.5rem] my-[-4rem]'
+                className='h-[4.5rem] mx-[-19.5rem] my-[-4rem]'
                 onClick={() => navigate('/favorites')}
               >
                 {' '}
-                <IconHeart className='w-full h-full' />{' '}
+                <IconHeart className='w-full h-full hover:animate-pulse' />{' '}
               </button>
               <button
-                className='h-[4rem] mx-[10rem] my-[-4rem]'
+                className='h-[4.5rem] mx-[13rem] my-[-4rem]'
                 onClick={() => navigate('/cart')}
               >
                 {' '}
-                <IconShoppingCartPlus className='w-full h-full' />{' '}
+                <IconShoppingCartPlus className='w-full h-full hover:animate-pulse' />{' '}
               </button>
             </div>
 
-            <div className='container flex mx-[3rem] my-[1.5rem] bg-violet-900 border-[0.2rem] border-purple-900 rounded-[1rem]'>
+            <div className='container flex p-[0.5rem] px-[1rem] mx-[4rem] my-[2rem] bg-black bg-opacity-50 border-[0.2rem] border-violet-500 rounded-[2rem] w-[42.5rem]'>
               <div className='flex flex-col p-[0.7rem]'>
                 <div className='text-2xl font-serif'>
                   Genres:
                 </div>
-                {game.genres && game.genres.map((genre) => (
-                  <div className='text-1xl font-mono font-semibold text-white my-[0.2rem]'>
+                {game.genres && game.genres.map((genre, index) => (
+                  <div key={index} className='text-1xl font-mono font-semibold text-white my-[0.2rem]'>
                     - {genre.name}
                   </div>
                 ))}
               </div>
-              <div className='text-white mx-[8rem] p-[0.7rem]'>
+
+              <div className='text-white mx-[6rem] p-[0.7rem]'>
                 <div>
                   <div className='text-2xl font-serif'>
                     Released in:
@@ -108,18 +110,29 @@ const Detail = () => {
                   </div>
                 </div>
               </div>
+
+              <div className='text-white p-[0.7rem]'>
+                <div>
+                  <div className='text-2xl font-serif'>
+                    Price:
+                  </div>
+                  <div className='text-1xl font-mono font-semibold my-[0.2rem]'>
+                    - {game.price}
+                  </div>
+                </div>
+              </div>
+
             </div>
 
           </div>
 
-          <div className='container2 bg-violet-900 p-8 w-[40rem] border-[0.2rem] border-purple-900 rounded-2xl mx-[5rem] my-[5rem]'>
+          <div className='container2 bg-black bg-opacity-50 p-8 w-[40rem] border-[0.2rem] border-violet-500 rounded-[2rem] mx-[5rem] my-[5rem]'>
             <div className='text-6xl font-serif text-white text-center'>
               {game.name}
             </div>
             <div className='text-1xl font-serif text-white mx-[2rem] my-[2rem]'>
-              {game.description && game.description.replace(/<\/?p>|<br\s?\/?>/g, '')}
+              {game.description && game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g, '')}
             </div>
-
           </div>
         </div>
 

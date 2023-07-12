@@ -10,9 +10,9 @@ const Footer = () => {
     return (
         <>
 
-            <div className='container p-[1rem] flex h-[2rem] mt-[8rem] justify-between -mb-[0.3rem] border-[0.2rem] border-purple-900 bg-violet-900'>
+            <div className='container p-[1rem] flex h-[2rem] mt-[8rem] justify-between -mb-[0.3rem] bg-black bg-opacity-40'>
 
-                <div className="flex gap-[5rem] items-center">
+                <div className="flex gap-[7rem] items-center">
                     <button className='font-serif font-light text-[0.8rem] underline' onClick={() => { navigate('/contacts') }}>
                         Contacts
                     </button>

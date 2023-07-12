@@ -11,7 +11,7 @@ const NotFound = () => {
         <img src={crash} className="h-[15rem]" />
       </div>
 
-      <div className="flex w-[8rem] text-[1.3rem] font-semibold justify-center bg-blue-600 border-[0.2rem] border-blue-600 rounded-[0.5rem] mx-[44rem]">
+      <div className="flex w-[8rem] text-[1.3rem] font-semibold justify-center bg-blue-600 border-blue-700 hover:bg-blue-700 hover:border-blue-600 transition duration-200 ease-in border-[0.2rem] rounded-[0.5rem] mx-[44rem] my-[3rem]">
         <NavLink to="/">
           Main menu
         </NavLink>
