@@ -78,3 +78,8 @@
     stroke-dashoffset: 0;
   }
 }
+
+.videogame__card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 280px));
+}
