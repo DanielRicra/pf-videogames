@@ -2,12 +2,12 @@ require('dotenv').config()
 const Stripe = require('stripe')
 const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK } = process.env
 const stripe = new Stripe(STRIPE_PRIVATE_KEY)
-
+const { Transaction, User, Cart } = require('../db')
 const createSession = async (req, res) => {
-  const { userId, cartItems } = req.body
+  const { email, cartItems } = req.body
   const customer = await stripe.customers.create({
     metadata: {
-      userId,
+      email: email,
     },
   })
   try {
@@ -77,13 +77,22 @@ const webhook = (req, res) => {
     stripe.customers
       .retrieve(data.customer)
       .then(async (customer) => {
-        /* try {
-          // CREATE ORDER
-          createOrder(customer, data)
-        } catch (err) {
-          console.log(typeof createOrder)
-          console.log(err)
-        } */
+        const transation = await Transaction.create()
+        const userFound = await User.findOne({
+          where: { email: customer.metadata.email },
+        })
+        /* if (!userFound) {
+          throw new Error('user not Found')
+        }
+        const cartFound = await Cart.findOne({
+          where: {
+            userId: userFound.id,
+            status: true,
+          },
+        })
+        await transation.addUser(userFound.id)
+        await transation.addCart(cartFound.id)
+        cartFound.status = false */
       })
       .catch((err) => console.log(err.message))
   }
