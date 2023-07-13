@@ -1,9 +1,11 @@
 import * as tagService from '../services/tagService'
 import useSWRImmutable from 'swr/immutable'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export const useTags = () => {
   const { data, error, isLoading } = useSWRImmutable(
-    'http://localhost:3001/tag',
+    `${API_URL}/tag`,
     tagService.fetchTags
   )
 

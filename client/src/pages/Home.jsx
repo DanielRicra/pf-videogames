@@ -2,8 +2,8 @@ import Carrousel from '../components/Carrousel'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
-import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
+import { saveUser } from '../services/userService'
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth0()
@@ -18,7 +18,7 @@ const Home = () => {
             nickname: user.nickname,
           }
 
-          await axios.post('http://localhost:3001/user/postUser', postData)
+          await saveUser(postData)
         }
       } catch (error) {
         console.log(error)
