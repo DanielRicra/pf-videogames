@@ -11,7 +11,7 @@ const LoginButton = ({ className }) => {
         className={twMerge('flex gap-2', className)}
         onClick={() => loginWithRedirect()}
       >
-        <IconLogin className='h-7 w-7' />
+        <IconLogin className='h-7 w-7 stroke-white' />
         <span>Log in</span>
       </button>
     </>
