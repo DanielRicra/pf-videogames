@@ -30,7 +30,7 @@ const NavBar = () => {
           <HeartIcon className='h-7 w-7' />
         </Link>
 
-        {isLoading && (
+        {isLoading && !user && (
           <div className='w-8 h-8 rounded-full animate-pulse bg-gray-400' />
         )}
         {isAuthenticated ? (

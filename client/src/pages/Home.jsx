@@ -5,7 +5,6 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
 
-
 const Home = () => {
   const { isAuthenticated, user } = useAuth0()
 
@@ -17,15 +16,14 @@ const Home = () => {
             name: user.name,
             email: user.email,
             nickname: user.nickname,
-          };
-    
-              await axios.post('http://localhost:3001/user/postUser', postData)
-    
+          }
+
+          await axios.post('http://localhost:3001/user/postUser', postData)
         }
       } catch (error) {
         console.log(error)
       }
-    };
+    }
 
     createUser()
   }, [isAuthenticated, user])

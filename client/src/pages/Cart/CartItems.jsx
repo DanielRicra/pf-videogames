@@ -1,12 +1,23 @@
 import { useDispatch } from 'react-redux'
 import { removeFromCart } from '../../redux/cart/cartSlice'
 import { IconTrashFilled } from '@tabler/icons-react'
+import { removeVideogameFromUserCart } from '../../services/cartService'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const CartItems = ({ cartItems }) => {
+  const { user } = useAuth0()
   const dispatch = useDispatch()
 
-  const handleRemoveItem = (id) => {
-    dispatch(removeFromCart(id))
+  const handleRemoveItem = async (id) => {
+    try {
+      if (user) {
+        await removeVideogameFromUserCart({
+          userEmail: user.email,
+          videogameId: id,
+        })
+      }
+      dispatch(removeFromCart(id))
+    } catch (error) { /* empty */ }
   }
 
   return (
