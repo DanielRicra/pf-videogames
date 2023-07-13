@@ -28,7 +28,7 @@ const addToCart = async (req, res) => {
 
     await cart.addVideogame(videogame);
 
-    return res.status(200).json({ message: 'Videojuego agregado al carrito' });
+    return res.status(201).json({ message: 'Videojuego agregado al carrito' });
   } catch (error) {
     console.error('Error al agregar videojuego al carrito:', error);
     return res.status(500).json({ error: 'Error interno del servidor' });
@@ -42,13 +42,16 @@ const removeFromCart = async (req, res) => {
 
     // Verificar si el usuario y el videojuego existen
     const user = await User.findOne({ where: { email: userEmail } });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
 
     const cart = await Cart.findOne({ where: { userId: user.id , status: true } });
-
     const videogame = await Videogame.findByPk(videogameId);
 
     if (!cart || !videogame) {
-      return res.status(404).json({ error: 'Usuario o videojuego no encontrado' });
+      return res.status(404).json({ error: 'Cart o videojuego no encontrado' });
     }
 
     // Eliminar el videojuego del carrito
@@ -87,20 +90,26 @@ const associateCart = async (req,res) =>{
 
 const getCart = async (req,res) =>{
   try{
-    const { userEmail } = req.body
+    const { userEmail } = req.query
+
+    if (!userEmail) return res.status(400).json({ error: 'Bad request, email required' })
 
     const user = await User.findOne({ where: { email: userEmail } });
-    const cart = await Cart.findOne({ where: { userId: user.id, status: true } , include: Videogame});
+
+    if (!user) return res.status(404).json({ error: 'User not found' })
+
+    let cart = await Cart.findOne({ 
+      where: { userId: user.id, status: true },
+      include: [{ model: Videogame, through: { attributes: [] }}] 
+    });
 
     if (!cart) {
       cart = await Cart.create({ userId: user.id });
     }
 
-    return cart
-
+    res.status(200).json(cart)
   } catch(error){
-    console.error('Error al buscar el carrito')
-    return res.status(500).json({error: 'Error interno del servidor'})
+    return res.status(500).json({error: 'Internal server error'})
   }
 }
 
