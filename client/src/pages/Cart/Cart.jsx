@@ -22,7 +22,7 @@ const Cart = () => {
   }, [urlCheckout])
 
   const handleCheckout = async () => {
-    dispatch(checkoutCart({ cartItems, userId: user?.id }))
+    dispatch(checkoutCart({ cartItems, email: 'jhonson.13@gmail.com' }))
   }
 
   return (
