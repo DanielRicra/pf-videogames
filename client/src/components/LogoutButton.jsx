@@ -1,16 +1,17 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { IconLogout } from '@tabler/icons-react'
+import { twMerge } from 'tailwind-merge'
 
-const LogoutButton = () => {
+const LogoutButton = ({ className }) => {
   const { logout } = useAuth0()
 
   return (
     <button
-      className='flex text-base font-semibold bg-purple-600 border-purple-700 hover:bg-purple-700 hover:border-purple-600 transition duration-200 ease-in border-[1px] rounded-[0.5rem] px-4 py-2 gap-2'
+      className={twMerge('flex gap-2', className)}
       onClick={() => logout()}
     >
-      Log out
-      <IconLogout />
+      <IconLogout className='w-7 stroke-gray-800' />
+      <span>Log out</span>
     </button>
   )
 }
