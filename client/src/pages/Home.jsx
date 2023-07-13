@@ -1,8 +1,35 @@
 import Carrousel from '../components/Carrousel'
 import { videogames } from '../utils/dumbData'
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react'
+
 
 const Home = () => {
+  const { isAuthenticated, user } = useAuth0()
+
+  useEffect(() => {
+    const createUser = async () => {
+      try {
+        if (isAuthenticated) {
+          const postData = {
+            name: user.name,
+            email: user.email,
+            nickname: user.nickname,
+          };
+    
+              await axios.post('http://localhost:3001/user/postUser', postData)
+    
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    createUser()
+  }, [isAuthenticated, user])
+
   return (
     <div className='text-white min-h-screen py-14'>
       <div className='font-medium mb-5 text-7xl whitespace-normal ml-12 min-h-[calc(100vh-120px)] flex justify-start items-center'>
