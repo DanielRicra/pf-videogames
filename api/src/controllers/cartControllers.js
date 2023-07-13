@@ -38,13 +38,16 @@ const removeFromCart = async (req, res) => {
     const { videogameId } = req.params;
 
     const user = await User.findOne({ where: { email: userEmail } });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
 
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
 
     const cart = await Cart.findOne({ where: { userId: user.id , status: true } });
-
     const videogame = await Videogame.findByPk(videogameId);
 
     if (!cart || !videogame) {
