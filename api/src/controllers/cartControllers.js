@@ -43,6 +43,10 @@ const removeFromCart = async (req, res) => {
     // Verificar si el usuario y el videojuego existen
     const user = await User.findOne({ where: { email: userEmail } });
 
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
     const cart = await Cart.findOne({ where: { userId: user.id , status: true } });
 
     const videogame = await Videogame.findByPk(videogameId);
@@ -67,6 +71,11 @@ const associateCart = async (req,res) =>{
     const { userEmail, videogamesId } =req.body
 
     const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
     const cart = await Cart.findOne({ where: { userId: user.id, status: true } });
 
     if (!cart) {
@@ -90,6 +99,11 @@ const getCart = async (req,res) =>{
     const { userEmail } = req.body
 
     const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
     const cart = await Cart.findOne({ where: { userId: user.id, status: true } , include: Videogame});
 
     if (!cart) {
