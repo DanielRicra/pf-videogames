@@ -13,12 +13,9 @@ cartRouter.get('/', async (req, res) =>{
 cartRouter.post('/add', async (req, res) =>{
     try{
 
-        const cart = await associateCart(req)
+        const cart = await associateCart(req, res)
 
         if(cart.error) throw new Error(cart.error)
-
-        res.status(200).json(cart)
-
     }catch(error){
         res.status(404).send(error.message)
     }
