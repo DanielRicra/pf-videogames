@@ -40,10 +40,6 @@ const removeFromCart = async (req, res) => {
     const user = await User.findOne({ where: { email: userEmail } });
     
     if (!user) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-
-    if (!user) {
       throw new Error('Usuario no encontrado');
     }
 
@@ -99,20 +95,11 @@ const getCart = async (req, res) => {
 
     const user = await User.findOne({ where: { email: userEmail } });
 
-<<<<<<< HEAD
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
 
     let cart = await Cart.findOne({ where: { userId: user.id, status: true }, include: Videogame });
-=======
-    if (!user) return res.status(404).json({ error: 'User not found' })
-
-    let cart = await Cart.findOne({ 
-      where: { userId: user.id, status: true },
-      include: [{ model: Videogame, through: { attributes: [] }}] 
-    });
->>>>>>> 5b8e91b8d272e3857e5c67279249c5e7b6ef661a
 
     if (!cart) {
       cart = await Cart.create({ userId: user.id });
