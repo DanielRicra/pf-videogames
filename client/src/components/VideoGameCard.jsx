@@ -9,8 +9,12 @@ import {
   removeFromCart,
 } from '../redux/cart/cartSlice'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import {
+  addVideogameToUserCart,
+  removeVideogameFromUserCart,
+} from '../services/cartService'
 
-const VideoGameCard = ({ videogame }) => {
+const VideoGameCard = ({ videogame, user }) => {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
   const cartItems = useSelector(getCartItems)
@@ -20,12 +24,29 @@ const VideoGameCard = ({ videogame }) => {
     return cartItems.find((item) => item.id === videogame.id)
   }, [cartItems, videogame])
 
-  const handleClick = () => {
-    if (!cartItem) {
-      dispatch(addToCart(videogame))
-      setIsOpen(true)
-    } else {
-      dispatch(removeFromCart(videogame.id.toString()))
+  const handleClick = async () => {
+    try {
+      if (!cartItem) {
+        if (user) {
+          await addVideogameToUserCart({
+            userEmail: user.email,
+            videogameId: videogame.id,
+          })
+        }
+        dispatch(addToCart(videogame))
+        setIsOpen(true)
+      } else {
+        if (user) {
+          await removeVideogameFromUserCart({
+            userEmail: user.email,
+            videogameId: videogame.id,
+          })
+        }
+  
+        dispatch(removeFromCart(videogame.id.toString()))
+      }
+    } catch (error) {
+      /* empty */
     }
   }
 

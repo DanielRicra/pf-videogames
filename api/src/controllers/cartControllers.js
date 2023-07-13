@@ -59,9 +59,10 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-const associateCart = async (req, res) => {
-  try {
-    const { userEmail, videogamesId } = req.body;
+
+const associateCart = async (req,res) =>{
+  try{
+    const { userEmail, videogameIds } = req.body
 
     const user = await User.findOne({ where: { email: userEmail } });
 
@@ -75,17 +76,12 @@ const associateCart = async (req, res) => {
       cart = await Cart.create({ userId: user.id });
     }
 
-    await Promise.all(videogamesId.map(async videogameId => {
-      const videogame = await Videogame.findByPk(videogameId);
-      if (videogame) {
-        await cart.addVideogame(videogame);
-      }
-    }));
+    await cart.addVideogames(videogameIds)
 
     return cart;
-  } catch (error) {
-    console.error('Error al asociar el carrito:', error);
-    throw new Error('Error interno del servidor');
+  } catch(error) {
+    console.error('Error al asociar el carrito', error)
+    return new Error('Error interno del servidor');
   }
 };
 
