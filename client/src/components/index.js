@@ -13,6 +13,8 @@ import ReviewCard from './ReviewCard'
 import ReviewForm from './ReviewForm'
 import Footer from './Layout/Footer'
 import Layout from './Layout/Layout'
+import LogoutButton from './LogoutButton'
+import LoginButton from './LoginButton'
 
 export {
   FilterBar,
@@ -29,5 +31,7 @@ export {
   ReviewCard,
   ReviewForm,
   Footer,
-  Layout
+  Layout,
+  LogoutButton,
+  LoginButton
 }
