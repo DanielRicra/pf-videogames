@@ -1,11 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch, useSelector } from 'react-redux'
-import { getCartItems } from '../../redux/cart/cartSlice'
-import { formatMoney } from '../../utils/helpers'
-import CartItems from './CartItems'
 import { useEffect } from 'react'
-import { checkoutCart } from '../../redux/actions/cartAction'
 import { useAuth0 } from '@auth0/auth0-react'
 import { IconLoader3 } from '@tabler/icons-react'
+
+import { checkoutCart } from '../../redux/actions/cartAction'
+import { fetchCartByUserEmail, getCartItems } from '../../redux/cart/cartSlice'
+import { formatMoney } from '../../utils/helpers'
+import CartItems from './CartItems'
+
 const Cart = () => {
   const cartItems = useSelector(getCartItems)
 
@@ -13,7 +16,7 @@ const Cart = () => {
     (status) => status.cart
   )
   const dispatch = useDispatch()
-  const { user } = useAuth0()
+  const { user, isAuthenticated, loginWithPopup } = useAuth0()
 
   useEffect(() => {
     if (urlCheckout) {
@@ -22,8 +25,20 @@ const Cart = () => {
   }, [urlCheckout])
 
   const handleCheckout = async () => {
-    dispatch(checkoutCart({ cartItems, email: 'jhonson.13@gmail.com' }))
+    if (!isAuthenticated) {
+      loginWithPopup({
+        redirectUri: window.location.origin + '/cart',
+      })
+      return
+    }
+    dispatch(checkoutCart({ cartItems, userId: user?.id }))
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCartByUserEmail(user.email ?? ''))
+    }
+  }, [isAuthenticated, user])
 
   return (
     <div className='min-h-screen flex flex-col justify-start items-start p-4 md:px-6 lg:px-10 xl:px-14 mb-10'>
@@ -37,7 +52,7 @@ const Cart = () => {
         <div className='w-full flex flex-col'>
           <div className='flex items-center justify-between w-full my-3 border-b-2 border-gray-400'>
             <p>Total VideoGames: {cartItems.length}</p>
-            <p className='text-2xl flex gap-2'>
+            <div className='text-2xl flex gap-2'>
               <p>Total Price:</p>
               <span className='font-semibold text-purple-800'>
                 {formatMoney(
@@ -47,7 +62,7 @@ const Cart = () => {
                   )
                 )}
               </span>
-            </p>
+            </div>
           </div>
 
           <button

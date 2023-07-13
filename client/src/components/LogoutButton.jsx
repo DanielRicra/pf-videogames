@@ -1,14 +1,28 @@
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth0 } from '@auth0/auth0-react'
+import { IconLogout } from '@tabler/icons-react'
+import { useDispatch } from 'react-redux'
+import { twMerge } from 'tailwind-merge'
+import { cleanCart } from '../redux/cart/cartSlice'
 
-const LogoutButton = () => {
+const LogoutButton = ({ className }) => {
+  const { logout } = useAuth0()
+  const dispatch = useDispatch()
 
-    const { logout } = useAuth0()
+  const handleClick = () => {
+    localStorage.setItem('shopping-cart', JSON.stringify([]))
+    dispatch(cleanCart)
+    logout({ returnTo: window.location.origin })
+  }
 
-    return (
-        <>
-            <button className="flex w-[4rem] text-[0.8rem] font-semibold justify-center bg-purple-600 border-purple-700 hover:bg-purple-700 hover:border-purple-600 transition duration-200 ease-in border-[0.2rem] rounded-[0.5rem] mx-[88rem] my-[-5rem]" onClick={() => logout()}>Log out</button>
-        </>
-    )
+  return (
+    <button
+      className={twMerge('flex gap-2', className)}
+      onClick={handleClick}
+    >
+      <IconLogout className='w-7 stroke-gray-800' />
+      <span>Log out</span>
+    </button>
+  )
 }
 
 export default LogoutButton

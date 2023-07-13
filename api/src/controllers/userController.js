@@ -1,6 +1,14 @@
 const { User } = require('../db')
 const sgMail = require('@sendgrid/mail')
+const fs = require('fs')
+const path = require('path')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+const welcomeEmailPath = path.join(
+  __dirname,
+  '../apiData/emailContent/WelcomeEmail.html'
+)
+const welcomeEmailContent = fs.readFileSync(welcomeEmailPath, 'utf8')
 
 // Obtener todos los usuarios
 const getUsers = async () => {
@@ -23,6 +31,23 @@ const getUserByEmail = async (email) => {
   }
 }
 
+// Función para enviar el correo electrónico de bienvenida
+const sendWelcomeEmail = async (email, name) => {
+  try {
+    const msg = {
+      to: email,
+      from: 'pfvideogames@gmail.com',
+      subject: '¡Bienvenido a GameStore!',
+      html: welcomeEmailContent.replace('{{name}}', name), // Reemplazar {{name}} con el nombre del usuario
+    }
+
+    await sgMail.send(msg)
+    console.log('Correo electrónico de bienvenida enviado')
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico de bienvenida:', error)
+  }
+}
+
 // Crear un nuevo usuario
 const postUser = async (req, res) => {
   try {
@@ -35,22 +60,7 @@ const postUser = async (req, res) => {
 
     if (created) {
       // Enviar correo electrónico de bienvenida
-      const msg = {
-        to: email,
-        from: 'pfvideogames@gmail.com',
-        subject: '¡Bienvenido a GameStore!',
-        text: `¡Hola ${name}! Bienvenido a GameStore. Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!`,
-        html: `<p>¡Hola ${name}! Gracias por registrarte en nuestra plataforma. Disfruta tus juegos al máximo!</p>`,
-      }
-
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log('Correo electrónico enviado')
-        })
-        .catch((error) => {
-          console.error('Error al enviar el correo electrónico:', error)
-        })
+      await sendWelcomeEmail(email, name)
 
       return res.status(201).json({ user, message: 'Usuario creado' })
     } else {
