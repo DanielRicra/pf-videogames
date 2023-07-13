@@ -1,12 +1,12 @@
 const cartRouter = require('express').Router();
 
-const { removeGame, addGame, associateCart, getCart } = require('../controllers/cartControllers');
+const { removeFromCart, addToCart, associateCart, getCart } = require('../controllers/cartControllers');
 const express = require('express');
 const router = express.Router();
 
 cartRouter.get('/', async (req, res) =>{
     try{
-        const cart = await getCart(req)
+        const cart = await getCart(req, res)
 
         if(cart.error) throw new Error(cart.error)
 

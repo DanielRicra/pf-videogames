@@ -6,7 +6,7 @@ const {
   uploadGenres,
 } = require('./src/utils/helpers.js')
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 
 conn.sync({ force: false }).then(() => {
   //uploadGenres(Genre)
