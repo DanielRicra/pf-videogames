@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { setLoadingCheckoutStatus, setUrlCheckout } from '../cart/cartSlice'
+import { setCheckoutError, setLoadingCheckoutStatus, setUrlCheckout } from '../cart/cartSlice'
 
 export const checkoutCart = ({ cartItems, userId }) => {
   return async (dispatch) => {
@@ -12,7 +12,7 @@ export const checkoutCart = ({ cartItems, userId }) => {
       dispatch(setLoadingCheckoutStatus(false))
       dispatch(setUrlCheckout(data.url))
     } catch (error) {
-      console.log('error', error)
+      dispatch(setCheckoutError(error.message ?? 'Something went wrong'))
     }
   }
 }
