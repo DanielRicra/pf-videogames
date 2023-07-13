@@ -9,9 +9,9 @@ const {
 const PORT = 3001
 
 conn.sync({ force: false }).then(() => {
-  // uploadGenres(Genre)
-  // uploadTags(Tag)
-  // uploadVideogames(Videogame)
+  uploadGenres(Genre)
+  uploadTags(Tag)
+  uploadVideogames(Videogame)
 
   server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
