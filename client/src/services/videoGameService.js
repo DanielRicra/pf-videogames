@@ -6,6 +6,11 @@ const fetchVideogames = async (url) => {
   return response.data
 }
 
+export const getVideogameById = async (url) => {
+  const response = await api.get(url)
+  return response.data
+}
+
 const saveNewVideogame = async (newVideogame) => {
   const response = await api.post('videogames', newVideogame)
   return response.data
