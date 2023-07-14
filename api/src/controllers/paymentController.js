@@ -2,12 +2,12 @@ require('dotenv').config()
 const Stripe = require('stripe')
 const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK } = process.env
 const stripe = new Stripe(STRIPE_PRIVATE_KEY)
-
+const { Transaction, User, Cart, Videogame } = require('../db')
 const createSession = async (req, res) => {
-  const { userId, cartItems } = req.body
+  const { email, cartItems } = req.body
   const customer = await stripe.customers.create({
     metadata: {
-      userId,
+      email: email,
     },
   })
   try {
@@ -77,13 +77,28 @@ const webhook = (req, res) => {
     stripe.customers
       .retrieve(data.customer)
       .then(async (customer) => {
-        /* try {
-          // CREATE ORDER
-          createOrder(customer, data)
-        } catch (err) {
-          console.log(typeof createOrder)
-          console.log(err)
-        } */
+        const transation = await Transaction.create()
+        const userFound = await User.findOne({
+          where: { email: customer.metadata.email },
+        })
+        const cartFound = await Cart.findOne({
+          where: { userId: userFound.id, status: true },
+          include: Videogame,
+        })
+        if (!userFound) {
+          throw new Error('user not Found')
+        }
+        if (!cartFound) {
+          throw new Error('cart not Found')
+        }
+        cartFound.dataValues.videogames.map(async (videogame) => {
+          await userFound.addVideogame(videogame.dataValues.id)
+        })
+
+        await transation.setUser(userFound.dataValues.id)
+        await transation.setCart(cartFound.dataValues.id)
+        cartFound.status = false
+        await cartFound.save()
       })
       .catch((err) => console.log(err.message))
   }
