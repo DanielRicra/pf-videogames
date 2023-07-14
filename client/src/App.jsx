@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
-import { Cart, Create, Detail, Home, NotFound, Search } from './pages'
+import { Create, Detail, Home, NotFound, Search } from './pages'
+import { Cart } from './pages/Cart'
 import Profile from './pages/Profile'
 import { Layout } from './components'
 
