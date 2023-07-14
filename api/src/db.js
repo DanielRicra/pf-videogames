@@ -7,11 +7,11 @@ const path = require('path');
 
 // se traen las credenciales
 const {
-  DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
+  DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT
 } = process.env;
 
 // sequelize + SQL
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
+const sequelize = new Sequelize(`postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, {
   logging: false, // set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
 });
@@ -35,7 +35,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Videogame, Genre, User, Review, Tag  } = sequelize.models;
+const { Videogame, Genre, User, Review, Tag, Cart, Transaction  } = sequelize.models;
 
 
 // Aca vendrian las relaciones
@@ -53,6 +53,20 @@ Review.belongsTo(Videogame, { foreignKey: 'videogameId' });
 Videogame.belongsToMany(Tag, { through: 'Videogame_Tag' });
 Tag.belongsToMany(Videogame, { through: 'Videogame_Tag' });
 
+Cart.belongsToMany(Videogame, { through: 'VideogamesInCart' })
+Videogame.belongsToMany(Cart, { through: 'VideogamesInCart' })
+
+Cart.belongsTo(User, { foreignKey : 'userId' })
+User.hasMany(Cart, { foreignKey: 'userId' })
+
+User.belongsToMany(Videogame, { through: 'VideogamesOwn' })
+Videogame.belongsToMany(User, { through: 'VideogamesOwn' })
+
+Transaction.belongsTo(Cart, { foreignKey: 'cartId' })
+Cart.hasOne(Transaction, { foreignKey: 'cartId' })
+
+Transaction.belongsTo(User, { foreignKey: 'userId' })
+User.hasMany(Transaction, { foreignKey: 'userId' })
 
 module.exports = {
   ...sequelize.models,
