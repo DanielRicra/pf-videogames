@@ -1,5 +1,10 @@
 import axios from 'axios'
-import { setCheckoutError, setLoadingCheckoutStatus, setUrlCheckout } from '../cart/cartSlice'
+import {
+  setCheckoutError,
+  setLoadingCheckoutStatus,
+  setUrlCheckout,
+  cleanCart,
+} from '../cart/cartSlice'
 
 export const checkoutCart = ({ cartItems, email }) => {
   return async (dispatch) => {
@@ -11,6 +16,7 @@ export const checkoutCart = ({ cartItems, email }) => {
       )
       dispatch(setLoadingCheckoutStatus(false))
       dispatch(setUrlCheckout(data.url))
+      dispatch(cleanCart())
     } catch (error) {
       dispatch(setCheckoutError(error.message ?? 'Something went wrong'))
     }
