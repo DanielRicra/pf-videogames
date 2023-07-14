@@ -32,8 +32,8 @@ const createSession = async (req, res) => {
       line_items,
       mode: 'payment',
       customer: customer.id,
-      success_url: `${CLIENTE_URL}/cart`,
-      cancel_url: `${CLIENTE_URL}/cart`,
+      success_url: `https://pf-videogames.vercel.app/cart`,
+      cancel_url: `https://pf-videogames.vercel.app/cart`,
     })
 
     return res.json({ url: session.url })
