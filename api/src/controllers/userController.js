@@ -1,4 +1,4 @@
-const { User } = require('../db')
+const { User, Videogame } = require('../db')
 const sgMail = require('@sendgrid/mail')
 const fs = require('fs')
 const path = require('path')
@@ -13,7 +13,9 @@ const welcomeEmailContent = fs.readFileSync(welcomeEmailPath, 'utf8')
 // Obtener todos los usuarios
 const getUsers = async () => {
   try {
-    const users = await User.findAll()
+    const users = await User.findAll({
+      include: Videogame,
+    })
     return users
   } catch (error) {
     throw new Error('Error al obtener los usuarios')
@@ -23,7 +25,10 @@ const getUsers = async () => {
 // Obtener un usuario por su email
 const getUserByEmail = async (email) => {
   try {
-    const user = await User.findOne({ where: { email: email } })
+    const user = await User.findOne({
+      where: { email: email },
+      include: Videogame,
+    })
 
     return user.dataValues
   } catch (error) {
