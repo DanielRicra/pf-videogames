@@ -17,6 +17,7 @@ const Cart = () => {
   )
   const dispatch = useDispatch()
   const { user, isAuthenticated, loginWithPopup } = useAuth0()
+  console.log('🚀 ~ file: Cart.jsx:20 ~ Cart ~ user:', user)
 
   useEffect(() => {
     if (urlCheckout) {
@@ -31,7 +32,8 @@ const Cart = () => {
       })
       return
     }
-    dispatch(checkoutCart({ cartItems, userId: user?.id }))
+
+    dispatch(checkoutCart({ cartItems, email: user?.email }))
   }
 
   useEffect(() => {
