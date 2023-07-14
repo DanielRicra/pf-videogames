@@ -108,7 +108,7 @@ const getCart = async (req,res) =>{
 
     return cart
   } catch(error){
-    return res.status(500).json({error: 'Internal server error'})
+    throw new Error ('Internal server error')
   }
 }
 
