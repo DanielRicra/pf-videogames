@@ -1,7 +1,5 @@
 const cartRouter = require('express').Router();
 const { removeFromCart, addToCart, associateCart, getCart } = require('../controllers/cartControllers');
-const express = require('express');
-const router = express.Router();
 
 cartRouter.get('/', async (req, res) =>{
     try{
@@ -21,6 +19,7 @@ cartRouter.post('/add', async (req, res) =>{
         const cart = await associateCart(req, res)
 
         if(cart.error) throw new Error(cart.error)
+        res.status(200).json(cart)
     }catch(error){
         res.status(404).send(error.message)
     }
@@ -32,6 +31,7 @@ cartRouter.post('/add/:videogameId', async (req, res) =>{
         const game = await addToCart(req, res)
 
         if(game.error) throw new Error(game.error)
+        res.status(200).json(game)
     }
     catch(error){
         res.status(404).send(error.message)
@@ -44,6 +44,7 @@ cartRouter.delete('/remove/:videogameId', async (req, res) =>{
         const game = await removeFromCart(req, res)
 
         if(game.error) throw new Error(game.error)
+        res.status(200).json(game)
     }
     catch(error){
         res.status(404).send(error.message)

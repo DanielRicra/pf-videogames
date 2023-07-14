@@ -17,6 +17,7 @@ const addToCart = async (req, res) => {
       throw new Error('Usuario no encontrado');
     }
 
+    // Obtener el carrito del usuario o crear uno nuevo si no existe
     let cart = await Cart.findOne({ where: { userId: user.id , status: true } });
 
     if (!cart) {
@@ -45,20 +46,19 @@ const removeFromCart = async (req, res) => {
 
     const cart = await Cart.findOne({ where: { userId: user.id , status: true } });
     const videogame = await Videogame.findByPk(videogameId);
-
     if (!cart || !videogame) {
       throw new Error('Usuario o videojuego no encontrado');
     }
 
+    // Eliminar el videojuego del carrito
     await cart.removeVideogame(videogame);
 
-    return cart;
+    return cart
   } catch (error) {
     console.error('Error al eliminar videojuego del carrito:', error);
     throw new Error('Error interno del servidor');
   }
 };
-
 
 const associateCart = async (req,res) =>{
   try{
@@ -78,16 +78,18 @@ const associateCart = async (req,res) =>{
 
     await cart.addVideogames(videogameIds)
 
-    return cart;
+    return cart
   } catch(error) {
     console.error('Error al asociar el carrito', error)
     return new Error('Error interno del servidor');
   }
-};
+}
 
-const getCart = async (req, res) => {
-  try {
-    const { userEmail } = req.body;
+const getCart = async (req,res) =>{
+  try{
+    const { userEmail } = req.query
+
+    if (!userEmail) throw new Error('Bad request, userEmail required');
 
     const user = await User.findOne({ where: { email: userEmail } });
 
@@ -95,18 +97,20 @@ const getCart = async (req, res) => {
       throw new Error('Usuario no encontrado');
     }
 
-    let cart = await Cart.findOne({ where: { userId: user.id, status: true }, include: Videogame });
+    let cart = await Cart.findOne({ 
+      where: { userId: user.id, status: true },
+      include: [{ model: Videogame, through: { attributes: [] }}] 
+    });
 
     if (!cart) {
       cart = await Cart.create({ userId: user.id });
     }
 
-    return cart;
-  } catch (error) {
-    console.error('Error al buscar el carrito:', error);
-    throw new Error('Error interno del servidor');
+    return cart
+  } catch(error){
+    return res.status(500).json({error: 'Internal server error'})
   }
-};
+}
 
 module.exports = {
   addToCart,

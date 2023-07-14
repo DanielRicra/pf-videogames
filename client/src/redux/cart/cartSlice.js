@@ -49,6 +49,7 @@ const cartSlice = createSlice({
     },
     cleanCart: (state) => {
       state.cartItems = []
+      localStorage.clear('shopping-cart')
     },
     setLoadingCheckoutStatus: (state, action) => {
       state.loadingCheckoutStatus = action.payload

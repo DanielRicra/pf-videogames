@@ -11,8 +11,9 @@ import {
 } from '../components'
 import * as videoGameService from '../services/videoGameService'
 import { getSearchQuery } from '../redux/videogame/videoGameSlice'
-
 import { getSortType, getSortOrder } from '../redux/videogame/videoGameSlice'
+
+const API_URL = import.meta.env.VITE_API_URL
 
 const Search = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -22,7 +23,7 @@ const Search = () => {
   const sortType = useSelector(getSortType)
   const sortOrder = useSelector(getSortOrder)
 
-  const [url, setUrl] = useState('http://localhost:3001/videogames?')
+  const [url, setUrl] = useState(`${API_URL}/videogames?`)
 
   useEffect(() => {
     let myUrl = ''
@@ -34,7 +35,7 @@ const Search = () => {
           ind === 0
             ? (genres = `genreFilter=${gn}`)
             : (genres = `${genres}&genreFilter=${gn}`)
-          myUrl = `http://localhost:3001/videogames?${genres}`
+          myUrl = `${API_URL}/videogames?${genres}`
         })
       : null
 
@@ -43,14 +44,14 @@ const Search = () => {
           ind === 0
             ? (tags = `tagFilter=${tg}`)
             : (tags = `${tags}&tagFilter=${tg}`)
-          myUrl = `http://localhost:3001/videogames?${tags}`
+          myUrl = `${API_URL}/videogames?${tags}`
         })
       : null
 
     if (genresFilter.length > 0 && tagsFilter.length > 0) {
-      myUrl = `http://localhost:3001/videogames?${genres}&${tags}`
+      myUrl = `${API_URL}/videogames?${genres}&${tags}`
     } else if (genresFilter.length == 0 && tagsFilter.length == 0) {
-      myUrl = 'http://localhost:3001/videogames?'
+      myUrl = `${API_URL}/videogames?`
     }
 
     myUrl !== '' ? setUrl(myUrl) : null
