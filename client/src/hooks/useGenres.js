@@ -1,9 +1,11 @@
 import * as genreService from '../services/genreService'
 import useSWRImmutable from 'swr/immutable'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export const useGenres = () => {
   const { data, error, isLoading } = useSWRImmutable(
-    'http://localhost:3001/genre',
+    `${API_URL}/genre`,
     genreService.fetchGenres
   )
 
