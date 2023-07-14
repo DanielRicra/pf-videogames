@@ -1,6 +1,6 @@
 require('dotenv').config()
 const Stripe = require('stripe')
-const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK } = process.env
+const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK, CLIENTE_URL } = process.env
 const stripe = new Stripe(STRIPE_PRIVATE_KEY)
 const { Transaction, User, Cart, Videogame } = require('../db')
 const createSession = async (req, res) => {
@@ -32,8 +32,8 @@ const createSession = async (req, res) => {
       line_items,
       mode: 'payment',
       customer: customer.id,
-      success_url: 'http://localhost:5173/cart/',
-      cancel_url: 'http://localhost:5173/cart/',
+      success_url: `${CLIENTE_URL}/cart`,
+      cancel_url: `${CLIENTE_URL}/cart`,
     })
 
     return res.json({ url: session.url })
