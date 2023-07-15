@@ -8,22 +8,37 @@ import { checkoutCart } from '../../redux/actions/cartAction'
 import { fetchCartByUserEmail, getCartItems } from '../../redux/cart/cartSlice'
 import { formatMoney } from '../../utils/helpers'
 import CartItems from './CartItems'
+import { loadStripe } from '@stripe/stripe-js'
+const VITE_PUBLIC_KEY_STRIPE = import.meta.env.VITE_PUBLIC_KEY_STRIPE
 
 const Cart = () => {
+  const dispatch = useDispatch()
   const cartItems = useSelector(getCartItems)
-
-  const { urlCheckout, loadingCheckoutStatus } = useSelector(
+  const stripePromise = loadStripe(VITE_PUBLIC_KEY_STRIPE)
+  const { user, isAuthenticated, loginWithPopup } = useAuth0()
+  const { sessionId, loadingCheckoutStatus } = useSelector(
     (status) => status.cart
   )
-  const dispatch = useDispatch()
-  const { user, isAuthenticated, loginWithPopup } = useAuth0()
-  console.log('🚀 ~ file: Cart.jsx:20 ~ Cart ~ user:', user)
 
   useEffect(() => {
-    if (urlCheckout) {
-      window.location.href = urlCheckout
+    if (sessionId) {
+      openStripeCheckout()
     }
-  }, [urlCheckout])
+    console.log('🚀 ~ file: Cart.jsx:20 ~ Cart ~ urlCheckout:', sessionId)
+  }, [sessionId])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCartByUserEmail(user.email ?? ''))
+    }
+  }, [isAuthenticated, user])
+
+  const openStripeCheckout = async () => {
+    const stripe = await stripePromise
+    await stripe.redirectToCheckout({
+      sessionId: sessionId.id,
+    })
+  }
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
@@ -32,15 +47,8 @@ const Cart = () => {
       })
       return
     }
-
     dispatch(checkoutCart({ cartItems, email: user?.email }))
   }
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCartByUserEmail(user.email ?? ''))
-    }
-  }, [isAuthenticated, user])
 
   return (
     <div className='min-h-screen flex flex-col justify-start items-start p-4 md:px-6 lg:px-10 xl:px-14 mb-10'>
