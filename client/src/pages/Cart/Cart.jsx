@@ -24,7 +24,6 @@ const Cart = () => {
     if (sessionId) {
       openStripeCheckout()
     }
-    console.log('🚀 ~ file: Cart.jsx:20 ~ Cart ~ urlCheckout:', sessionId)
   }, [sessionId])
 
   useEffect(() => {
