@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRef } from 'react'
-import { formatDistance } from 'date-fns'
+import ChatSideBar from './ChatSideBar'
+import Message from './Message'
 
 const friends = [
   {
@@ -73,34 +74,7 @@ const Chat = () => {
   return (
     <div className='min-h-[calc(100vh-120px)] flex bg-gray-100 text-black'>
       <div className='flex flex-col w-1/4 p-4 h-full gap-2'>
-        <h2 className='text-2xl'>Chats</h2>
-        <div className='my-2'>
-          <input
-            type='text'
-            placeholder='search user...'
-            className='p-2 px-4 text-black w-full'
-          />
-        </div>
-        <div className='flex flex-col gap-3'>
-          {friends.map((friend) => (
-            <div key={friend.id}>
-              <div className='flex gap-2'>
-                <img
-                  src={friend.picture}
-                  alt={friend.name}
-                  className='w-10 h-10 rounded-full'
-                />
-                <div>
-                  <p>{friend.name}</p>
-                  <p className='text-sm'>Last seen: 2 hours ago</p>
-                </div>
-              </div>
-              <div>
-                <p>Last message: Hey, how are you?</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <ChatSideBar friends={friends} />
       </div>
 
       <div className='flex-1 flex flex-col h-[calc(100vh-120px)] justify-between overflow-hidden'>
@@ -116,19 +90,7 @@ const Chat = () => {
 
           <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2'>
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className={
-                  message.senderId === currentUser.id
-                    ? 'self-end'
-                    : 'self-start'
-                }
-              >
-                <p>{message.message}</p>
-                <span className='text-sm'>
-                  {formatDistance(new Date(), new Date(message.createdAt))}
-                </span>
-              </div>
+              <Message key={message.id} message={message} currentUser={currentUser} />
             ))}
             <div ref={scrollToBottom} />
           </div>
