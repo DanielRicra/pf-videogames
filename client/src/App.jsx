@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import { Cart, Create, Detail, Home, NotFound, Search } from './pages'
+import { Cart, Chat, Create, Detail, Home, NotFound, Search } from './pages'
 import Profile from './pages/Profile'
 import { Layout } from './components'
 
@@ -19,6 +19,7 @@ function App() {
             <Route path='/create' element={<Create />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/chat' element={<Chat />} />
           </Route>
           <Route path='*' element={<NotFound />} />
         </Routes>
