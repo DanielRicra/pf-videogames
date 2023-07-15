@@ -3,7 +3,6 @@ import { formatDistance } from 'date-fns'
 const Message = ({ message, currentUser }) => {
   return (
     <div
-      key={message.id}
       className={
         message.senderId === currentUser.id ? 'self-end' : 'self-start'
       }
