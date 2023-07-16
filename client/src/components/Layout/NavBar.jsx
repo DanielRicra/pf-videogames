@@ -50,6 +50,9 @@ const NavBar = () => {
                 <UserIcon className='h-6 -ml-[1px]' />
                 <span className='whitespace-nowrap'>See Profile</span>
               </Link>
+              <Link to='/create' className='flex gap-2 hover:bg-purple-500 py-1 px-2'>
+                <span className='whitespace-nowrap'>Create Game</span>
+              </Link>
               <LogoutButton className='w-full flex items-center hover:bg-purple-500 py-1 px-2' />
             </div>
           </div>
