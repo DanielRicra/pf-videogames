@@ -11,12 +11,6 @@ const Footer = () => {
       <div className='flex justify-between w-full px-6 py-2 bg-black bg-opacity-40'>
         <div className='flex gap-[5rem] items-center'>
           <Link
-            className='font-serif font-light text-[0.8rem] hover:underline'
-            to='/contacts'
-          >
-            Contacts
-          </Link>
-          <Link
             className='flex-1 font-serif font-light text-[0.8rem] hover:underline'
             to='/about'
           >
@@ -27,12 +21,6 @@ const Footer = () => {
             to='/faqs'
           >
             FAQs
-          </Link>
-          <Link
-            className='font-serif font-light text-[0.8rem] hover:underline'
-            to='/support'
-          >
-            Support
           </Link>
         </div>
 
