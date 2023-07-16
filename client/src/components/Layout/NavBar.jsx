@@ -4,9 +4,12 @@ import SearchBar from '../SearchBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import LogoutButton from '../LogoutButton'
 import LoginButton from '../LoginButton'
+import { useSelector } from 'react-redux'
+import { getCartItems } from '../../redux/cart/cartSlice'
 
 const NavBar = () => {
   const { isAuthenticated, isLoading, user } = useAuth0()
+  const cartItems = useSelector(getCartItems)
 
   return (
     <nav className='h-24 flex items-center px-14'>
@@ -50,6 +53,12 @@ const NavBar = () => {
                 <UserIcon className='h-6 -ml-[1px]' />
                 <span className='whitespace-nowrap'>See Profile</span>
               </Link>
+              <Link
+                to='/create'
+                className='flex gap-2 hover:bg-purple-500 py-1 px-2'
+              >
+                <span className='whitespace-nowrap'>Create Game</span>
+              </Link>
               <LogoutButton className='w-full flex items-center hover:bg-purple-500 py-1 px-2' />
             </div>
           </div>
@@ -57,8 +66,14 @@ const NavBar = () => {
           <LoginButton className='gap-[2px] items-center hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md' />
         )}
 
-        <Link to='/cart' className='hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md'>
+        <Link
+          to='/cart'
+          className='hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md relative'
+        >
           <ShoppingCartIcon className='cursor-pointer w-7 h-7' />
+          <span className='absolute -top-1 -right-1 text-white bg-red-600 rounded-full w-5 h-5 text-sm leading-none flex items-center justify-center'>
+            {cartItems.length}
+          </span>
         </Link>
       </div>
     </nav>
