@@ -46,7 +46,7 @@ const FiltersSidebar = ({ paginate }) => {
     <div className='flex flex-col rounded-lg bg-white gap-3 w-11/12 p-4 text-purple-900 max-w-xs'>
       <h2 className='text-2xl text-left mb-2 font-medium'>Filter by</h2>
 
-      <div className='flex items-start flex-col'>
+      {/* <div className='flex items-start flex-col'>
         <h3 className='font-medium text-purple-900 text-xl capitalize mb-3'>
           price
         </h3>
@@ -70,7 +70,7 @@ const FiltersSidebar = ({ paginate }) => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <MultiSelectAccordion
         title='Genre'
