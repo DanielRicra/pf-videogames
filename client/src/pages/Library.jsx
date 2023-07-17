@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import CartItems from './Cart/CartItems'
 import { useAuth0 } from '@auth0/auth0-react'
-import { getCartByUserEmail } from '../services/cartService'
+import { getUser } from '../services/userService'
 
 const Library = () => {
   const { isAuthenticated, user } = useAuth0()
@@ -9,8 +9,8 @@ const Library = () => {
   useEffect(() => {
     const createUser = async () => {
       try {
-        if (isAuthenticated) {
-          const videogames = await getCartByUserEmail(user.email)
+        if (isAuthenticated && user.email) {
+          const { videogames } = await getUser(user.email)
           setCartItems(videogames)
         }
       } catch (error) {
@@ -27,7 +27,7 @@ const Library = () => {
           Library of Video Games
         </h2>
 
-        {/*  <CartItems cartItems={cartItems} /> */}
+        <CartItems cartItems={cartItems} />
       </div>
     </div>
   )
