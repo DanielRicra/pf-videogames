@@ -13,8 +13,8 @@ router.get('/videogame/:videogameId', (req, res) => getReviewsByVideogameId(req,
 
 // Crear una nueva reseña
 router.post('/', (req, res) => {
-    const { score, text, videogameId } = req.body;
-    postReview(score, text, videogameId, req, res);
+    const { score, text, videogameId, userId  } = req.body;
+    postReview(score, text, videogameId, userId, req, res);
   });
   
 
