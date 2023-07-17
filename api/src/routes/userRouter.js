@@ -9,13 +9,23 @@ const {
   getUserByEmail,
 } = require('../controllers/userController')
 
-// Obtener todos los usuarios
+// Obtener todo los usuarios
 userRouter.get('/', async (req, res) => {
-  let { email } = req.body
+  try {
+    const users = await getUsers()
+
+    res.status(200).json(users)
+  } catch (error) {
+    res.status(404).send(error.message)
+  }
+})
+
+// Obtener un usuario por email
+userRouter.get('/:email', async (req, res) => {
+  let { email } = req.params
   let users
   try {
     if (email) users = await getUserByEmail(email)
-    else users = await getUsers()
 
     res.status(200).json(users)
   } catch (error) {
