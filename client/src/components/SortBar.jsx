@@ -8,21 +8,6 @@ import { setSortOrder } from "../redux/videogame/videoGameSlice"
 const SortBar = () => {
   const dispatch = useDispatch()
   const [tooggleSort, setToogleSort] = useState(true)
-  // const sortType = useSelector((state) => state.sortType)
-
-  // const sortTypeHandler = (parameter) => {
-  //   let sortedData = [...sortType];
-
-  //   if (parameter === 'name') {
-  //     sortedData.sort((a, b) => a.name.localeCompare(b.name));
-  //   } else if (parameter === 'releaseDate') {
-  //     sortedData.sort((a, b) => a.releaseDate.localeCompare(b.releaseDate));
-  //   } else if (parameter === "rating") {
-  //     sortedData.sort((a, b) => a.rating.localeCompare(b.rating));
-  //   }
-
-  //   dispatch(fetchByParameter(parameter));
-  // };
 
   const sortTypeHandler = (parameter) => {
     dispatch(setSortType(parameter));
