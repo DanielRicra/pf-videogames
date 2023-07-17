@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Cart, Chat, Create, Detail, Home, NotFound, Search, AboutUs, FAQs } from './pages'
 import Profile from './pages/Profile'
 import { Layout } from './components'
+import Library from './pages/Library'
 
 function App() {
   return (
@@ -19,9 +20,13 @@ function App() {
             <Route path='/create' element={<Create />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile' element={<Profile />} />
+
+            <Route path='/library' element={<Library />} />
+
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
             <Route path='/chat' element={<Chat />} />
+
           </Route>
           <Route path='*' element={<NotFound />} />
         </Routes>

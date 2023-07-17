@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { HeartIcon, ShoppingCartIcon, UserIcon } from '../icons'
+import { IconBooks } from '@tabler/icons-react'
 import SearchBar from '../SearchBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import LogoutButton from '../LogoutButton'
@@ -75,6 +76,16 @@ const NavBar = () => {
             {cartItems.length}
           </span>
         </Link>
+        {isAuthenticated ? (
+          <Link
+            to='/library'
+            className='hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md'
+          >
+            <IconBooks className='cursor-pointer w-7 h-7' />
+          </Link>
+        ) : (
+          <></>
+        )}
       </div>
     </nav>
   )
