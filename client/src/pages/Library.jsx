@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import CartItems from './Cart/CartItems'
+import { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getUser } from '../services/userService'
 
@@ -27,7 +26,25 @@ const Library = () => {
           Library of Video Games
         </h2>
 
-        <CartItems cartItems={cartItems} />
+        <div className='flex flex-col gap-2 px-4'>
+          {cartItems.map((item) => (
+            <div
+              key={item.id}
+              className='flex items-center my-3 justify-between border-b-[1px] border-white pb-2'
+            >
+              <div className='flex items-start gap-2'>
+                <div className='flex items-center w-[80px] h-[102px] overflow-hidden'>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className='w-full h-full object-cover'
+                  />
+                </div>
+                <p>{item.name}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

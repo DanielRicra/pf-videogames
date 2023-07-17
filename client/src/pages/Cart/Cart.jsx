@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { IconLoader3 } from '@tabler/icons-react'
 
+import CartItems from './CartItems'
 import { checkoutCart } from '../../redux/actions/cartAction'
 import { fetchCartByUserEmail, getCartItems } from '../../redux/cart/cartSlice'
 import { formatMoney } from '../../utils/helpers'
@@ -55,25 +56,7 @@ const Cart = () => {
           Cart Shopping
         </h2>
 
-        <div className='flex flex-col gap-2 px-4'>
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              className='flex items-center my-3 justify-between border-b-[1px] border-white pb-2'
-            >
-              <div className='flex items-start gap-2'>
-                <div className='flex items-center w-[80px] h-[102px] overflow-hidden'>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className='w-full h-full object-cover'
-                  />
-                </div>
-                <p>{item.name}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <CartItems cartItems={cartItems} />
 
         <div className='w-full flex flex-col'>
           <div className='flex items-center justify-between w-full my-3 border-b-2 border-gray-400'>
