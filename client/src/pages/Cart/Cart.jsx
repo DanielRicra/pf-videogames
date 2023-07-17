@@ -14,7 +14,7 @@ const VITE_PUBLIC_KEY_STRIPE = import.meta.env.VITE_PUBLIC_KEY_STRIPE
 const Cart = () => {
   const dispatch = useDispatch()
   const cartItems = useSelector(getCartItems)
-  const stripePromise = loadStripe(VITE_PUBLIC_KEY_STRIPE)
+  const stripePromise = loadStripe(`${VITE_PUBLIC_KEY_STRIPE}`)
   const { user, isAuthenticated, loginWithPopup } = useAuth0()
   const { sessionId, loadingCheckoutStatus } = useSelector(
     (status) => status.cart
