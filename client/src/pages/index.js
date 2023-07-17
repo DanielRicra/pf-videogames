@@ -7,5 +7,17 @@ import Cart from './Cart/Cart'
 import AboutUs from './AboutUs'
 import FAQs from './FAQs'
 import Chat from './Chat/Chat'
+import Dashboard from './Dashboard/Dashboard'
 
-export { Create, Detail, Home, Search, NotFound, Cart, Chat, AboutUs, FAQs }
+export {
+  Create,
+  Detail,
+  Home,
+  Search,
+  NotFound,
+  Cart,
+  Chat,
+  AboutUs,
+  FAQs,
+  Dashboard,
+}
