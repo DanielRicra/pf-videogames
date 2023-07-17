@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { postReview } from '../redux/actions/reviewAction'
+import { IconX } from '@tabler/icons-react'
 
-const ReviewForm = ({ videogameId }) => {
+const ReviewForm = ({ videogameId, closeForm }) => {
   const [score, setScore] = useState(1)
   const [text, setText] = useState('')
 
@@ -26,14 +27,17 @@ const ReviewForm = ({ videogameId }) => {
 
   return (
     <div className='w-full bg-transparent py-8'>
-      <div className='max-w-3xl mx-auto px-4'>
-        <h2 className='text-3xl font-semibold text-center mb-6'>
-          Leave a Review
-        </h2>
-        <form
-          onSubmit={handleSubmit}
-          className='bg-white p-6 rounded-lg shadow-md'
+      <div className='max-w-3xl mx-auto px-4 relative'>
+               <button
+          className='absolute top-2 right-2 text-red-600 hover:text-red-700 border-red-600 border-2 rounded-lg p-2'
+          onClick={closeForm}
         >
+          <IconX className='w-8 h-8' />
+        </button>
+        <h2 className='text-3xl font-semibold text-center mb-6'>
+          Review
+        </h2>
+        <form onSubmit={handleSubmit} className='bg-white p-6 rounded-lg shadow-md'>
           <div className='flex items-center justify-center'>
             <input
               type='range'
