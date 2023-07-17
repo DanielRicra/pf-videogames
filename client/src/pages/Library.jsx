@@ -32,7 +32,7 @@ const Library = () => {
     <div className='min-h-screen flex flex-col justify-start items-start p-4 md:px-6 lg:px-10 xl:px-14 mb-10'>
       <div className='w-full bg-gray-200 text-gray-800 rounded-lg p-6 px-10'>
         <h2 className='text-2xl font-semibold my-3 border-b-2 border-gray-400'>
-          Library of Video Games
+          My Games
         </h2>
 
         <div className='flex flex-col gap-2 px-4'>
