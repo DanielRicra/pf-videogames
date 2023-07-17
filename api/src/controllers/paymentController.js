@@ -36,7 +36,7 @@ const createSession = async (req, res) => {
       cancel_url: `${CLIENTE_URL}`,
     })
 
-    return res.json({ url: session.url })
+    return res.json({ id: session.id })
   } catch (error) {
     return res.status(400).json({ message: error.message })
   }

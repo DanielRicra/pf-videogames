@@ -9,7 +9,7 @@ import { AxiosError } from 'axios'
 const initialState = {
   cartItems: getCartItemsFromStorage(),
   loadingCheckoutStatus: false,
-  urlCheckout: '',
+  sessionId: '',
   checkoutError: '',
 }
 
@@ -54,8 +54,8 @@ const cartSlice = createSlice({
     setLoadingCheckoutStatus: (state, action) => {
       state.loadingCheckoutStatus = action.payload
     },
-    setUrlCheckout: (state, action) => {
-      state.urlCheckout = action.payload
+    setSessionId: (state, action) => {
+      state.sessionId = action.payload
     },
     setCheckoutError: (state, action) => {
       state.loadingCheckoutStatus = false
@@ -80,7 +80,7 @@ export const {
   removeFromCart,
   cleanCart,
   setLoadingCheckoutStatus,
-  setUrlCheckout,
+  setSessionId,
   setCheckoutError,
 } = cartSlice.actions
 export default cartSlice.reducer
