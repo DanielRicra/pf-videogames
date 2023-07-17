@@ -12,12 +12,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #5a0394;
+  background: #524a57;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6704a8;
+  background: rgb(139, 136, 141);
 }
 
 @keyframes slideUp {
