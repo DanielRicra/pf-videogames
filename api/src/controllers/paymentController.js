@@ -32,8 +32,8 @@ const createSession = async (req, res) => {
       line_items,
       mode: 'payment',
       customer: customer.id,
-      success_url: `${CLIENTE_URL}/cart`,
-      cancel_url: `${CLIENTE_URL}/cart`,
+      success_url: `${CLIENTE_URL}`,
+      cancel_url: `${CLIENTE_URL}`,
     })
 
     return res.json({ id: session.id })

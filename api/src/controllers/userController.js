@@ -59,7 +59,7 @@ const postUser = async (req, res) => {
     const { email, name } = req.body
 
     const [user, created] = await User.findOrCreate({
-      where: { email },
+      where: { email: email },
       defaults: { name: req.body.name, email, nickname: req.body.nickname },
     })
 
