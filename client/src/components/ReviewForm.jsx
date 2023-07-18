@@ -4,47 +4,67 @@ import { postReview } from '../redux/actions/reviewAction'
 import { IconX } from '@tabler/icons-react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getUser } from '../services/userService'
+import useSWRImmutable from 'swr/immutable'; // Importa useSWRImmutable
+import { getReviewByVideogameId } from '../services/reviewService'; 
 
 const ReviewForm = ({ videogameId, closeForm }) => {
   const [score, setScore] = useState(1)
   const [text, setText] = useState('')
-
   const dispatch = useDispatch()
   const { isAuthenticated, user } = useAuth0()
-const [userId, setUserId] = useState(null)
+  const [userId, setUserId] = useState(null)
 
-useEffect(() => {
-  const fetchUserId = async () => {
-    if (isAuthenticated && user.email) {
-      try {
-        const userData = await getUser(user.email)
-        setUserId(userData.id)
-      } catch (error) {
-        console.log('Error al obtener el userId:', error)
+  useEffect(() => {
+    const fetchUserId = async () => {
+      if (isAuthenticated && user.email) {
+        try {
+          const userData = await getUser(user.email)
+          setUserId(userData.id)
+        } catch (error) {
+          console.log('Error al obtener el userId:', error)
+        }
       }
     }
-  }
 
-  fetchUserId()
-}, [isAuthenticated, user])
+    fetchUserId()
+  }, [isAuthenticated, user])
+
+  const { data: reviews, error: reviewError } = useSWRImmutable(videogameId, getReviewByVideogameId);
+
+
+  useEffect(() => {
+    // Lógica adicional para obtener las reviews
+  }, [videogameId]);
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const review = {
-      videogameId,
-      score,
-      text,
-      userId,
+    // Verificar si el usuario ya tiene una revisión para este videojuego
+    const userReview = reviews?.find((review) => review.userId === userId);
+
+    if (userReview) {
+      // Mostrar mensaje de que ya tiene una revisión para este videojuego
+      console.log('¡Ya tienes una revisión para este videojuego!');
+    } else {
+      const review = {
+        videogameId,
+        score,
+        text,
+        userId,
+      }
+
+      dispatch(postReview(review))
+
+      // Reset form fields
+      setScore(1)
+      setText('')
+
+      closeForm()
     }
+  }
 
-    dispatch(postReview(review))
-
-    // Reset form fields
-    setScore(1)
-    setText('')
-
-    closeForm()
+  if (reviewError) {
+    return <div>Error al cargar las revisiones del videojuego.</div>;
   }
 
   return (
@@ -93,4 +113,4 @@ useEffect(() => {
   )
 }
 
-export default ReviewForm
+export default ReviewForm;
