@@ -170,7 +170,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
           totalVideogames: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: videogamesFound
+          results: videogamesFound
       };
 
       
@@ -184,7 +184,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
       if (currentPage > defaultPage) {
           result.prevPage = currentPage - 1;
       }
-      //return result;
+
       return result;
     }
     catch (error) {
