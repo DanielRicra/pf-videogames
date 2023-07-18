@@ -4,13 +4,13 @@ import { postReview } from '../redux/actions/reviewAction'
 import { IconX } from '@tabler/icons-react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getUser } from '../services/userService'
-import useSWRImmutable from 'swr/immutable'; // Importa useSWRImmutable
-import { getReviewByVideogameId } from '../services/reviewService'; 
+import useSWRImmutable from 'swr/immutable' 
+import { getReviewByVideogameId } from '../services/reviewService' 
 
 const ReviewForm = ({ videogameId, closeForm }) => {
   const [score, setScore] = useState(1)
   const [text, setText] = useState('')
-  const [isFormOpen, setIsFormOpen] = useState(true); // Estado para controlar si el formulario está abierto o cerrado
+  const [isFormOpen, setIsFormOpen] = useState(true) 
   const dispatch = useDispatch()
   const { isAuthenticated, user } = useAuth0()
   const [userId, setUserId] = useState(null)
@@ -30,22 +30,22 @@ const ReviewForm = ({ videogameId, closeForm }) => {
     fetchUserId()
   }, [isAuthenticated, user])
 
-  const { data: reviews, error: reviewError } = useSWRImmutable(videogameId, getReviewByVideogameId);
+  const { data: reviews, error: reviewError } = useSWRImmutable(videogameId, getReviewByVideogameId)
 
 
   useEffect(() => {
-    // Lógica adicional para obtener las reviews
-  }, [videogameId]);
+    
+  }, [videogameId])
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    // Verificar si el usuario ya tiene una revisión para este videojuego
-    const userReview = reviews?.find((review) => review.userId === userId);
+    
+    const userReview = reviews?.find((review) => review.userId === userId)
 
     if (userReview) {
-      // Mostrar mensaje de que ya tiene una revisión para este videojuego
-      setIsFormOpen(false); // Ocultar el formulario
+      
+      setIsFormOpen(false) 
     } else {
       const review = {
         videogameId,
@@ -65,7 +65,7 @@ const ReviewForm = ({ videogameId, closeForm }) => {
   }
 
   if (reviewError) {
-    return <div>Error al cargar las revisiones del videojuego.</div>;
+    return <div>Error al cargar las revisiones del videojuego.</div>
   }
 
   return (
@@ -118,7 +118,7 @@ const ReviewForm = ({ videogameId, closeForm }) => {
             <h2 className='text-3xl font-semibold mb-6'>¡Ya tienes una review para este videojuego!</h2>
             <button
               className='bg-purple-600 text-white px-4 py-2 rounded-md hover:opacity-80'
-              onClick={() => setIsFormOpen(true)} // Abrir el formulario al hacer clic en el botón
+              onClick={() => setIsFormOpen(true)}
             >
               Volver
             </button>
@@ -129,4 +129,4 @@ const ReviewForm = ({ videogameId, closeForm }) => {
   )
 }
 
-export default ReviewForm;
+export default ReviewForm
