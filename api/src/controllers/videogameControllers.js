@@ -71,7 +71,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
           totalVideogames: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: allVideogames
+          results: allVideogames
       };
 
 
@@ -87,8 +87,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
       }
 
 
-      //return result;
-      return allVideogames;
+      return result;
   } catch (error) {
       return { error: error.message };
   }

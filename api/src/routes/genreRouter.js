@@ -7,7 +7,8 @@ const {
 
 genreRouter.get('/', async (req, res) => {
   try {
-    const genres = await getGenres()
+    const { limit, page, name } = req.query
+    const genres = await getGenres({ limit, page, name })
 
     res.status(200).json(genres)
   } catch (error) {
