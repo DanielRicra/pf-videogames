@@ -14,6 +14,18 @@ const getGenres = async () => {
     }
 };
 
+const getManyGenres = async (ids) => {
+    try {
+        let allGenres = await Genre.findAll({
+            where: { id: ids },
+        });
+
+        return allGenres;
+    } catch (error) {
+        return {error: error.message}
+    }
+}
+
 
 const genreUpload = () => {
     try {
@@ -60,5 +72,6 @@ const genreUpload = () => {
 
 module.exports = {
     getGenres,
-    postGenres
+    postGenres,
+    getManyGenres
 };
