@@ -21,7 +21,7 @@ const Detail = () => {
 
   useEffect(() => {
        dispatch(fetchReviews(id))
-      .then(() => setIsLoadingReviews(false))
+      
       .catch((error) => {
         setIsLoadingReviews(false);
         console.error('Error al obtener las reviews:', error);

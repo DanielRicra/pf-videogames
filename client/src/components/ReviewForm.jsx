@@ -11,22 +11,22 @@ const ReviewForm = ({ videogameId, closeForm }) => {
 
   const dispatch = useDispatch()
   const { isAuthenticated, user } = useAuth0()
-  const [userId, setUserId] = useState(null)
+const [userId, setUserId] = useState(null)
 
- < useEffect(() => {
-    const fetchUserId = async () => {
-      if (isAuthenticated && user.email) {
-        try {
-          const userData = await getUser(user.email)>
-          setUserId(userData.id)
-        } catch (error) {
-          console.log('Error al obtener el userId:', error)
-        }
+useEffect(() => {
+  const fetchUserId = async () => {
+    if (isAuthenticated && user.email) {
+      try {
+        const userData = await getUser(user.email)
+        setUserId(userData.id)
+      } catch (error) {
+        console.log('Error al obtener el userId:', error)
       }
     }
+  }
 
-    fetchUserId()
-  }, [isAuthenticated, user])
+  fetchUserId()
+}, [isAuthenticated, user])
 
   const handleSubmit = (e) => {
     e.preventDefault()
