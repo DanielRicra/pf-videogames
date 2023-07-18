@@ -1,8 +1,7 @@
 const { Videogame, Genre, Tag } = require('../db')
 const { Op } = require('sequelize');
 
-const axios = require ('axios')
-const sharp = require('sharp');
+const { uploadImage } = require('../utils/uploadImages');
 const cloudinary = require('cloudinary').v2;
 const MAX_WIDTH = 1920; // Ancho máximo permitido
 const MAX_HEIGHT = 1080; // Alto máximo permitido
@@ -17,8 +16,6 @@ cloudinary.config({
   api_key: `${API_KEY}`,
   api_secret: `${API_SECRET}`
 });
-
-const videogame = require('../apiData/Videogame.json')
 
 const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter) => {
   try {
@@ -167,7 +164,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
       const totalVideogames = await Videogame.count(countOptions);
 
       const result = {
-          totalVideogames: totalVideogames,
+          totalResults: totalVideogames,
           nextPage: null,
           prevPage: null,
           results: videogamesFound
@@ -221,6 +218,41 @@ const postVideogames = async (videogame) => {
         return {error: error.message};
     }
     
+}
+
+const updateVideogame = async ({ body, id }) => {
+    const { name, description, releaseDate, rating, genres, tags, price} = body
+    let { image } = body
+
+    if(!name || !image || !description || !releaseDate || !price || !genres.length || !tags.length ) {
+      throw new Error('Bad request, missing fields')
+    }
+
+    try {
+        const existingVideogame = await Videogame.findByPk(id)
+        if (!existingVideogame) {
+            return { status: 404, message: 'Videogame not found' }
+        }
+
+        if (image !== existingVideogame.image) {
+            const result = await uploadImage({ imagePath: image, id })
+            image = result.secure_url
+        }
+
+        await existingVideogame.update({
+            name,
+            image,
+            description,
+            releaseDate,
+            rating,
+            price,
+        })
+        await existingVideogame.setGenres(genres)
+        await existingVideogame.setTags(tags)
+        return existingVideogame
+    } catch (error) {
+        throw new Error(error.message || 'Something went wrong')
+    }
 }
 
 /*videogamesUpload = async () => {
@@ -285,5 +317,6 @@ module.exports = {
     getVideogamesById,
     getVideogamesByName,
     postVideogames,
+    updateVideogame,
   };
   
