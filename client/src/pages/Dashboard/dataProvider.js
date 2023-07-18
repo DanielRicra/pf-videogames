@@ -8,11 +8,12 @@ export const dataProvider = {
   getList: (resource, params) => {
     const { page, perPage } = params.pagination
     const { field, order } = params.sort
+    const { q = '' } = params.filter
 
-    const url = `${API_URL}/${resource}?sort=${field}&order=${order}&page=${page}`
+    const url = `${API_URL}/${resource}?name=${q}&sort=${field}&order=${order}&page=${page}`
 
     return httpClient(url).then(({ headers, json }) => ({
-      data: json,
+      data: json.results,
       total: 10,
     }))
   },
@@ -40,4 +41,10 @@ export const dataProvider = {
     httpClient(`${API_URL}/${resource}/${params.id}`, {
       method: 'DELETE',
     }).then(({ json }) => ({ data: json })),
+
+  getMany: (resource, params) => {
+    const ids = `${params.ids.map((id) => `${id}`).join(',')}`
+    const url = `${API_URL}/${resource}/${ids}`
+    return httpClient(url).then(({ json }) => ({ data: json }))
+  },
 }
