@@ -14,7 +14,32 @@ const getTags = async ({ name = '', page = 1, limit = 10 }) => {
             order: [['id', 'ASC']],
         })
 
-        return foundedTags
+        const totalTags = await Tag.count({
+            distinct: true,
+            col: 'id',
+            where: { name: { [Op.iLike]: `%${name}%` } },
+            order: [['id', 'ASC']],
+        });
+
+        const result = {
+            totalTags: totalTags,
+            nextPage: null,
+            prevPage: null,
+            results: foundedTags
+        };
+
+        const currentPage = parseInt(page)
+        const totalPages = Math.ceil(totalTags / parseInt(limit));
+
+        if (currentPage < totalPages) {
+            result.nextPage = currentPage + 1;
+        }
+
+        if (currentPage > 1) {
+            result.prevPage = currentPage - 1;
+        }
+
+        return result
     } catch (error) {
         return { error: error.message }
     }
