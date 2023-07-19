@@ -1,8 +1,8 @@
 import { useReducer, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-import { BoxInput, TextField } from '../../components'
-import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
+import { BoxInput, TextField } from '../../../components'
+import { actionTypes, fetchData, INITIAL_STATE } from '../../Create/fetchReducer'
 import { useGenreById } from '../../../hooks/useGenres'
 import * as genreService from '../../../services/genreService'
 

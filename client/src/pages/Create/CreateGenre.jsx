@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 import { BoxInput, TextField } from '../../components'
-import { saveGenre } from '../../services/tagGameService'
+import { saveGenre } from '../../services/genreService'
 import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
 
 const CreateGenre = () => {

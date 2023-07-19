@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 import { BoxInput, TextField } from '../../components'
-import { saveTag } from '../../services/tagGameService'
+import { saveTag } from '../../services/tagService'
 import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
 
 const CreateTag = () => {

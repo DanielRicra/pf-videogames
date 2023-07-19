@@ -1,14 +1,14 @@
 import { useReducer, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-import { BoxInput, TextField } from '../../components'
-import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
-import { useGenreById } from '../../../hooks/useGenres'
+import { BoxInput, TextField } from '../../../components'
+import { actionTypes, fetchData, INITIAL_STATE } from '../../Create/fetchReducer'
+import { useTagById } from '../../../hooks/useTags'
 import * as tagService from '../../../services/tagService'
 
 const EditGenreForm = () => {
     const {id} = useParams()
-    const { tag, tagError, isTagLoading, mutate } = useGenreById(id)
+    const { tag, tagError, isTagLoading, mutate } = useTagById(id)
   const {
     register,
     formState: { errors },
