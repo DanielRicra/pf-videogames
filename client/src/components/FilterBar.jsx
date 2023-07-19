@@ -74,14 +74,14 @@ const FiltersSidebar = ({ paginate }) => {
 
       <MultiSelectAccordion
         title='Genre'
-        options={genres ?? []}
+        options={genres?.results ?? []}
         addToSelectedFilters={addToGenreFilters}
       />
       <p className='animate-pulse'>{isGenresLoading && 'Fetching genres...'}</p>
 
       <MultiSelectAccordion
         title='Tags'
-        options={tags ?? []}
+        options={tags?.results ?? []}
         addToSelectedFilters={addToTagFilters}
       />
       <p className='animate-pulse'>{isTagsLoading && 'Fetching tags...'}</p>
