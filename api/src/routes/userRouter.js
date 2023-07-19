@@ -27,7 +27,11 @@ userRouter.get('/:email', async (req, res) => {
   let { email } = req.params
   let users
   try {
-    if (email) users = await getUserByEmail(email)
+    if (isNaN(email)) {
+      users = await getUserByEmail(email) 
+    } else { 
+      users = await getUserById(email)
+    }
 
     res.status(200).json(users)
   } catch (error) {
