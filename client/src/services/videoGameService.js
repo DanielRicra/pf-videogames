@@ -16,4 +16,9 @@ const saveNewVideogame = async (newVideogame) => {
   return response.data
 }
 
-export { fetchVideogames, saveNewVideogame }
+const updateVideogame = async (id, newVideogame) => {
+  const response = await api.put(`videogames/${id}`, newVideogame)
+  return response.data
+}
+
+export { fetchVideogames, saveNewVideogame, updateVideogame }

@@ -1,50 +1,109 @@
-import { useReducer, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useEffect, useReducer, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
-import { BoxInput, TextField } from '../../components'
-import { CloudUpload } from '../../components/icons'
-import * as videoGameService from '../../services/videoGameService'
-import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
-import { useGenres } from '../../hooks/useGenres'
-import { useTags } from '../../hooks/useTags'
-import { selectStyles } from './styles'
-import { convertImageFileToBase64 } from '../../utils/helpers'
+import { BoxInput, TextField } from '../../../components'
+import { CloudUpload } from '../../../components/icons'
+import * as videoGameService from '../../../services/videoGameService'
+import {
+  actionTypes,
+  fetchData,
+  INITIAL_STATE,
+} from '../../Create/fetchReducer'
+import { useGenres } from '../../../hooks/useGenres'
+import { useTags } from '../../../hooks/useTags'
+import { selectStyles } from '../../Create/styles'
+import { convertImageFileToBase64 } from '../../../utils/helpers'
+import { useVideogame } from '../../../hooks/useVideogame'
 
-const Create = () => {
+const EditVideogameForm = () => {
+  const { id } = useParams()
+  const { game, gameError, isGameLoading, mutate } = useVideogame(id)
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-    control,
   } = useForm({ criteriaMode: 'all' })
   const navigate = useNavigate()
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState(game?.image)
+  const [selectedTags, setSelectedTags] = useState([])
+  const [selectedGenres, setSelectedGenres] = useState([])
   const [state, dispatch] = useReducer(fetchData, INITIAL_STATE)
 
   const { genres, isGenresLoading } = useGenres()
   const { tags, isTagsLoading } = useTags()
 
   const onSubmit = async (data) => {
-    data.rating = 1
+    data.genres = selectedGenres.map((genre) => +genre.value)
+    data.tags = selectedTags.map((tag) => +tag.value)
 
+    if (!data.genres.length || !data.tags.length) {
+      return
+    }
+  
     try {
-      const imgBase64 = await convertImageFileToBase64(data.image[0])
-      data.image = imgBase64
+      if (data.image[0] instanceof File) {
+        const imgBase64 = await convertImageFileToBase64(data.image[0])
+        data.image = imgBase64
+      }
 
       dispatch({ type: actionTypes.FETCH_START })
-      await videoGameService.saveNewVideogame(data)
+      await videoGameService.updateVideogame(game?.id, data)
       dispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
-      reset()
+      mutate()      
       navigate('/dashboard/admin/videogames')
     } catch (error) {
+      console.log(error)
       dispatch({
         type: actionTypes.FETCH_ERROR,
         payload: error?.response?.data ?? 'Something went wrong',
       })
     }
+  }
+
+  useEffect(() => {
+    reset({
+      name: game?.name,
+      description: game?.description,
+      price: game?.price,
+      image: game?.image,
+      releaseDate: game?.releaseDate,
+    })
+    setSelectedGenres(
+      game?.genres.map((tag) => ({
+        value: tag.id,
+        label: tag.name,
+      })) ?? []
+    )
+    setSelectedTags(
+      game?.tags.map((tag) => ({
+        value: tag.id,
+        label: tag.name,
+      })) ?? []
+    )
+    setImage(game?.image)
+  }, [game, reset])
+
+  if (isGameLoading && !game) {
+    return (
+      <div className='flex min-h-screen items-center justify-center'>
+        <h1 className='text-2xl font-bold'>Loading...</h1>
+      </div>
+    )
+  }
+
+  if (gameError) {
+    return (
+      <div className='flex min-h-screen items-center justify-center'>
+        <h1 className='text-2xl font-bold'>
+          {gameError?.message ?? 'Something went wrong'}
+        </h1>
+      </div>
+    )
   }
 
   return (
@@ -151,30 +210,41 @@ const Create = () => {
             className='border-2 w-[200px] border-purple-600 p-3 rounded-lg aspect-square flex items-center justify-center flex-col'
           >
             {image ? (
-              <img
-                src={URL.createObjectURL(image)}
-                alt='preview'
-                className='w-full h-full object-cover'
-              />
+              <>
+                <img
+                  src={
+                    image instanceof File
+                    ? URL.createObjectURL(image)
+                    : image
+                  }
+                  alt='preview'
+                  className='w-full h-full object-cover'
+                />
+                <button
+                  className='mt-2 p-2 px-4 bg-red-500 text-white rounded-lg hover:opacity-80'
+                  onClick={() => setImage('')}
+                >
+                  Reset image
+                </button>
+              </>
             ) : (
               <>
                 <CloudUpload className='text-purple-600 h-16 w-16 stroke-1' />
                 <span>Upload your image</span>
+                <input
+                  type='file'
+                  className='hidden'
+                  name='image'
+                  {...register('image', {
+                    required: 'Image is required',
+                    onChange: async (e) => {
+                      setImage(e.target.files[0])
+                    },
+                  })}
+                  id='image'
+                />
               </>
             )}
-
-            <input
-              type='file'
-              className='hidden'
-              name='image'
-              {...register('image', {
-                required: 'Image is required',
-                onChange: (e) => {
-                  setImage(e.target.files[0])
-                },
-              })}
-              id='image'
-            />
           </label>
           <p className='text-red-600 text-sm ml-2'>{errors.image?.message}</p>
         </div>
@@ -183,86 +253,74 @@ const Create = () => {
           {isGenresLoading ? (
             <p className='animate-pulse'>Loading genres...</p>
           ) : (
-            <Controller
-              control={control}
+            <Select
+              className='basic-single'
+              classNamePrefix='select'
+              isClearable={true}
+              isSearchable={true}
               name='genres'
-              rules={{ required: 'At least one genre is required' }}
-              render={({ field: { onChange, value, name } }) => (
-                <Select
-                  className='basic-single'
-                  classNamePrefix='select'
-                  isClearable={true}
-                  isSearchable={true}
-                  name={name}
-                  isMulti
-                  options={
-                    genres?.map((genre) => ({
-                      value: genre.id,
-                      label: genre.name,
-                    })) ?? []
-                  }
-                  value={genres.find((g) => g.id === value)}
-                  onChange={(e) =>
-                    e.value
-                      ? onChange(e.value)
-                      : onChange(e.map((c) => c.value))
-                  }
-                  placeholder='Select genres'
-                  isLoading={isGenresLoading}
-                  styles={selectStyles}
-                />
-              )}
+              isMulti
+              options={
+                genres?.map((genre) => ({
+                  value: genre.id,
+                  label: genre.name,
+                })) ?? []
+              }
+              defaultValue={
+                game?.genres?.map((genre) => ({
+                  value: genre.id,
+                  label: genre.name,
+                })) ?? []
+              }
+              placeholder='Select genres'
+              isLoading={isGenresLoading}
+              styles={selectStyles}
+              onChange={(genres) => setSelectedGenres(genres)}
             />
           )}
-          <p className='text-red-600 text-sm ml-2'>{errors.genres?.message}</p>
+          <p className='text-red-600 text-sm ml-2'>{selectedGenres.length === 0 ? 'At least one genre is required' : ''}</p>
         </BoxInput>
 
         <BoxInput>
           {isTagsLoading ? (
             <p className='animate-pulse'>Loading tags...</p>
           ) : (
-            <Controller
-              control={control}
+            <Select
+              className='basic-single'
+              isClearable={true}
+              isSearchable={true}
               name='tags'
-              rules={{ required: 'At least one tag is required' }}
-              render={({ field: { onChange, value, name } }) => (
-                <Select
-                  className='basic-single'
-                  isClearable={true}
-                  isSearchable={true}
-                  name={name}
-                  isMulti
-                  styles={selectStyles}
-                  options={
-                    tags?.map((tag) => ({
-                      value: tag.id,
-                      label: tag.name,
-                    })) ?? []
-                  }
-                  value={tags.find((g) => g.id === value)}
-                  onChange={(e) =>
-                    e.value
-                      ? onChange(e.value)
-                      : onChange(e.map((c) => c.value))
-                  }
-                  placeholder='Select tags'
-                  isLoading={isTagsLoading}
-                />
-              )}
+              isMulti
+              styles={selectStyles}
+              options={
+                tags?.map((tag) => ({
+                  value: tag.id,
+                  label: tag.name,
+                })) ?? []
+              }
+              defaultValue={
+                game?.tags?.map((tag) => ({
+                  value: tag.id,
+                  label: tag.name,
+                })) ?? []
+              }
+              placeholder='Select tags'
+              isLoading={isTagsLoading}
+              onChange={(tags) => setSelectedTags(tags)}
             />
           )}
-          <p className='text-red-600 text-sm ml-2'>{errors.tags?.message}</p>
+          <p className='text-red-600 text-sm ml-2'>{selectedTags.length === 0 ? 'At least one tag is required' : ''}</p>
         </BoxInput>
 
         <input
           type='submit'
           disabled={state.loading}
           className='p-3 rounded-lg bg-purple-600 text-white hover:opacity-80 disabled:bg-purple-500 disabled:cursor-not-allowed'
-          value={state.loading ? 'Creating...' : 'Create'}
+          value={state.loading ? 'Updating...' : 'Update'}
         />
         {state.error && <p className='text-red-600'>{state.error}</p>}
       </form>
     </div>
   )
 }
-export default Create
+export default EditVideogameForm
