@@ -65,7 +65,7 @@ const postUser = async (req, res) => {
 
     if (created) {
       // Enviar correo electrónico de bienvenida
-      //await sendWelcomeEmail(email, name)
+      await sendWelcomeEmail(email, name)
 
       return res.status(201).json({ user, message: 'Usuario creado' })
     } else {
