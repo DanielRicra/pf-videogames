@@ -1,4 +1,16 @@
-import { Create, Datagrid, Edit, EmailField, List, SimpleForm, TextField, TextInput } from 'react-admin'
+import {
+  ArrayField,
+  ChipField,
+  Create,
+  Datagrid,
+  Edit,
+  EmailField,
+  List,
+  SimpleForm,
+  SingleFieldList,
+  TextField,
+  TextInput,
+} from 'react-admin'
 
 export const UserList = () => (
   <List>
@@ -8,7 +20,11 @@ export const UserList = () => (
       <EmailField source='email' />
       <TextField source='nickname' />
       <TextField source='friends' />
-      <TextField source='videogames' />
+      <ArrayField source='videogames'>
+        <SingleFieldList>
+          <ChipField source='name' size='small' />
+        </SingleFieldList>
+      </ArrayField>
     </Datagrid>
   </List>
 )
@@ -16,23 +32,37 @@ export const UserList = () => (
 export const UserEdit = () => (
   <Edit>
     <SimpleForm>
-      <TextInput source="id" />
-      <TextInput source="name" />
-      <TextInput source="email" />
-      <TextInput source="nickname" />
-      <TextInput source="friends" />
+      <TextInput source='id' />
+      <TextInput source='name' />
+      <TextInput source='email' />
+      <TextInput source='nickname' />
+      <TextInput source='friends' />
     </SimpleForm>
   </Edit>
 )
 
 export const UserCreate = () => {
+  const validateUserCreation = (values) => {
+    const errors = {}
+    if (!values.name) {
+      errors.name = 'Name is required'
+    }
+    if (!values.email) {
+      errors.email = 'Email is required'
+    }
+    if (!values.nickname) {
+      errors.nickname = 'Nickname is required'
+    }
+    return errors
+  }
+
   return (
     <Create>
-      <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="email" />
-      <TextInput source="nickname" />
-    </SimpleForm>
+      <SimpleForm validate={validateUserCreation}>
+        <TextInput source='name' />
+        <TextInput source='email' />
+        <TextInput source='nickname' />
+      </SimpleForm>
     </Create>
   )
 }
