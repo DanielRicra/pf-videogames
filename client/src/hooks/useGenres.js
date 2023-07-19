@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 export const useGenres = () => {
   const { data, error, isLoading } = useSWRImmutable(
-    `${API_URL}/genre`,
+    `${API_URL}/genre?limit=100`,
     genreService.fetchGenres
   )
 

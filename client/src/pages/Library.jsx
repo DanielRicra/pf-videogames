@@ -1,35 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { useAuth0 } from '@auth0/auth0-react'
-import { getUser } from '../services/userService'
+import { useEffect, useState } from 'react'
 import ReviewForm from '../components/ReviewForm'
 import { getReviewByVideogameId } from '../services/reviewService'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../redux/user/userSlice'
 
 const Library = () => {
-  const { isAuthenticated, user } = useAuth0()
-  const [cartItems, setCartItems] = useState([])
+  const { videogames } = useSelector(selectUser)
   const [selectedVideogame, setSelectedVideogame] = useState(null)
+  // eslint-disable-next-line no-unused-vars
   const [reviews, setReviews] = useState([])
   const [hasReview, setHasReview] = useState({})
 
   useEffect(() => {
-    const createUser = async () => {
-      try {
-        if (isAuthenticated && user.email) {
-          const { videogames } = await getUser(user.email)
-          setCartItems(videogames)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    createUser()
-  }, [isAuthenticated, user])
-
-  useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const videogameIds = cartItems.map((item) => item.id)
+        const videogameIds = videogames?.map((item) => item.id) ?? []
         const reviewsPromises = videogameIds.map((id) => getReviewByVideogameId(id))
         const reviewsData = await Promise.all(reviewsPromises)
         const allReviews = reviewsData.flat()
@@ -46,7 +31,7 @@ const Library = () => {
     }
 
     fetchReviews()
-  }, [cartItems])
+  }, [videogames])
 
   const handleReviewClick = (videogameId) => {
     setSelectedVideogame(videogameId)
@@ -62,7 +47,7 @@ const Library = () => {
         <h2 className='text-2xl font-semibold my-3 border-b-2 border-gray-400'>My Games</h2>
 
         <div className='flex flex-col gap-2 px-4'>
-          {cartItems.map((item) => (
+          {videogames?.map((item) => (
             <div
               key={item.id}
               className='flex items-center my-3 justify-between border-b-[1px] border-white pb-2'

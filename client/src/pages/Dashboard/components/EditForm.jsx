@@ -261,7 +261,7 @@ const EditVideogameForm = () => {
               name='genres'
               isMulti
               options={
-                genres?.map((genre) => ({
+                genres?.results?.map((genre) => ({
                   value: genre.id,
                   label: genre.name,
                 })) ?? []
@@ -293,7 +293,7 @@ const EditVideogameForm = () => {
               isMulti
               styles={selectStyles}
               options={
-                tags?.map((tag) => ({
+                tags?.results?.map((tag) => ({
                   value: tag.id,
                   label: tag.name,
                 })) ?? []

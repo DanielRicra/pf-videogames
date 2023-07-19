@@ -1,28 +1,51 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getUser } from '../../services/userService'
+import { AxiosError } from 'axios'
 
 const initialState = {
-  user: 'jhonson',
-  userError: null,
-  userLoading: false,
-  token: '',
+  user: {},
+  error: null,
+  loading: 'idle',
 }
+
+export const fetchUserByEmail = createAsyncThunk(
+  'user/fetchUserByEmail',
+  async (email, { rejectWithValue }) => {
+    try {
+      const data = await getUser(email)
+      return data
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(
+          error.response?.data?.error ?? 'Something when wrong'
+        )
+      }
+      return rejectWithValue(error.message)
+    }
+  }
+)
 
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload
-      localStorage.setItem('userData', JSON.stringify(action.payload))
-    },
-    setLoading: (state, action) => {
-      state.userLoading = action.payload
-    },
-    setError: (state, action) => {
-      state.userError = action.payload
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUserByEmail.pending, (state) => {
+        state.loading = 'pending'
+      })
+      .addCase(fetchUserByEmail.fulfilled, (state, action) => {
+        state.loading = 'success'
+        state.user = action.payload
+      })
+      .addCase(fetchUserByEmail.rejected, (state, action) => {
+        state.loading = 'idle'
+        state.error = action.payload
+      })
   },
 })
 
+export const selectUser = (state) => state.user.user
+
 export const { setUser, setLoading, setError } = userSlice.actions
-export default userSlice.reducer;
+export default userSlice.reducer

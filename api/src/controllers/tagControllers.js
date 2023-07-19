@@ -22,7 +22,7 @@ const getTags = async ({ name = '', page = 1, limit = 10 }) => {
         });
 
         const result = {
-            totalTags: totalTags,
+            totalResults: totalTags,
             nextPage: null,
             prevPage: null,
             results: foundedTags

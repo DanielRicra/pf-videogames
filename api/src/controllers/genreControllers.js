@@ -25,7 +25,7 @@ const getGenres = async ({ name = '', page = 1, limit = 10 }) => {
       });
 
       const result = {
-          totalresults: totalGenres,
+          totalResults: totalGenres,
           nextPage: null,
           prevPage: null,
           results: foundedGenres

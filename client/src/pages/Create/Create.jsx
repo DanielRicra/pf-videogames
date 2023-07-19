@@ -196,12 +196,12 @@ const Create = () => {
                   name={name}
                   isMulti
                   options={
-                    genres?.map((genre) => ({
+                    genres?.results?.map((genre) => ({
                       value: genre.id,
                       label: genre.name,
                     })) ?? []
                   }
-                  value={genres.find((g) => g.id === value)}
+                  value={genres?.results?.find((g) => g.id === value)}
                   onChange={(e) =>
                     e.value
                       ? onChange(e.value)
@@ -234,12 +234,12 @@ const Create = () => {
                   isMulti
                   styles={selectStyles}
                   options={
-                    tags?.map((tag) => ({
+                    tags?.results?.map((tag) => ({
                       value: tag.id,
                       label: tag.name,
                     })) ?? []
                   }
-                  value={tags.find((g) => g.id === value)}
+                  value={tags?.results?.find((g) => g.id === value)}
                   onChange={(e) =>
                     e.value
                       ? onChange(e.value)
