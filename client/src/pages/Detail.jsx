@@ -1,15 +1,16 @@
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react' 
+import { useSelector, useDispatch } from 'react-redux' 
 import { useParams, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { IconHeart } from '@tabler/icons-react'
 import { IconShoppingCartPlus } from '@tabler/icons-react'
 import { Loading, ReviewCard } from '../components'
-// import { fetchReviews, postReview } from '../redux/actions/reviewAction'
 import { getVideogameById } from '../services/videoGameService'
+import { fetchReviews } from '../redux/actions/reviewAction' 
 
 const Detail = () => {
   const { id } = useParams()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch() 
   const navigate = useNavigate()
   const reviews = useSelector((state) => state.review.reviews || [])
   const {
@@ -18,9 +19,14 @@ const Detail = () => {
     isLoading,
   } = useSWRImmutable(`videogames/${id}`, getVideogameById)
 
-  // const handleSubmitReview = (review) => {
-  //   dispatch(postReview(review))
-  // }
+  useEffect(() => {
+       dispatch(fetchReviews(id))
+      
+      .catch((error) => {
+        setIsLoadingReviews(false)
+        console.error('Error al obtener las reviews:', error)
+      })
+  }, [dispatch, id])
 
   if (isLoading) {
     return (
@@ -110,8 +116,6 @@ const Detail = () => {
           </div>
         </div>
       </div>
-
-      {/* <ReviewForm onSubmit={handleSubmitReview} videogameId={id} /> */}
 
       <div className='flex flex-col mt-10'>
         {reviews.map((review) => (

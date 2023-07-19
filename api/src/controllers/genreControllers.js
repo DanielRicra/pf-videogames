@@ -4,15 +4,49 @@ const { Op } = require('sequelize');
 const Sequelize = require('sequelize')
 const shortid = require('shortid')
 
-const getGenres = async () => {
-    try {
-        let allGenres = await Genre.findAll();
+const getGenres = async ({ name = '', page = 1, limit = 10 }) => {
+  if (isNaN(page) || isNaN(limit)) {
+      throw new Error('Page or limit must be numbers')
+  }
 
-        return allGenres;
-    } catch (error) {
-        return {error: error.message}
-    }
-};
+  try {
+      let foundedGenres = await Genre.findAll({
+          where: { name: { [Op.iLike]: `%${name}%` } },
+          offset: (page - 1) * limit,
+          limit,
+          order: [['id', 'ASC']],
+      })
+
+      const totalGenres = await Genre.count({
+          distinct: true,
+          col: 'id',
+          where: { name: { [Op.iLike]: `%${name}%` } },
+          order: [['id', 'ASC']],
+      });
+
+      const result = {
+          totalresults: totalGenres,
+          nextPage: null,
+          prevPage: null,
+          results: foundedGenres
+      };
+
+      const currentPage = parseInt(page)
+      const totalPages = Math.ceil(totalGenres / parseInt(limit));
+
+      if (currentPage < totalPages) {
+          result.nextPage = currentPage + 1;
+      }
+
+      if (currentPage > 1) {
+          result.prevPage = currentPage - 1;
+      }
+
+      return result
+  } catch (error) {
+      return { error: error.message }
+  }
+}
 
 const getManyGenres = async (ids) => {
     try {
