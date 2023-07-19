@@ -47,7 +47,7 @@ userRouter.get('/:id', async (req, res) => {
 })
 
 // Crear un nuevo usuario
-userRouter.post('/postUser', postUser)
+userRouter.post('/', postUser)
 
 // Borrar un usuario por su ID
 userRouter.delete('/:id', async (req, res) => {
