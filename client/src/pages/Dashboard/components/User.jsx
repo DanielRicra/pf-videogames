@@ -32,7 +32,7 @@ export const UserList = () => (
 export const UserEdit = () => (
   <Edit>
     <SimpleForm>
-      <TextInput source='id' />
+      <TextInput source='id' disabled={true} />
       <TextInput source='name' />
       <TextInput source='email' />
       <TextInput source='nickname' />
