@@ -16,7 +16,7 @@ const getUsers = async () => {
     const users = await User.findAll({
       include: Videogame,
     })
-    return users
+    return { results: users }
   } catch (error) {
     throw new Error('Error al obtener los usuarios')
   }
