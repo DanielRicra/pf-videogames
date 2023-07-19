@@ -92,7 +92,7 @@ const Search = () => {
             </div>
           ) : (
             <VideoGameCardList
-              videogames={data?.videogames ?? []}
+              videogames={data?.results ?? []}
               message={`There are no VideoGames with name: ${searchQuery}`}
             />
           )}

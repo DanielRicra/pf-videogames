@@ -71,7 +71,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
           totalVideogames: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: allVideogames
+          results: allVideogames
       };
 
 
@@ -87,8 +87,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
       }
 
 
-      //return result;
-      return allVideogames;
+      return result;
   } catch (error) {
       return { error: error.message };
   }
@@ -170,7 +169,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
           totalVideogames: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: videogamesFound
+          results: videogamesFound
       };
 
       
@@ -184,7 +183,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
       if (currentPage > defaultPage) {
           result.prevPage = currentPage - 1;
       }
-      //return result;
+
       return result;
     }
     catch (error) {
