@@ -6,6 +6,7 @@ const { Transaction, User, Cart, Videogame } = require('../db');
 const fs = require('fs');
 const path = require('path');
 const sgMail = require('@sendgrid/mail');
+const Handlebars = require('handlebars');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -48,7 +49,7 @@ const createSession = async (req, res) => {
   }
 };
 
-const Handlebars = require('handlebars');
+
 
 const sendConfirmationEmail = async (email, name, cartItems) => {
   try {
