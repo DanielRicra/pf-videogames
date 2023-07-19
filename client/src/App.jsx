@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Route, Routes } from 'react-router-dom'
 import {
   Cart,
@@ -13,8 +14,21 @@ import {
 import Profile from './pages/Profile'
 import { Layout } from './components'
 import Library from './pages/Library'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { fetchUserByEmail } from './redux/user/userSlice'
+import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
+  const dispatch = useDispatch()
+  const { isAuthenticated, user } = useAuth0()
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      dispatch(fetchUserByEmail(user.email))
+    }
+  }, [isAuthenticated, user])
+
   return (
     <div
       className={
