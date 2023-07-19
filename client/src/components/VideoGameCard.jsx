@@ -14,7 +14,7 @@ import {
   removeVideogameFromUserCart,
 } from '../services/cartService'
 
-const VideoGameCard = ({ videogame, user }) => {
+const VideoGameCard = ({ videogame, user, owned }) => {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
   const cartItems = useSelector(getCartItems)
@@ -42,7 +42,7 @@ const VideoGameCard = ({ videogame, user }) => {
             videogameId: videogame.id,
           })
         }
-  
+
         dispatch(removeFromCart(videogame.id.toString()))
       }
     } catch (error) {
@@ -86,7 +86,13 @@ const VideoGameCard = ({ videogame, user }) => {
               onClick={handleClick}
             >
               <ShoppingCartIcon />
-              <span>{!cartItem ? 'Add to cart' : 'Remove from cart'}</span>
+              <span>
+                {!cartItem
+                  ? !owned
+                    ? 'Add to cart'
+                    : 'Gift to a friend'
+                  : 'Remove from cart'}
+              </span>
             </button>
           </div>
           <Link

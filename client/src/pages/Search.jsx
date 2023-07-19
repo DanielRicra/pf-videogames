@@ -76,7 +76,7 @@ const Search = () => {
           <SortBar />
 
           <p className='text-xl font-semibold text-left mb-4'>
-            Showing {data?.totalVideogames} results
+            Showing {data?.totalResults} results
           </p>
 
 
@@ -101,7 +101,7 @@ const Search = () => {
             {!error && (
               <PaginationBar
                 currentPage={currentPage}
-                totalPages={Math.round((data?.totalVideogames ?? 10) / 10)}
+                totalPages={Math.round((data?.totalResults ?? 10) / 10)}
                 paginate={paginate}
               />
             )}
