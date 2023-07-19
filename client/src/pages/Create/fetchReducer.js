@@ -9,7 +9,7 @@ export const INITIAL_STATE = {
   error: null,
 }
 
-export const saveNewVideogame = (state = INITIAL_STATE, action) => {
+export const fetchData = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case actionTypes.FETCH_START:
       return {

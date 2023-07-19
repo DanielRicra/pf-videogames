@@ -98,3 +98,7 @@ function replaceImgProperty() {
     console.log('File written successfully\n')
   })
 }
+
+module.exports = {
+  uploadImage,
+}

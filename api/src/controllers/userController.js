@@ -1,4 +1,4 @@
-const { User, Videogame } = require('../db')
+const { User, Videogame, Favorite } = require('../db')
 const sgMail = require('@sendgrid/mail')
 const fs = require('fs')
 const path = require('path')
@@ -105,10 +105,36 @@ const updateUser = async (id, newData) => {
   }
 }
 
+const postFavorite = async (email, videogameId) => {
+  try {
+    const user = await User.findOne({ where: { email } })
+    const videogame = await Videogame.findByPk(videogameId)
+
+    if (!user || !videogame) throw new Error('No se encontro usuario y/o videojuego')
+
+    const favorite = await Favorite.findOrCreate({ where: { userId: user.id, videogameId: videogame.id } })
+
+    return favorite
+    
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteFavorite = async (id) => {
+    try {
+        await Favorite.destroy({ where: { id } })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports = {
   getUsers,
   getUserByEmail,
   postUser,
   deleteUser,
   updateUser,
+  postFavorite,
+  deleteFavorite,
 }

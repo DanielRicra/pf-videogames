@@ -14,7 +14,7 @@ export const dataProvider = {
 
     return httpClient(url).then(({ headers, json }) => ({
       data: json.results,
-      total: 10,
+      total: json.totalResults ?? 10,
     }))
   },
 
