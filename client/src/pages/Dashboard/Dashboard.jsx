@@ -5,7 +5,7 @@ import {
 } from 'react-admin'
 import { dataProvider } from './dataProvider'
 import { UserList } from './components/UserList'
-import { VideogameList } from './components/VideoGameList'
+import { VideogameEdit, VideogameList, VideogameCreate } from './components/VideoGameList'
 
 const lightTheme = defaultTheme
 const darkTheme = { ...defaultTheme, palette: { mode: 'dark' } }
@@ -19,7 +19,7 @@ const Dashboard = () => {
       basename='/dashboard/admin'
     >
       <Resource name='user' list={UserList} />
-      <Resource name='videogames' list={VideogameList} />
+      <Resource name='videogames' list={VideogameList} edit={VideogameEdit} create={VideogameCreate} />
     </Admin>
   )
 }

@@ -10,7 +10,11 @@ import {
   SingleFieldList,
   TextField,
   WrapperField,
+  Edit,
+  Create,
 } from 'react-admin'
+import CreateVideogameForm from '../../Create/Create'
+import EditVideogameForm from './EditForm'
 
 export const VideogameList = () => (
   <List>
@@ -49,3 +53,17 @@ export const VideogameList = () => (
     </Datagrid>
   </List>
 )
+
+export const VideogameEdit = () => (
+  <Edit>
+    <EditVideogameForm />
+  </Edit>
+)
+
+export const VideogameCreate = () => {
+  return (
+    <Create>
+      <CreateVideogameForm />
+    </Create>
+  )
+}
