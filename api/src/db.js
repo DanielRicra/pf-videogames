@@ -35,7 +35,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Videogame, Genre, User, Review, Tag, Cart, Transaction, Chat, FriendRequest  } = sequelize.models;
+const { Videogame, Genre, User, Review, Tag, Cart, Transaction, Chat, Friend } = sequelize.models;
 
 
 // Aca vendrian las relaciones
@@ -68,10 +68,10 @@ Cart.hasOne(Transaction, { foreignKey: 'cartId' })
 Transaction.belongsTo(User, { foreignKey: 'userId' })
 User.hasMany(Transaction, { foreignKey: 'userId' })
 
-User.hasMany(FriendRequest, { foreignKey: 'userId'})
-FriendRequest.belongsTo(User, { foreignKey: 'userId'})
-User.hasMany(FriendRequest, { foreignKey: 'friendId'})
-FriendRequest.belongsTo(User, { foreignKey: 'friendId'})
+User.hasMany(Friend, { foreignKey: 'userId'})
+Friend.belongsTo(User, { foreignKey: 'userId'})
+User.hasMany(Friend, { foreignKey: 'friendId'})
+Friend.belongsTo(User, { foreignKey: 'friendId'})
 
 /*
 User.hasMany(Chat, { foreignKey: 'senderId'})
