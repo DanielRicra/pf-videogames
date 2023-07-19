@@ -1,23 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
-import { IconLoader3 } from '@tabler/icons-react'
 
 import CartItems from './CartItems'
 import { checkoutCart } from '../../redux/actions/cartAction'
 import { fetchCartByUserEmail, getCartItems } from '../../redux/cart/cartSlice'
-import { formatMoney } from '../../utils/helpers'
 import { loadStripe } from '@stripe/stripe-js'
+import { selectUser } from '../../redux/user/userSlice'
+import CheckoutDetail from './CheckoutDetail'
 const VITE_PUBLIC_KEY_STRIPE = import.meta.env.VITE_PUBLIC_KEY_STRIPE
 
 const Cart = () => {
   const dispatch = useDispatch()
   const cartItems = useSelector(getCartItems)
+  const { videogames: myVideogames } = useSelector(selectUser)
   const stripePromise = loadStripe(`${VITE_PUBLIC_KEY_STRIPE}`)
   const { user, isAuthenticated, loginWithPopup } = useAuth0()
   const { sessionId, loadingCheckoutStatus } = useSelector(
     (status) => status.cart
+  )
+
+  const itemsToGift = useMemo(
+    () =>
+      cartItems.filter((item) => myVideogames?.some((vg) => vg.id === item.id)),
+    [cartItems, myVideogames]
+  )
+  const myItems = useMemo(
+    () =>
+      cartItems.filter(
+        (item) => !myVideogames?.some((vg) => vg.id === item.id)
+      ),
+    [cartItems, myVideogames]
   )
 
   useEffect(() => {
@@ -46,7 +60,7 @@ const Cart = () => {
       })
       return
     }
-    dispatch(checkoutCart({ cartItems, email: user?.email }))
+    dispatch(checkoutCart({ myItems, email: user?.email }))
   }
 
   return (
@@ -56,36 +70,31 @@ const Cart = () => {
           Cart Shopping
         </h2>
 
-        <CartItems cartItems={cartItems} />
+        {myItems.length > 0 && (
+          <div className='border-2 border-white rounded-lg mb-4 p-2'>
+            <h3 className='text-lg font-medium'>For my self</h3>
+            <CartItems cartItems={myItems} />
 
-        <div className='w-full flex flex-col'>
-          <div className='flex items-center justify-between w-full my-3 border-b-2 border-gray-400'>
-            <p>Total VideoGames: {cartItems.length}</p>
-            <div className='text-2xl flex gap-2'>
-              <p>Total Price:</p>
-              <span className='font-semibold text-purple-800'>
-                {formatMoney(
-                  cartItems.reduce(
-                    (acc, item) => acc + parseFloat(item.price),
-                    0
-                  )
-                )}
-              </span>
-            </div>
+            <CheckoutDetail
+              handleCheckout={handleCheckout}
+              items={myItems}
+              loadingCheckoutStatus={loadingCheckoutStatus}
+            />
           </div>
+        )}
 
-          <button
-            type='button'
-            className='py-2 text-white px-4 bg-purple-600 rounded-lg hover:opacity-80 self-end'
-            onClick={handleCheckout}
-          >
-            {!loadingCheckoutStatus ? (
-              'Checkout'
-            ) : (
-              <IconLoader3 className='animate-spin' size={25} />
-            )}
-          </button>
-        </div>
+        {itemsToGift.length > 0 && (
+          <div className='border-2 border-white rounded-lg p-2'>
+            <h3 className='text-lg font-medium'>Gift Videogame</h3>
+            <CartItems cartItems={itemsToGift} />
+
+            <CheckoutDetail
+              handleCheckout={() => alert('Gift Videogame')}
+              items={itemsToGift}
+              loadingCheckoutStatus={loadingCheckoutStatus}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
