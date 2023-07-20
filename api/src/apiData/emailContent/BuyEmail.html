@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Your Purchase</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f2f4fb;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #fe5d61;
+            margin: 10px 0;
+        }
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            padding: 20px;
+            background-color: #fe5d61;
+            color: #ffffff;
+            text-align: center;
+        }
+        .header h1 {
+        color: #ffffff; /* Cambiar el color del texto a blanco */
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .footer {
+            padding: 20px;
+            background-color: #fe5d61;
+            color: #ffffff;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            background-color: #fe5d61;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .game-info {
+            margin-top: 30px;
+        }
+        .game-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thank You for Your Purchase!</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{CUSTOMER_NAME}},</p>
+            <p>Thank you for choosing GameStore for your gaming needs! We're excited to confirm your purchase of the following games:</p>
+            <div class="game-info">
+                <!-- Loop through the cartItems to display all purchased games -->
+                {{#each cartItems}}
+                <h2>Game:</h2>
+                <p><strong>Title:</strong> {{this.name}}</p>
+                <p><strong></strong> <img src="{{this.image}}" alt="{{this.name}}" style="max-width: 500px;"></p>
+                <p><strong>Price:</strong> {{this.price}}</p>
+                <hr>
+                {{/each}}
+            </div>
+            <p>If you have any questions or need assistance, feel free to reach out to our customer support team. Your satisfaction is our top priority!</p>
+            <p>Happy gaming, and see you in the virtual world!</p>
+            <a href="[GAME_LINK]" class="button">Download Now</a>
+        </div>
+        <div class="footer">
+            <p>GameStore | Your One-Stop Gaming Destination</p>
+        </div>
+    </div>
+</body>
+</html>
