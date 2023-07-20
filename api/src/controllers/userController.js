@@ -22,6 +22,18 @@ const getUsers = async () => {
   }
 }
 
+const getUserById = async (id) => {
+  try {
+    const user = await User.findByPk(id)
+    if (!user) {
+      throw new Error('User not found')
+    }
+    return user
+  } catch (error) {
+    throw error
+  }
+}
+
 // Obtener un usuario por su email
 const getUserByEmail = async (email) => {
   try {
@@ -137,4 +149,5 @@ module.exports = {
   updateUser,
   postFavorite,
   deleteFavorite,
+  getUserById,
 }
