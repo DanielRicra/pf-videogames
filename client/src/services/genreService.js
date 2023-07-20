@@ -12,7 +12,7 @@ const saveGenre = async (genre) => {
 }
 
 const updateGenre = async (id, newGenre) => {
-  const response = await api.put(`videogames/${id}`, newGenre)
+  const response = await api.put(`genre/${id}`, newGenre)
   return response.data
 }
 
