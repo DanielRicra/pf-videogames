@@ -27,7 +27,11 @@ userRouter.get('/:email', async (req, res) => {
   let { email } = req.params
   let users
   try {
-    if (email) users = await getUserByEmail(email)
+    if (isNaN(email)) {
+      users = await getUserByEmail(email) 
+    } else { 
+      users = await getUserById(email)
+    }
 
     res.status(200).json(users)
   } catch (error) {
@@ -47,7 +51,7 @@ userRouter.get('/:id', async (req, res) => {
 })
 
 // Crear un nuevo usuario
-userRouter.post('/postUser', postUser)
+userRouter.post('/', postUser)
 
 // Borrar un usuario por su ID
 userRouter.delete('/:id', async (req, res) => {
