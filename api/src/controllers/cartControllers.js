@@ -112,9 +112,27 @@ const getCart = async (req,res) =>{
   }
 }
 
+const getManyCarts = async (ids) => {
+  try {
+    const carts = await Cart.findAll({
+      where: { id: ids },
+      include: [{ model: Videogame, through: { attributes: [] } }],
+    })
+
+    if (!carts) {
+      throw new Error('Carts not found')
+    }
+
+    return carts;
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   addToCart,
   removeFromCart,
   associateCart,
-  getCart
+  getCart,
+  getManyCarts
 };
