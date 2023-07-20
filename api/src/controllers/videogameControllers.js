@@ -245,7 +245,7 @@ const updateVideogame = async ({ body, id }) => {
             releaseDate,
             rating,
             price,
-            banned,
+            stock,
         })
         await existingVideogame.setGenres(genres)
         await existingVideogame.setTags(tags)
