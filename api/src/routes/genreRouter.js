@@ -3,6 +3,8 @@ const {
   getGenres,
   postGenres,
   getManyGenres,
+  updateGenre,
+  getGenreById,
 } = require('../controllers/genreControllers')
 
 genreRouter.get('/', async (req, res) => {
@@ -37,6 +39,35 @@ genreRouter.post('/', async (req, res) => {
     res.status(200).json(genre)
   } catch (error) {
     res.status(404).send(error.message)
+  }
+})
+
+genreRouter.get('/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+      const genre = await getGenreById(id)
+
+      res.status(200).json(genre)
+  } catch (error) {
+      res.status(500).json({ error: error.message })
+  }
+})
+
+genreRouter.put('/:id', async (req, res) =>{
+  const { id } = req.params;
+
+  try{
+      const result = await updateGenre({ body: req.body, id })
+
+      if (result.status === 404) {
+          return res.status(404).send(result.message)
+      }
+
+      res.status(200).json(result)
+  }
+  catch(error){
+      res.status(500).send(error.message)
   }
 })
 

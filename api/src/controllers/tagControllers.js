@@ -22,7 +22,7 @@ const getTags = async ({ name = '', page = 1, limit = 10 }) => {
         });
 
         const result = {
-            totalTags: totalTags,
+            totalResults: totalTags,
             nextPage: null,
             prevPage: null,
             results: foundedTags
@@ -57,7 +57,47 @@ const getManyTags = async (tagIds) => {
     }
 }
 
+const getTagById = async ( id ) =>{
+    try{
+        let tag = await Tag.findByPk(id);
+  
+        if (!tag) {
+          throw new Error('Genre not found');
+        }
+        
+        return tag
+    }
+    catch (error) {
+        throw new Error(error.message || 'Something went wrong')
+    }
+  }
+
+const updateTag = async ({ body, id }) => {
+    const { name } = body
+
+    if( !name ) {
+      throw new Error('Bad request, missing fields')
+    }
+
+    try {
+        const existingTag = await Tag.findByPk(id)
+        if (!existingTag) {
+            return { status: 404, message: 'Tag not found' }
+        }
+
+        await existingTag.update({
+            name,
+        })
+
+        return existingTag
+    } catch (error) {
+        throw new Error(error.message || 'Something went wrong')
+    }
+}
+
 module.exports = {
     getTags,
     getManyTags,
+    updateTag,
+    getTagById
 }

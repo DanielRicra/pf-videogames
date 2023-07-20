@@ -25,7 +25,7 @@ const getGenres = async ({ name = '', page = 1, limit = 10 }) => {
       });
 
       const result = {
-          totalresults: totalGenres,
+          totalResults: totalGenres,
           nextPage: null,
           prevPage: null,
           results: foundedGenres
@@ -104,8 +104,48 @@ const genreUpload = () => {
       
 }
 
+const updateGenre = async ({ body, id }) => {
+  const { name } = body
+
+  if( !name ) {
+    throw new Error('Bad request, missing fields')
+  }
+
+  try {
+      const existingGenre = await Genre.findByPk(id)
+      if (!existingGenre) {
+          return { status: 404, message: 'Genre not found' }
+      }
+
+      await existingGenre.update({
+          name,
+      })
+
+      return existingGenre
+  } catch (error) {
+      throw new Error(error.message || 'Something went wrong')
+  }
+}
+
+const getGenreById = async ( id ) =>{
+  try{
+      let genre = await Genre.findByPk(id);
+
+      if (!genre) {
+        throw new Error('Genre not found');
+      }
+      
+      return genre
+  }
+  catch (error) {
+      throw new Error(error.message || 'Something went wrong')
+  }
+}
+
 module.exports = {
     getGenres,
     postGenres,
-    getManyGenres
+    getManyGenres,
+    updateGenre,
+    getGenreById
 };

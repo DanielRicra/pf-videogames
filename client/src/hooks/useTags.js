@@ -1,11 +1,12 @@
 import * as tagService from '../services/tagService'
 import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr/immutable'
 
 const API_URL = import.meta.env.VITE_API_URL
 
 export const useTags = () => {
   const { data, error, isLoading } = useSWRImmutable(
-    `${API_URL}/tag`,
+    `${API_URL}/tag?limit=25`,
     tagService.fetchTags
   )
 
@@ -13,5 +14,21 @@ export const useTags = () => {
     tags: data,
     tagsError: error,
     isTagsLoading: isLoading,
+  }
+}
+
+export const useTagById = (id) => {
+  const {
+    data: tag,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(`tag/${id}`, tagService.getTagById)
+
+  return {
+    tag,
+    tagError: error,
+    isTagLoading: isLoading,
+    mutate,
   }
 }

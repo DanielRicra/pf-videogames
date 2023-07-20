@@ -10,7 +10,11 @@ import {
   SingleFieldList,
   TextField,
   WrapperField,
+  Edit,
+  Create,
 } from 'react-admin'
+import CreateVideogameForm from '../../Create/Create'
+import EditVideogameForm from './EditForm'
 
 export const VideogameList = () => (
   <List>
@@ -42,10 +46,26 @@ export const VideogameList = () => (
         </SingleFieldList>
       </ArrayField>
       <ArrayField source='tags'>
-        <SingleFieldList>
-          <ChipField source='name' />
-        </SingleFieldList>
+        <div className='max-h-[100px] overflow-y-auto'>
+          <SingleFieldList>
+            <ChipField source='name' />
+          </SingleFieldList>
+        </div>
       </ArrayField>
     </Datagrid>
   </List>
 )
+
+export const VideogameEdit = () => (
+  <Edit>
+    <EditVideogameForm />
+  </Edit>
+)
+
+export const VideogameCreate = () => {
+  return (
+    <Create>
+      <CreateVideogameForm />
+    </Create>
+  )
+}

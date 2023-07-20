@@ -14,8 +14,6 @@ conn.sync({ force: false }).then(() => {
   //uploadVideogames(Videogame)
 
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(
-      `Server is running on https://pf-videogames-production.up.railway.app/`
-    )
+    console.log(`Server is running on https://localhost:${PORT}`)
   })
 })

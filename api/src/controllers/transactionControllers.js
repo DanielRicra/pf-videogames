@@ -1,5 +1,4 @@
 const { Transaction, User, Cart }= require('../db');
-const Sequelize = require('sequelize')
 
 const getAllTransactions = async ({ page = 1, limit = 10 }) => {
     if (isNaN(page) || isNaN(limit)) {
@@ -21,7 +20,7 @@ const getAllTransactions = async ({ page = 1, limit = 10 }) => {
         });
   
         const result = {
-            totalresults: totalTransactions,
+            totalResults: totalTransactions,
             nextPage: null,
             prevPage: null,
             results: foundedTransactions
@@ -42,9 +41,9 @@ const getAllTransactions = async ({ page = 1, limit = 10 }) => {
     } catch (error) {
         return { error: error.message }
     }
-  }
+}
 
-  const getTransactionsByUser = async ({ userEmail:userEmail, page = 1, limit = 10 }) => {
+const getTransactionsByUser = async ({ userEmail:userEmail, page = 1, limit = 10 }) => {
     if (isNaN(page) || isNaN(limit)) {
         throw new Error('Page or limit must be numbers')
     }
@@ -90,7 +89,7 @@ const getAllTransactions = async ({ page = 1, limit = 10 }) => {
         });
   
         const result = {
-            totalresults: totalTransactions,
+            totalResults: totalTransactions,
             nextPage: null,
             prevPage: null,
             results: foundedTransactions
@@ -111,9 +110,9 @@ const getAllTransactions = async ({ page = 1, limit = 10 }) => {
     } catch (error) {
         return { error: error.message }
     }
-  }
+}
 
-  module.exports = {
+module.exports = {
     getAllTransactions,
     getTransactionsByUser
 };
