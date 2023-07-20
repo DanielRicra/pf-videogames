@@ -9,3 +9,18 @@ export const getPendingFriendRequests = async (userEmail) => {
     throw new Error('Error fetching pending friend requests');
   }
 };
+
+export const addFriend = async (userEmail, friendEmail) => {
+  const response = await api.post(`/friend?userEmail=${userEmail}&friendEmail=${friendEmail}&action=add`);
+  return response.data;
+};
+
+export const acceptFriend = async (userEmail, friendEmail) => {
+  const response = await api.post(`/friend?userEmail=${userEmail}&friendEmail=${friendEmail}&action=accept`);
+  return response.data;
+};
+
+export const rejectFriend = async (userEmail, friendEmail) => {
+  const response = await api.post(`/friend?userEmail=${userEmail}&friendEmail=${friendEmail}&action=reject`);
+  return response.data;
+};

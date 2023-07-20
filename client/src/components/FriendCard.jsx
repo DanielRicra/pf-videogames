@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getUserById } from '../services/userService';
 import { useDispatch } from 'react-redux';
+import { addFriend, acceptFriend, rejectFriend } from '../services/friendService';
 
 const FriendCard = ({ friend, onAccept, onReject }) => {
-  const { userId, status } = friend;
+  const { userId, status, user } = friend; // Cambiar friendId por userId
   const [friendDetails, setFriendDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +27,27 @@ const FriendCard = ({ friend, onAccept, onReject }) => {
     fetchFriendDetails();
   }, [userId]);
 
+  // Funciones para manejar acciones de amigos
+  const handleAcceptFriend = async () => {
+    try {
+      await acceptFriend(user.email, friendDetails.email);
+      // Lógica adicional si es necesario después de aceptar el amigo
+      onAccept(friend);
+    } catch (error) {
+      setError('Error accepting friend');
+    }
+  };
+
+  const handleRejectFriend = async () => {
+    try {
+      await rejectFriend(user.email, friendDetails.email);
+      // Lógica adicional si es necesario después de rechazar el amigo
+      onReject(friend);
+    } catch (error) {
+      setError('Error rejecting friend');
+    }
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -34,12 +56,7 @@ const FriendCard = ({ friend, onAccept, onReject }) => {
     return <p>Error: {error}</p>;
   }
 
-  // If friend details are not available, return null
-  if (!friendDetails) {
-    return null;
-  }
-
-  // Rest of the code to render friend details
+  // Resto del código para renderizar los detalles del amigo
   const { nickname, email } = friendDetails;
 
   return (
@@ -51,16 +68,10 @@ const FriendCard = ({ friend, onAccept, onReject }) => {
       <div className="ml-auto">
         {status === 'Pending' && (
           <>
-            <button
-              onClick={() => onAccept(friend)}
-              className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"
-            >
+            <button onClick={handleAcceptFriend} className="bg-green-500 text-white px-4 py-2 rounded-md mr-2">
               Accept
             </button>
-            <button
-              onClick={() => onReject(friend)}
-              className="bg-red-500 text-white px-4 py-2 rounded-md"
-            >
+            <button onClick={handleRejectFriend} className="bg-red-500 text-white px-4 py-2 rounded-md">
               Reject
             </button>
           </>
