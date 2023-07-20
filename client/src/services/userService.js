@@ -9,3 +9,8 @@ export const getUser = async (email) => {
   const response = await api.get(`/user/${email}`)
   return response.data
 }
+
+export const getUserById = async (id) => {
+  const response = await api.get(`/user/friend/${id}`);
+  return response.data;
+};
