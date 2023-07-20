@@ -96,6 +96,36 @@ const addFriend = async({ userEmail, friendEmail }) =>{
     }
 }
 
+const getPendingFriendRequests = async ({ userEmail }) => {
+    try {
+      const user = await User.findOne({
+        where: { email: userEmail },
+      });
+  
+      if (!user) {
+        throw new Error(`No se encontró un usuario con el correo electrónico: ${userEmail}`);
+      }
+  
+      const pendingFriendRequests = await Friend.findAll({
+        where: {
+          friendId: user.id,
+          status: 'Pending',
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'email'], 
+          },
+        ],
+      });
+  
+      return pendingFriendRequests;
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+
 const acceptFriend = async({ userEmail, friendEmail }) =>{
     try{
 
@@ -170,5 +200,6 @@ module.exports = {
     getFriends,
     addFriend,
     acceptFriend,
-    rejectFriend
+    rejectFriend,
+    getPendingFriendRequests
 };
