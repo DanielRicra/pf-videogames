@@ -3,7 +3,10 @@ import {
   Resource,
   defaultTheme,
 } from 'react-admin'
+
 import { dataProvider } from './dataProvider'
+import { TagList, TagEdit, TagCreate } from './components/TagList'
+import { GenreList, GenreEdit, GenreCreate} from './components/GenreList'
 import { UserCreate, UserEdit, UserList } from './components/User'
 import { VideogameEdit, VideogameList, VideogameCreate } from './components/VideoGame'
 
@@ -20,6 +23,8 @@ const Dashboard = () => {
     >
       <Resource name='user' list={UserList} edit={UserEdit} create={UserCreate} />
       <Resource name='videogames' list={VideogameList} edit={VideogameEdit} create={VideogameCreate} />
+      <Resource name='tags' list={TagList} edit={TagEdit} create={TagCreate}/>
+      <Resource name='genres' list={GenreList} edit={GenreEdit} create={GenreCreate}/>
     </Admin>
   )
 }
