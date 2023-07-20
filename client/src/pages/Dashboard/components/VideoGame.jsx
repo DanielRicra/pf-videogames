@@ -46,9 +46,11 @@ export const VideogameList = () => (
         </SingleFieldList>
       </ArrayField>
       <ArrayField source='tags'>
-        <SingleFieldList>
-          <ChipField source='name' />
-        </SingleFieldList>
+        <div className='max-h-[100px] overflow-y-auto'>
+          <SingleFieldList>
+            <ChipField source='name' />
+          </SingleFieldList>
+        </div>
       </ArrayField>
     </Datagrid>
   </List>

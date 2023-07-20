@@ -3,6 +3,13 @@ const Stripe = require('stripe')
 const { STRIPE_PRIVATE_KEY, STRIPE_WEB_HOOK, CLIENTE_URL } = process.env
 const stripe = new Stripe(STRIPE_PRIVATE_KEY)
 const { Transaction, User, Cart, Videogame } = require('../db')
+const fs = require('fs')
+const path = require('path')
+const sgMail = require('@sendgrid/mail')
+const Handlebars = require('handlebars')
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
 const createSession = async (req, res) => {
   const { email, cartItems } = req.body
   const customer = await stripe.customers.create({
@@ -42,6 +49,43 @@ const createSession = async (req, res) => {
   }
 }
 
+
+
+const sendConfirmationEmail = async (email, name, cartItems) => {
+  try {
+    const buyEmailPath = path.join(__dirname, '../apiData/emailContent/BuyEmail.html')
+    const buyEmailContent = fs.readFileSync(buyEmailPath, 'utf8')
+
+    // Compile the BuyEmail.html template
+    const template = Handlebars.compile(buyEmailContent)
+
+    // Prepare the data for rendering the template
+    const data = {
+      CUSTOMER_NAME: name,
+      cartItems: cartItems.map(item => ({
+        name: item.name,
+        image: item.image,
+        price: item.price,
+      })),
+    }
+
+    // Render the template with the data
+    const emailContent = template(data)
+
+    const msg = {
+      to: email,
+      from: 'pfvideogames@gmail.com',
+      subject: '¡Gracias por tu compra!',
+      html: emailContent,
+    }
+
+    await sgMail.send(msg)
+    console.log('Correo electrónico de confirmación de compra enviado')
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico de confirmación:', error)
+  }
+}
+
 const webhook = (req, res) => {
   let data
   let eventType
@@ -52,11 +96,7 @@ const webhook = (req, res) => {
     let event
     let signature = req.headers['stripe-signature']
     try {
-      event = stripe.webhooks.constructEvent(
-        req.body.toString(),
-        signature,
-        STRIPE_WEB_HOOK
-      )
+      event = stripe.webhooks.constructEvent(req.body.toString(), signature, STRIPE_WEB_HOOK)
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed:  ${err}`)
       return res.sendStatus(400)
@@ -85,9 +125,6 @@ const webhook = (req, res) => {
           where: { userId: userFound.id, status: true },
           include: Videogame,
         })
-        if (!userFound) {
-          throw new Error('user not Found')
-        }
         if (!cartFound) {
           throw new Error('cart not Found')
         }
@@ -99,6 +136,15 @@ const webhook = (req, res) => {
         await transation.setCart(cartFound.dataValues.id)
         cartFound.status = false
         await cartFound.save()
+
+        const { email, name } = customer.metadata
+        const cartItems = cartFound.videogames.map((game) => ({
+          name: game.name,
+          image: game.image,
+          price: game.price,
+        }))
+
+        await sendConfirmationEmail(email, name, cartItems)
       })
       .catch((err) => console.log(err.message))
   }

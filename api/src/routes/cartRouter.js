@@ -1,11 +1,22 @@
 const cartRouter = require('express').Router();
-const { removeFromCart, addToCart, associateCart, getCart } = require('../controllers/cartControllers');
+const { removeFromCart, addToCart, associateCart, getCart, getManyCarts } = require('../controllers/cartControllers');
 
 cartRouter.get('/', async (req, res) =>{
     try{
         const cart = await getCart(req, res)
 
         if(cart.error) throw new Error(cart.error)
+
+        res.status(200).json(cart)
+    } catch(error){
+        res.status(404).send(error.message)
+    }
+})
+
+cartRouter.get('/:ids', async (req, res) =>{
+    const { ids } = req.params.ids.split(',').map(Number)
+    try{
+        const cart = await getManyCarts(ids)
 
         res.status(200).json(cart)
     } catch(error){
