@@ -1,39 +1,27 @@
+import React, { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useState, useEffect } from 'react';
-import { getPendingFriendRequests } from '../api'; // Import the API function to get pending friend requests
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserByEmail, selectUser } from '../redux/user/userSlice';
 import { toTitleCase } from '../utils/helpers';
 import FriendCard from '../components/FriendCard';
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
-  const [pendingFriendRequests, setPendingFriendRequests] = useState([]);
+  const dispatch = useDispatch();
+  const userState = useSelector(selectUser);
 
   useEffect(() => {
-    // Fetch pending friend requests when the component mounts
-    fetchPendingFriendRequests();
-  }, []);
-
-  const fetchPendingFriendRequests = async () => {
-    try {
-      const response = await getPendingFriendRequests(user.email); // Assuming 'user.email' contains the user's email
-      setPendingFriendRequests(response.data.results);
-    } catch (error) {
-      console.error('Error fetching pending friend requests:', error);
+    if (isAuthenticated && user.email) {
+      dispatch(fetchUserByEmail(user.email));
     }
-  };
+  }, [dispatch, isAuthenticated, user.email]);
 
-  const handleAcceptFriend = async (friend) => {
-    // Logic to accept the friend request using an API function
-    // Implement this function using the API endpoint and logic to accept the friend request
-    console.log('Accept friend request:', friend);
-  };
+  useEffect(() => {
+    // Log the user state whenever it changes
+    console.log('User State:', userState);
+  }, [userState]);
 
-  const handleRejectFriend = async (friend) => {
-    // Logic to reject the friend request using an API function
-    // Implement this function using the API endpoint and logic to reject the friend request
-    console.log('Reject friend request:', friend);
-  };
-
+  
   return (
     <div className="flex flex-col min-h-[calc(100vh-180px)]">
       {isAuthenticated && (
@@ -53,17 +41,17 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Display pending friend requests */}
       <div className="my-8">
         <h3 className="text-xl font-medium mb-4">Pending Friend Requests</h3>
-        {pendingFriendRequests.map((friend) => (
-          <FriendCard
-            key={friend.id}
-            friend={friend}
-            onAccept={handleAcceptFriend}
-            onReject={handleRejectFriend}
-          />
-        ))}
+        {userState.loading === 'pending' ? (
+          <p>Loading...</p>
+        ) : userState.error ? (
+          <p>Error: {userState.error}</p>
+        ) : (
+          userState.user?.pendingFriendRequests?.map((friend) => (
+            <FriendCard key={friend.id} friend={friend} />
+          ))
+        )}
       </div>
     </div>
   );
