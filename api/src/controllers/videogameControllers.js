@@ -220,7 +220,7 @@ const postVideogames = async (videogame) => {
 }
 
 const updateVideogame = async ({ body, id }) => {
-    const { name, description, releaseDate, rating, genres, tags, price, banned } = body
+    const { name, description, releaseDate, rating, genres, tags, price, stock } = body
     let { image } = body
 
     if(!name || !image || !description || !releaseDate || !price || !genres.length || !tags.length ) {
