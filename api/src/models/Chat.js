@@ -1,20 +1,22 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-
-  sequelize.define('chat', {
-    id: {
+  sequelize.define(
+    'chat',
+    {
+      id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
-    },
-    status: {
-        type: DataTypes.BOOLEAN,
+      },
+      message: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
         allowNull: true,
+      },
+    },
+    {
+      timestamps: false,
     }
-  },
-  {
-    timestamps: false
-  });
-};
+  )
+}
