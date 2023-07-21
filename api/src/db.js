@@ -96,8 +96,8 @@ Friend.belongsTo(User, { foreignKey: 'userId' })
 User.hasMany(Friend, { foreignKey: 'friendId' })
 Friend.belongsTo(User, { foreignKey: 'friendId' })
 
-Friend.hasOne(Chat, { foreignKey: 'friendshipId' })
-Chat.belongsTo(Friend, { foreignKey: 'friendshipId' })
+Friend.hasOne(Chat, { foreignKey: 'friendShipId' })
+Chat.belongsTo(Friend, { foreignKey: 'friendShipId' })
 /*User.hasMany(Chat, { foreignKey: 'receiverId'})
 Chat.belongsTo(User, { foreignKey: 'receiverId'})
 */
