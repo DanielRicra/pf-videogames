@@ -33,7 +33,7 @@ const Profile = () => {
       try {
         const response = await getUsers()
         setAllUsers(response.results)
-        console.log('All Users:', response.results)
+        
 
         const filtered = response.results.filter(
           (u) =>

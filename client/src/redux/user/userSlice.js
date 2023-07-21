@@ -15,8 +15,6 @@ export const fetchUserByEmail = createAsyncThunk(
     try {
       const userData = await getUser(email)
       const pendingFriendRequests = await getPendingFriendRequests(email) 
-      console.log('User Data:', userData)
-      console.log('Pending Friend Requests:', pendingFriendRequests)
       return {
         ...userData,
         pendingFriendRequests,
