@@ -1,5 +1,7 @@
 import {
   ArrayField,
+  BooleanField,
+  BooleanInput,
   ChipField,
   Create,
   Datagrid,
@@ -14,7 +16,7 @@ import {
 
 export const UserList = () => (
   <List>
-    <Datagrid>
+    <Datagrid rowClick='edit'>
       <TextField source='name' />
       <TextField source='id' />
       <EmailField source='email' />
@@ -25,6 +27,7 @@ export const UserList = () => (
           <ChipField source='name' size='small' />
         </SingleFieldList>
       </ArrayField>
+      <BooleanField source='banned' />
     </Datagrid>
   </List>
 )
@@ -37,6 +40,7 @@ export const UserEdit = () => (
       <TextInput source='email' />
       <TextInput source='nickname' />
       <TextInput source='friends' />
+      <BooleanInput source='banned' />
     </SimpleForm>
   </Edit>
 )

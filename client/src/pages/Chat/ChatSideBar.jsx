@@ -1,4 +1,4 @@
-const ChatSideBar = ({ friends }) => {
+const ChatSideBar = ({ friends, handleJoinChat }) => {
   return (
     <>
       <h2 className='text-2xl'>Chats</h2>
@@ -10,8 +10,17 @@ const ChatSideBar = ({ friends }) => {
         />
       </div>
       <div className='flex flex-col gap-3'>
-        {friends.map((friend) => (
-          <div key={friend.id}>
+        {friends?.map((friend) => (
+          <div
+            key={friend.id}
+            onClick={() =>
+              handleJoinChat({
+                idFriend: friend.friendId,
+                idUser: friend.userId,
+                friendShipId: friend.id,
+              })
+            }
+          >
             <div className='flex gap-2'>
               <img
                 src={friend.picture}

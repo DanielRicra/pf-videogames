@@ -44,7 +44,7 @@ const EditVideogameForm = () => {
     if (!data.genres.length || !data.tags.length) {
       return
     }
-  
+
     try {
       if (data.image[0] instanceof File) {
         const imgBase64 = await convertImageFileToBase64(data.image[0])
@@ -54,7 +54,7 @@ const EditVideogameForm = () => {
       dispatch({ type: actionTypes.FETCH_START })
       await videoGameService.updateVideogame(game?.id, data)
       dispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
-      mutate()      
+      mutate()
       navigate('/dashboard/admin/videogames')
     } catch (error) {
       console.log(error)
@@ -72,6 +72,7 @@ const EditVideogameForm = () => {
       price: game?.price,
       image: game?.image,
       releaseDate: game?.releaseDate,
+      stock: game?.stock,
     })
     setSelectedGenres(
       game?.genres.map((tag) => ({
@@ -141,14 +142,14 @@ const EditVideogameForm = () => {
             label='Description'
             name='description'
           >
-            <input
+            <textarea
               type='text'
               placeholder='Enter a description'
               {...register('description', {
                 required: 'Description is required',
               })}
               id='description'
-              className='p-3 rounded-lg bg-transparent border-2 border-purple-600'
+              className='p-3 rounded-lg bg-transparent border-2 border-purple-600 max-h-56'
               style={
                 errors.description?.message
                   ? { borderColor: 'red', outlineColor: 'red' }
@@ -166,6 +167,7 @@ const EditVideogameForm = () => {
           >
             <input
               type='number'
+              step='0.01'
               placeholder='Enter a price'
               {...register('price', {
                 required: 'Price is required',
@@ -204,6 +206,19 @@ const EditVideogameForm = () => {
           </TextField>
         </BoxInput>
 
+        <div className='flex items-center'>
+          <label htmlFor='stock' className='text-base flex gap-2 font-light'>
+            Available
+            <input
+              type='checkbox'
+              id='stock'
+              name='Available'
+              className='text-2xl border-2 p-0.5 cursor-pointer border-purple-600 w-6 h-6 rounded-lg appearance-none before:content-[""] before:w-full before:h-full before:rounded-md before:block before:transition-all before:duration-300 before:bg-purple-500 before:scale-0 checked:before:scale-100 before:ease-in-out before:opacity-0 checked:before:opacity-100'
+              {...register('stock')}
+            />
+          </label>
+        </div>
+
         <div className='flex items-center flex-col'>
           <label
             htmlFor='image'
@@ -213,9 +228,7 @@ const EditVideogameForm = () => {
               <>
                 <img
                   src={
-                    image instanceof File
-                    ? URL.createObjectURL(image)
-                    : image
+                    image instanceof File ? URL.createObjectURL(image) : image
                   }
                   alt='preview'
                   className='w-full h-full object-cover'
@@ -278,7 +291,11 @@ const EditVideogameForm = () => {
               onChange={(genres) => setSelectedGenres(genres)}
             />
           )}
-          <p className='text-red-600 text-sm ml-2'>{selectedGenres.length === 0 ? 'At least one genre is required' : ''}</p>
+          <p className='text-red-600 text-sm ml-2'>
+            {selectedGenres.length === 0
+              ? 'At least one genre is required'
+              : ''}
+          </p>
         </BoxInput>
 
         <BoxInput>
@@ -309,7 +326,9 @@ const EditVideogameForm = () => {
               onChange={(tags) => setSelectedTags(tags)}
             />
           )}
-          <p className='text-red-600 text-sm ml-2'>{selectedTags.length === 0 ? 'At least one tag is required' : ''}</p>
+          <p className='text-red-600 text-sm ml-2'>
+            {selectedTags.length === 0 ? 'At least one tag is required' : ''}
+          </p>
         </BoxInput>
 
         <input
