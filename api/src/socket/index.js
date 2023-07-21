@@ -23,9 +23,9 @@ module.exports = (io) => {
 
     // Evento para enviar un mensaje
     socket.on('message', (data) => {
-      console.log('🚀 ~ file: index.js:21 ~ socket.on ~ data:', data)
       const { from, to, message } = data
       const recipientSocket = getSocketId(to)
+
       if (recipientSocket) {
         io.to(recipientSocket).emit('message', { from, message })
       }
