@@ -12,7 +12,7 @@ const saveTag = async (tag) => {
 }
 
 const updateTag = async (id, newTag) => {
-  const response = await api.put(`videogames/${id}`, newTag)
+  const response = await api.put(`tag/${id}`, newTag)
   return response.data
 }
 

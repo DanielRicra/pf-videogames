@@ -14,6 +14,7 @@ const uploadVideogames = (Videogame) => {
       let randomPrice = Math.random() * (40 - 5) + 5;
       let randomPriceRounded = randomPrice.toFixed(2);
       vg.price = randomPriceRounded
+      vg.stock = true
       let newVg = await Videogame.create(vg)
       await newVg.addTags(vg.tags)
       await newVg.addGenres(vg.genres)

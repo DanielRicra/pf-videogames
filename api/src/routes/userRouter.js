@@ -68,8 +68,8 @@ userRouter.delete('/:id', async (req, res) => {
 userRouter.put('/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const { name, email, password } = req.body
-    const newData = { name, email, password }
+    const { name, email, password, banned } = req.body
+    const newData = { name, email, password, banned }
     const message = await updateUser(id, newData)
     res.status(200).send(message)
   } catch (error) {
