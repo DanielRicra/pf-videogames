@@ -214,7 +214,6 @@ const EditVideogameForm = () => {
               id='stock'
               name='Available'
               className='text-2xl border-2 p-0.5 cursor-pointer border-purple-600 w-6 h-6 rounded-lg appearance-none before:content-[""] before:w-full before:h-full before:rounded-md before:block before:transition-all before:duration-300 before:bg-purple-500 before:scale-0 checked:before:scale-100 before:ease-in-out before:opacity-0 checked:before:opacity-100'
-              onChange={(e) => console.log(e)}
               {...register('stock')}
             />
           </label>
