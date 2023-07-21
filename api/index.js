@@ -1,4 +1,4 @@
-const server = require('./src/app.js')
+const { server } = require('./src/app.js')
 const { conn, Tag, Videogame, Genre } = require('./src/db.js')
 const {
   uploadVideogames,
@@ -13,7 +13,7 @@ conn.sync({ force: false }).then(() => {
   //uploadTags(Tag)
   //uploadVideogames(Videogame)
 
-  server.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on https://localhost:${PORT}`)
   })
 })
