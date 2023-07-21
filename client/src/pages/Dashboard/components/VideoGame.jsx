@@ -37,18 +37,18 @@ export const VideogameList = () => (
         sx={{ height: '100px', width: '100px' }}
       />
       <DateField source='releaseDate' />
+      <TextField source='stock' />
       <NumberField source='rating' />
       <TextField source='price' />
-      <NumberField source='stock' />
       <ArrayField source='genres'>
         <SingleFieldList>
-          <ChipField source='name' />
+          <ChipField source='name' size='small' />
         </SingleFieldList>
       </ArrayField>
       <ArrayField source='tags'>
         <div className='max-h-[100px] overflow-y-auto'>
           <SingleFieldList>
-            <ChipField source='name' />
+            <ChipField source='name' size='small' />
           </SingleFieldList>
         </div>
       </ArrayField>
