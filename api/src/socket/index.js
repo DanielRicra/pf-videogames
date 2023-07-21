@@ -7,17 +7,23 @@ module.exports = (io) => {
 
     // Evento para unirse al chat
     socket.on('join', (userId) => {
-      console.log('🚀 ~ file: index.js:10 ~ socket.on ~ userId:', userId)
-      connectedUsers.push({
-        id: socket.id,
-        userId: userId ? userId : '123456',
-      })
-      io.emit('userList', getUserList(userId))
+      if (userId !== null) {
+        const user = connectedUsers.find((e) => e.userId === userId)
+        if (!user) {
+          connectedUsers.push({
+            id: socket.id,
+            userId: userId,
+          })
+          io.emit('userList', getUserList(userId))
+        }
+      }
+
       console.log('🚀 ~ file: index.js:3 ~ connectedUsers:', connectedUsers)
     })
 
     // Evento para enviar un mensaje
     socket.on('message', (data) => {
+      console.log('🚀 ~ file: index.js:21 ~ socket.on ~ data:', data)
       const { from, to, message } = data
       const recipientSocket = getSocketId(to)
       if (recipientSocket) {
