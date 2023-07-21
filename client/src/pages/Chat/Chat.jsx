@@ -4,6 +4,8 @@ import ChatSideBar from './ChatSideBar'
 import Message from './Message'
 import io from 'socket.io-client'
 import { useAuth0 } from '@auth0/auth0-react'
+import { getFriends } from '../../services/friendService'
+import { findOrCreateChat } from '../../services/chatSevice'
 
 const friends = [
   {
@@ -54,10 +56,13 @@ const socket = io('http://localhost:3001/')
 
 const Chat = () => {
   const [messages, setMessages] = useState(initialMessages)
+  const [friends, setFriends] = useState([])
+  const [friendId, setFriendId] = useState()
+  const [userId, setUserId] = useState()
+
   const messageRef = useRef(null)
   const scrollToBottom = useRef(null)
-  const { user } = useAuth0()
-  console.log('🚀 ~ file: Chat.jsx:60 ~ Chat ~ user:', user)
+  const { user, isAuthenticated } = useAuth0()
 
   useEffect(() => {
     socket.on('message', receiveMessage)
@@ -67,38 +72,49 @@ const Chat = () => {
     }
   }, [])
 
-  const handleJoinChat = () => {
-    console.log('hoiiiiiiii')
-    socket.emit('join', user?.sub)
+  useEffect(() => {
+    if (isAuthenticated) {
+      Friends()
+    }
+  }, [user])
+
+  const Friends = async () => {
+    const { results } = await getFriends(user.email)
+    setFriends(results)
   }
+
+  const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
+    setUserId(idUser)
+    setFriendId(idFriend)
+    /* const { message } = await findOrCreateChat(friendShipId)
+     setMessages((prevMessages) => [...prevMessages, message]) */
+    socket.emit('join', userId)
+  }
+
   const receiveMessage = (message) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: prevMessages.length + 1,
-        senderId: message.id,
-        message: message.body,
-        createdAt: new Date().toISOString(),
-      },
-    ])
+    let newMessage = {
+      senderId: message.from,
+      message: message.message,
+      createdAt: new Date().toISOString(),
+    }
+    setMessages((prevMessages) => [...prevMessages, newMessage])
   }
 
   const sendMessage = (e) => {
     e.preventDefault()
-
     let message = messageRef.current.value
     setMessages((prevMessages) => [
       ...prevMessages,
       {
         id: prevMessages.length + 1,
-        from: currentUser.id,
+        from: userId,
         to: friendId,
         message: message,
         createdAt: new Date().toISOString(),
       },
     ])
     messageRef.current.value = ''
-    socket.emit('message', message)
+    socket.emit('message', { message, from: userId, to: friendId })
   }
 
   return (
@@ -119,12 +135,8 @@ const Chat = () => {
           </div>
 
           <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2'>
-            {messages.map((message) => (
-              <Message
-                key={message.id}
-                message={message}
-                currentUser={currentUser}
-              />
+            {messages.map((message, i) => (
+              <Message key={i} message={message} currentUser={friendId} />
             ))}
             <div ref={scrollToBottom} />
           </div>
