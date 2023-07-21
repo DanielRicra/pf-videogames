@@ -22,6 +22,11 @@ genreRouter.get('/:ids', async (req, res) => {
   const ids = req.params.ids.split(',').map(Number)
 
   try {
+    if (ids.length === 1) {
+      const genre = await getGenreById(ids.at(0))
+      return res.status(200).json(genre)
+    }
+
     const genres = await getManyGenres(ids)
 
     res.status(200).json(genres)
