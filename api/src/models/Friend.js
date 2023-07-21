@@ -13,7 +13,11 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM('Pending','Rejected','Accepted'),
         allowNull: true,
         defaultValue: 'Pending'
-    }
+    },
+    isMirror: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     timestamps: false

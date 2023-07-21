@@ -6,7 +6,7 @@ import { toTitleCase } from '../utils/helpers';
 import FriendCard from '../components/FriendCard';
 import FriendCardSend from '../components/FriendCardSend';
 import { getUsers } from '../services/userService';
-import { addFriend } from '../services/friendService';
+import { addFriend, getPendingFriendRequests } from '../services/friendService';
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -45,10 +45,27 @@ const Profile = () => {
       } catch (error) {
         console.error('Error fetching users:', error);
       }
-    };  
+    };
 
     fetchAllUsers();
   }, [user.email, userState.pendingFriendRequests]);
+
+  useEffect(() => {
+    const fetchPendingFriendRequests = async () => {
+      try {
+        if (isAuthenticated && user?.email) {
+          const requestsFromOthers = await getPendingFriendRequests(user.email);
+          // Filtrar las solicitudes espejo para que no se muestren en el perfil
+          const nonMirrorRequests = requestsFromOthers.filter((request) => !request.isMirror);
+          setPendingFriendRequests(nonMirrorRequests || []);
+        }
+      } catch (error) {
+        console.error('Error fetching pending friend requests:', error);
+      }
+    };
+
+    fetchPendingFriendRequests();
+  }, [isAuthenticated, user]);
 
   const handleAddFriend = async (friendEmail) => {
     try {
@@ -66,6 +83,8 @@ const Profile = () => {
   if (!isAuthenticated) {
     return <p>Please log in to view this page.</p>;
   }
+
+  const filteredPendingRequests = pendingFriendRequests.filter((request) => !request.isMirror);
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-180px)]">
@@ -88,10 +107,10 @@ const Profile = () => {
 
       <div className="my-8">
         <h3 className="text-xl font-medium mb-4">Pending Friend Requests</h3>
-        {pendingFriendRequests.length === 0 ? (
+        {Array.isArray(filteredPendingRequests) && filteredPendingRequests.length === 0 ? (
           <p>No pending friend requests.</p>
         ) : (
-          pendingFriendRequests.map((friend) => (
+          filteredPendingRequests.map((friend) => (
             <FriendCard key={friend.id} friend={friend} />
           ))
         )}
