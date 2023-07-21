@@ -1,64 +1,22 @@
-import { useEffect, useState } from 'react'
 import { useRef } from 'react'
-import ChatSideBar from './ChatSideBar'
-import Message from './Message'
 import io from 'socket.io-client'
+import { useEffect, useState } from 'react'
+
+import Message from './Message'
+import ChatSideBar from './ChatSideBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getFriends } from '../../services/friendService'
-import { findOrCreateChat } from '../../services/chatSevice'
+import { addMessageToChat, findOrCreateChat } from '../../services/chatSevice'
 
-const friends = [
-  {
-    id: 1,
-    name: 'Friend 01',
-    email: 'firend01@test.com',
-    picture:
-      'https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=100',
-  },
-  {
-    id: 2,
-    name: 'Test 02',
-    email: 'XXXXXXXXXXXXXXX',
-    picture:
-      'https://images.pexels.com/photos/3686769/pexels-photo-3686769.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=100',
-  },
-]
-
-const initialMessages = [
-  {
-    id: 1,
-    senderId: 1,
-    message: 'Hey, how are you?',
-    createdAt: '2023-07-14T08:00:00',
-  },
-  {
-    id: 2,
-    senderId: 2,
-    message: 'Good, How about you?',
-    createdAt: '2023-07-14T08:00:20',
-  },
-  {
-    id: 3,
-    senderId: 1,
-    message: 'Great, How about you?',
-    createdAt: '2023-07-14T08:00:40',
-  },
-  {
-    id: 4,
-    senderId: 2,
-    message: 'Stop being so silly',
-    createdAt: '2023-07-14T08:00:50',
-  },
-]
-
-const currentUser = friends[0]
 const socket = io('http://localhost:3001/')
 
 const Chat = () => {
-  const [messages, setMessages] = useState(initialMessages)
+  const [messages, setMessages] = useState([])
   const [friends, setFriends] = useState([])
+  const [friendChat, setFriendChat] = useState([])
   const [friendId, setFriendId] = useState()
   const [userId, setUserId] = useState()
+  const [friendShipId, setFriendShipId] = useState()
 
   const messageRef = useRef(null)
   const scrollToBottom = useRef(null)
@@ -86,8 +44,12 @@ const Chat = () => {
   const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
     setUserId(idUser)
     setFriendId(idFriend)
-    /* const { message } = await findOrCreateChat(friendShipId)
-     setMessages((prevMessages) => [...prevMessages, message]) */
+    setFriendShipId(friendShipId)
+
+    /* setFriendChat() */
+    const message = await findOrCreateChat(friendShipId)
+    setMessages(message[0].message)
+
     socket.emit('join', userId)
   }
 
@@ -115,6 +77,17 @@ const Chat = () => {
     ])
     messageRef.current.value = ''
     socket.emit('message', { message, from: userId, to: friendId })
+    addMessageToChat({
+      message: {
+        message,
+        senderId: userId,
+        from: userId,
+        to: friendId,
+        id: messages.length,
+        createdAt: new Date().toISOString(),
+      },
+      friendShipId,
+    })
   }
 
   return (
@@ -127,16 +100,16 @@ const Chat = () => {
         <div className='p-4 flex-1'>
           <div className='w-full flex flex-col items-center p-4'>
             <img
-              src={currentUser.picture}
+              src={user?.picture}
               className='w-16 h-16 object-cover rounded-full'
-              alt={currentUser.name}
+              alt={user?.name}
             />
-            <h2>{currentUser.name}</h2>
+            <h2>{user?.name}</h2>
           </div>
 
           <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2'>
             {messages.map((message, i) => (
-              <Message key={i} message={message} currentUser={friendId} />
+              <Message key={i} message={message} friendId={friendId} />
             ))}
             <div ref={scrollToBottom} />
           </div>

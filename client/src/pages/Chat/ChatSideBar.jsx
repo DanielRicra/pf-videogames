@@ -10,7 +10,7 @@ const ChatSideBar = ({ friends, handleJoinChat }) => {
         />
       </div>
       <div className='flex flex-col gap-3'>
-        {friends.map((friend) => (
+        {friends?.map((friend) => (
           <div
             key={friend.id}
             onClick={() =>
