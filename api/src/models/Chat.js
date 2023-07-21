@@ -13,6 +13,7 @@ module.exports = (sequelize) => {
       message: {
         type: DataTypes.ARRAY(DataTypes.JSON),
         allowNull: true,
+        defaultValue: [],
       },
     },
     {
