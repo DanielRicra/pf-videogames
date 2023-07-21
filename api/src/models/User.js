@@ -22,11 +22,11 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      /* banned: {
+      banned: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
       defaultValue: false,
-    } */
+    }
     },
     {
       timestamps: false,
