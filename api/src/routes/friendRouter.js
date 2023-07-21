@@ -4,6 +4,7 @@ const {
   addFriend,
   rejectFriend,
   acceptFriend,
+  getPendingFriendRequests
 } = require('../controllers/friendController')
 
 friendRouter.post('/', async (req, res) => {
@@ -45,5 +46,16 @@ friendRouter.get('/', async (req, res) => {
         res.status(404).send(error.message)
     }
 })
+
+friendRouter.get('/pending/:userEmail', async (req, res) => {
+  const { userEmail } = req.params; 
+  try {
+    const pendingFriendRequests = await getPendingFriendRequests({ userEmail });
+    res.status(200).json(pendingFriendRequests);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
 
 module.exports = friendRouter

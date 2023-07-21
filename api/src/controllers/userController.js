@@ -22,17 +22,18 @@ const getUsers = async () => {
   }
 }
 
-const getUserById = async (id) => {
+const getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(id)
+    const { id } = req.params;
+    const user = await User.findByPk(id, { attributes: ['id', 'email', 'nickname'] });
     if (!user) {
-      throw new Error('User not found')
+      return res.status(404).json({ error: 'User not found' });
     }
-    return user
+    res.status(200).json(user);
   } catch (error) {
-    throw error
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
 
 // Obtener un usuario por su email
 const getUserByEmail = async (email) => {

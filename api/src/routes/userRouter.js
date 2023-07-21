@@ -40,15 +40,7 @@ userRouter.get('/:email', async (req, res) => {
 })
 
 // Obtener un usuario por su ID
-userRouter.get('/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const user = await getUserById(id)
-    res.status(200).json(user)
-  } catch (error) {
-    res.status(404).send(error.message)
-  }
-})
+userRouter.get('/friend/:id', getUserById);
 
 // Crear un nuevo usuario
 userRouter.post('/', postUser)
