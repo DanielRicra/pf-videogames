@@ -1,5 +1,6 @@
 import { api } from './api'
 
+
 export const getPendingFriendRequests = async (userEmail) => {
   try {
     const encodedEmail = encodeURIComponent(userEmail)
@@ -24,3 +25,9 @@ export const rejectFriend = async (userEmail, friendEmail) => {
   const response = await api.post(`/friend?userEmail=${userEmail}&friendEmail=${friendEmail}&action=reject`)
   return response.data
 }
+
+export const getFriends = async (userEmail) => {
+  const response = await api.get(`/friend?userEmail=${userEmail}`)
+  return response.data
+}
+

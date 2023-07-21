@@ -10,12 +10,11 @@ const {
 
 
 videogamesRouter.get('/', async ( req, res ) => {
-    const { name, page, page_size, order, field, genreFilter, tagFilter } =req.query;
-    
+    const { name, page, page_size, order, field, genreFilter, tagFilter, stock } =req.query;
     if(name !== undefined){
         try {
     
-            const response = await getVideogamesByName( name, page, page_size, order, field, genreFilter, tagFilter );
+            const response = await getVideogamesByName( name, page, page_size, order, field, genreFilter, tagFilter, stock );
     
             res.status(200).json(response);
     
@@ -26,7 +25,7 @@ videogamesRouter.get('/', async ( req, res ) => {
     }
     else{
         try {
-            const allVideogames= await getAllVideogames(page, page_size, order, field,genreFilter, tagFilter);
+            const allVideogames= await getAllVideogames(page, page_size, order, field,genreFilter, tagFilter, stock);
 
             res.status(200).json(allVideogames);
         } catch (error) {
