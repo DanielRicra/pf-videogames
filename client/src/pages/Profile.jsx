@@ -6,6 +6,7 @@ import { toTitleCase } from '../utils/helpers';
 import FriendCard from '../components/FriendCard';
 import FriendCardSend from '../components/FriendCardSend'; // Importar el nuevo componente
 import { getUsers } from '../services/userService'; // Importar el servicio getUsers
+import { addFriend } from '../services/friendService'; // Importar el servicio addFriend
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -33,9 +34,9 @@ const Profile = () => {
     const fetchAllUsers = async () => {
       try {
         const response = await getUsers();
-        setAllUsers(response); // Almacenar todos los usuarios en el estado local
-        console.log('All Users:', response);
-  
+        setAllUsers(response.results); // Almacenar todos los usuarios en el estado local
+        console.log('All Users:', response.results);
+
         // Filtrar los usuarios para obtener aquellos que no sean el usuario actual y que tampoco estén en las pendingFriendRequests
         const filtered = response.results.filter(
           (u) =>
@@ -47,10 +48,25 @@ const Profile = () => {
       } catch (error) {
         console.error('Error fetching users:', error);
       }
-    };
-  
+    };  
+
     fetchAllUsers();
   }, [user.email, userState.pendingFriendRequests]);
+
+  const handleAddFriend = async (friendEmail) => {
+    try {
+      // Agregar una confirmación antes de enviar la solicitud
+      const confirmAdd = window.confirm(`¿Deseas agregar a ${friendEmail} como amigo?`);
+      if (confirmAdd) {
+        await addFriend(user.email, friendEmail);
+        // Actualizar la lista de posibles amigos después de agregar uno nuevo
+        const updatedFilteredUsers = filteredUsers.filter((user) => user.email !== friendEmail);
+        setFilteredUsers(updatedFilteredUsers);
+      }
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    }
+  };
 
   if (!isAuthenticated) {
     return <p>Please log in to view this page.</p>;
@@ -92,7 +108,7 @@ const Profile = () => {
           <p>No possible friends.</p>
         ) : (
           filteredUsers.map((user) => (
-            <FriendCardSend key={user.id} userId={user.id} />
+            <FriendCardSend key={user.id} userId={user.id} user={user} />
           ))
         )}
       </div>
