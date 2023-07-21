@@ -8,10 +8,10 @@ const {
 
 const PORT = process.env.PORT || 3001
 
-conn.sync({ force: true }).then(() => {
-  //uploadGenres(Genre)
-  //uploadTags(Tag)
-  //uploadVideogames(Videogame)
+conn.sync({ force: false }).then(() => {
+  // uploadGenres(Genre)
+  // uploadTags(Tag)
+  // uploadVideogames(Videogame)
 
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on https://localhost:${PORT}`)
