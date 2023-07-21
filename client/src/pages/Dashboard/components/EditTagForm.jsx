@@ -2,13 +2,17 @@ import { useReducer, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { BoxInput, TextField } from '../../../components'
-import { actionTypes, fetchData, INITIAL_STATE } from '../../Create/fetchReducer'
+import {
+  actionTypes,
+  fetchData,
+  INITIAL_STATE,
+} from '../../Create/fetchReducer'
 import { useTagById } from '../../../hooks/useTags'
 import * as tagService from '../../../services/tagService'
 
 const EditGenreForm = () => {
-    const {id} = useParams()
-    const { tag, tagError, isTagLoading, mutate } = useTagById(id)
+  const { id } = useParams()
+  const { tag, tagError, isTagLoading, mutate } = useTagById(id)
   const {
     register,
     formState: { errors },
@@ -27,11 +31,11 @@ const EditGenreForm = () => {
 
   const onSubmit = async (data) => {
     try {
-        dispatch({ type: actionTypes.FETCH_START })
-        await tagService.updateTag(tag?.id, data)
-        dispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
-        mutate()      
-        navigate('/dashboard/admin/tags')
+      dispatch({ type: actionTypes.FETCH_START })
+      await tagService.updateTag(tag?.id, data)
+      dispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
+      mutate()
+      navigate('/dashboard/admin/tags')
     } catch (error) {
       dispatch({
         type: actionTypes.FETCH_ERROR,
@@ -58,13 +62,13 @@ const EditGenreForm = () => {
     )
   }
 
-
-return (
+  return (
     <div className='flex items-center w-full min-h-screen box-content justify-center py-20'>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-col bg-gray-100 p-8 rounded-lg text-black w-[90%] md:max-w-[24rem] lg:max-w-[44rem] 2xl:max-w-[40rem] gap-4'
-      ><BoxInput>
+      >
+        <BoxInput>
           <TextField
             error={errors.name?.message ?? ''}
             label='Name'

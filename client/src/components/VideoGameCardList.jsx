@@ -20,7 +20,7 @@ const VideoGameCardList = ({ videogames = [], message }) => {
           key={videoGame.id}
           videogame={videoGame}
           user={user}
-          owned={myVideogames.some((vg) => vg.id === videoGame.id)}
+          owned={myVideogames?.some((vg) => vg.id === videoGame.id)}
         />
       ))}
     </div>
