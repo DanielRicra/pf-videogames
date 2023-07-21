@@ -1,52 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { getUserById } from '../services/userService';
-import { useDispatch } from 'react-redux';
-import { addFriend } from '../services/friendService';
+import React, { useEffect, useState } from 'react'
+import { getUserById } from '../services/userService'
+import { useDispatch } from 'react-redux'
+import { addFriend } from '../services/friendService'
 
 const FriendCardSend = ({ userId, userEmail }) => {
-  const [friendDetails, setFriendDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isRequestSent, setIsRequestSent] = useState(false);
-  const dispatch = useDispatch();
+  const [friendDetails, setFriendDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [isRequestSent, setIsRequestSent] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchFriendDetails = async () => {
       try {
-        setLoading(true);
-        const response = await getUserById(userId);
-        setFriendDetails(response);
-        setLoading(false);
+        setLoading(true)
+        const response = await getUserById(userId)
+        setFriendDetails(response)
+        setLoading(false)
       } catch (error) {
-        setError('Error fetching friend details');
-        setLoading(false);
+        setError('Error fetching friend details')
+        setLoading(false)
       }
-    };
+    }
 
-    fetchFriendDetails();
-  }, [userId]);
+    fetchFriendDetails()
+  }, [userId])
 
   const handleAddFriend = async () => {
     try {
-      const confirmAdd = window.confirm(`¿Deseas agregar a ${friendDetails.nickname} como amigo?`);
+      const confirmAdd = window.confirm(`¿Deseas agregar a ${friendDetails.nickname} como amigo?`)
       if (confirmAdd) {
-        await addFriend(userEmail, friendDetails.email); // Usar userEmail en lugar de user.email
-        setIsRequestSent(true);
+        await addFriend(userEmail, friendDetails.email) 
+        setIsRequestSent(true)
       }
     } catch (error) {
-      setError('Error adding friend');
+      setError('Error adding friend')
     }
-  };
+  }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p>Loading...</p>
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p>Error: {error}</p>
   }
 
-  const { nickname, email } = friendDetails;
+  const { nickname, email } = friendDetails
 
   return (
     <div className="flex items-center border rounded p-4 my-2">
@@ -64,7 +64,7 @@ const FriendCardSend = ({ userId, userEmail }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FriendCardSend;
+export default FriendCardSend

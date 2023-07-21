@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getUser } from '../../services/userService'
-import { getPendingFriendRequests } from '../../services/friendService';
+import { getPendingFriendRequests } from '../../services/friendService'
 import { AxiosError } from 'axios'
 
 const initialState = {
@@ -20,12 +20,12 @@ export const fetchUserByEmail = createAsyncThunk(
       return {
         ...userData,
         pendingFriendRequests,
-      };
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(
           error.response?.data?.error ?? 'Something went wrong'
-        );
+        )
       }
       return rejectWithValue(error.message)
     }

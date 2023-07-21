@@ -1,63 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import { getUserById } from '../services/userService';
-import { useDispatch } from 'react-redux';
-import { addFriend, acceptFriend, rejectFriend } from '../services/friendService';
+import React, { useEffect, useState } from 'react'
+import { getUserById } from '../services/userService'
+import { useDispatch } from 'react-redux'
+import { addFriend, acceptFriend, rejectFriend } from '../services/friendService'
 
 const FriendCard = ({ friend, onAccept, onReject }) => {
-  const { userId, status, user } = friend; // Cambiar friendId por userId
-  const [friendDetails, setFriendDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const dispatch = useDispatch();
+  const { userId, status, user } = friend 
+  const [friendDetails, setFriendDetails] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    // Function to fetch friend details using userId
+    
     const fetchFriendDetails = async () => {
       try {
-        setLoading(true);
-        const response = await getUserById(userId);
-        setFriendDetails(response);
-        setLoading(false);
+        setLoading(true)
+        const response = await getUserById(userId)
+        setFriendDetails(response)
+        setLoading(false)
       } catch (error) {
-        setError('Error fetching friend details');
-        setLoading(false);
+        setError('Error fetching friend details')
+        setLoading(false)
       }
-    };
+    }
 
-    fetchFriendDetails();
-  }, [userId]);
+    fetchFriendDetails()
+  }, [userId])
 
-  // Funciones para manejar acciones de amigos
+  
   const handleAcceptFriend = async () => {
     try {
-      await acceptFriend(user.email, friendDetails.email);
-      // Lógica adicional si es necesario después de aceptar el amigo
-      onAccept(friend);
+      await acceptFriend(user.email, friendDetails.email)
+     
+      onAccept(friend)
     } catch (error) {
-      setError('Error accepting friend');
+      setError('Error accepting friend')
     }
-  };
+  }
 
   const handleRejectFriend = async () => {
     try {
-      await rejectFriend(user.email, friendDetails.email);
-      // Lógica adicional si es necesario después de rechazar el amigo
-      onReject(friend);
+      await rejectFriend(user.email, friendDetails.email)
+      
+      onReject(friend)
     } catch (error) {
-      setError('Error rejecting friend');
+      setError('Error rejecting friend')
     }
-  };
+  }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p>Loading...</p>
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p>Error: {error}</p>
   }
 
-  // Resto del código para renderizar los detalles del amigo
-  const { nickname, email } = friendDetails;
+  
+  const { nickname, email } = friendDetails
 
   return (
     <div className="flex items-center border rounded p-4 my-2">
@@ -78,7 +78,7 @@ const FriendCard = ({ friend, onAccept, onReject }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FriendCard;
+export default FriendCard

@@ -8,7 +8,7 @@ const {
 
 const PORT = process.env.PORT || 3001
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   // uploadGenres(Genre)
   // uploadTags(Tag)
   // uploadVideogames(Videogame)
