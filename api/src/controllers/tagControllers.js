@@ -95,9 +95,26 @@ const updateTag = async ({ body, id }) => {
     }
 }
 
+const saveNewTag = async (req, res) => {
+    const { name } = req.body
+
+    try {
+        const id = Math.round(Date.now() / 100000)
+        if (!name) {
+            throw new Error('Bad request, name is required')
+        }
+        const newTag = await Tag.create({ id, name })
+        res.status(201).json(newTag)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error.message || 'Something went wrong')
+    }
+}
+
 module.exports = {
     getTags,
     getManyTags,
     updateTag,
-    getTagById
+    getTagById,
+    saveNewTag,
 }
