@@ -4,17 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserByEmail, selectUser } from '../redux/user/userSlice';
 import { toTitleCase } from '../utils/helpers';
 import FriendCard from '../components/FriendCard';
-import FriendCardSend from '../components/FriendCardSend'; // Importar el nuevo componente
-import { getUsers } from '../services/userService'; // Importar el servicio getUsers
-import { addFriend } from '../services/friendService'; // Importar el servicio addFriend
+import FriendCardSend from '../components/FriendCardSend';
+import { getUsers } from '../services/userService';
+import { addFriend } from '../services/friendService';
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth0();
   const dispatch = useDispatch();
   const userState = useSelector(selectUser);
   const [pendingFriendRequests, setPendingFriendRequests] = useState([]);
-  const [allUsers, setAllUsers] = useState([]); // Estado para almacenar todos los usuarios
-  const [filteredUsers, setFilteredUsers] = useState([]); // Estado para almacenar los usuarios filtrados
+  const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
@@ -23,27 +23,24 @@ const Profile = () => {
   }, [dispatch, isAuthenticated, user]);
 
   useEffect(() => {
-    // Update pending friend requests when userState changes
     if (userState.pendingFriendRequests) {
       setPendingFriendRequests(userState.pendingFriendRequests);
     }
   }, [userState.pendingFriendRequests]);
 
   useEffect(() => {
-    // Fetch all users and filter them
     const fetchAllUsers = async () => {
       try {
         const response = await getUsers();
-        setAllUsers(response.results); // Almacenar todos los usuarios en el estado local
+        setAllUsers(response.results);
         console.log('All Users:', response.results);
 
-        // Filtrar los usuarios para obtener aquellos que no sean el usuario actual y que tampoco estén en las pendingFriendRequests
         const filtered = response.results.filter(
           (u) =>
             u.email !== user.email &&
             !userState.pendingFriendRequests.find((friend) => friend.userId === u.id)
         );
-        setFilteredUsers(filtered); // Almacenar los usuarios filtrados en el estado local
+        setFilteredUsers(filtered);
         console.log('Filtered Users:', filtered);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -55,11 +52,9 @@ const Profile = () => {
 
   const handleAddFriend = async (friendEmail) => {
     try {
-      // Agregar una confirmación antes de enviar la solicitud
       const confirmAdd = window.confirm(`¿Deseas agregar a ${friendEmail} como amigo?`);
       if (confirmAdd) {
         await addFriend(user.email, friendEmail);
-        // Actualizar la lista de posibles amigos después de agregar uno nuevo
         const updatedFilteredUsers = filteredUsers.filter((user) => user.email !== friendEmail);
         setFilteredUsers(updatedFilteredUsers);
       }
@@ -108,7 +103,7 @@ const Profile = () => {
           <p>No possible friends.</p>
         ) : (
           filteredUsers.map((user) => (
-            <FriendCardSend key={user.id} userId={user.id} user={user} />
+            <FriendCardSend key={user.id} userId={user.id} userEmail={userState.email} />
           ))
         )}
       </div>

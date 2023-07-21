@@ -3,7 +3,7 @@ import { getUserById } from '../services/userService';
 import { useDispatch } from 'react-redux';
 import { addFriend } from '../services/friendService';
 
-const FriendCardSend = ({ userId, user }) => {
+const FriendCardSend = ({ userId, userEmail }) => {
   const [friendDetails, setFriendDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,10 +30,8 @@ const FriendCardSend = ({ userId, user }) => {
     try {
       const confirmAdd = window.confirm(`¿Deseas agregar a ${friendDetails.nickname} como amigo?`);
       if (confirmAdd) {
-        await addFriend(user.email, friendDetails.email); // Pasar el correo electrónico correcto del usuario actual y del amigo a agregar
-        setIsRequestSent(true); // Actualiza el estado para mostrar que se envió la solicitud
-        // Lógica adicional si es necesario después de agregar el amigo
-        // Por ejemplo, actualizar la lista de posibles amigos.
+        await addFriend(userEmail, friendDetails.email); // Usar userEmail en lugar de user.email
+        setIsRequestSent(true);
       }
     } catch (error) {
       setError('Error adding friend');
