@@ -17,7 +17,7 @@ cloudinary.config({
   api_secret: `${API_SECRET}`
 });
 
-const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter) => {
+const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter, stock) => {
   try {
       const defaultPageSize = 10;
       const defaultPage = 1;
@@ -33,11 +33,14 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
                   where: {}
               }
           ],
+          where: {},
           order: [[field ? field : 'name', order ? order : 'ASC']],
           limit: page_size ? page_size : defaultPageSize,
           offset: page ? (page - 1) * (page_size ? page_size : defaultPageSize) : 0,
       };
-
+      if(stock){
+        videogameOptions.where.stock = stock
+      }
       if (genreFilter) {
           videogameOptions.include[0].where.name = genreFilter;
       }
@@ -58,7 +61,8 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
                   model: Tag,
                   where: tagFilter ? { name: tagFilter } : {}
               }
-          ]
+          ],
+          where: stock ? { stock:stock } : {}
       };
 
       const allVideogames = await Videogame.findAll(videogameOptions);
@@ -107,8 +111,9 @@ const getVideogamesById = async ( searchedId ) =>{
     }
 }
 
-const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter ) =>{
+const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter, stock ) =>{
     try{
+
       const defaultPageSize = 10;
       const defaultPage = 1;
       const videogameOptions = {
@@ -131,6 +136,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
           limit: page_size ? page_size : 10,
           offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
       };
+
 
       if (genreFilter) {
           videogameOptions.include[0].where.name = genreFilter;
@@ -158,7 +164,12 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
             }
         ]
       };
-        
+
+      if(stock !== undefined){
+        videogameOptions.where.stock = stock
+        countOptions.where.stock = stock
+      }
+
       const videogamesFound = await Videogame.findAll(videogameOptions);
       const totalVideogames = await Videogame.count(countOptions);
 
@@ -220,7 +231,7 @@ const postVideogames = async (videogame) => {
 }
 
 const updateVideogame = async ({ body, id }) => {
-    const { name, description, releaseDate, rating, genres, tags, price} = body
+    const { name, description, releaseDate, rating, genres, tags, price, stock } = body
     let { image } = body
 
     if(!name || !image || !description || !releaseDate || !price || !genres.length || !tags.length ) {
@@ -245,6 +256,7 @@ const updateVideogame = async ({ body, id }) => {
             releaseDate,
             rating,
             price,
+            stock,
         })
         await existingVideogame.setGenres(genres)
         await existingVideogame.setTags(tags)
