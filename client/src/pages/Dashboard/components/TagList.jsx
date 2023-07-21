@@ -1,34 +1,37 @@
 import {
-    Datagrid,
-    List,
-    TextField,
-    Edit,
-    Create,
-  } from 'react-admin'
+  Datagrid,
+  List,
+  TextField,
+  Edit,
+  Create,
+  SimpleForm,
+  TextInput,
+} from 'react-admin'
 
-  import CreateTagForm from '../../Create/CreateTag'
-  import EditTagForm from './EditTagForm'
-  
-  export const TagList = () => (
-    <List>
-      <Datagrid rowClick='edit'>
-        <TextField source='name' />
-        <TextField source='id' />
-      </Datagrid>
-    </List>
+export const TagList = () => (
+  <List>
+    <Datagrid rowClick='edit'>
+      <TextField source='name' />
+      <TextField source='id' />
+    </Datagrid>
+  </List>
+)
+
+export const TagEdit = () => (
+  <Edit>
+    <SimpleForm>
+      <TextInput source='name' />
+      <TextInput source='id' disabled />
+    </SimpleForm>
+  </Edit>
+)
+
+export const TagCreate = () => {
+  return (
+    <Create>
+      <SimpleForm>
+        <TextInput source='name' />
+      </SimpleForm>
+    </Create>
   )
-  
-  export const TagEdit = () => (
-    <Edit>
-      <EditTagForm />
-    </Edit>
-  )
-  
-  export const TagCreate = () => {
-    return (
-      <Create>
-        <CreateTagForm />
-      </Create>
-    )
-  }
-  
+}
