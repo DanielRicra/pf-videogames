@@ -5,8 +5,8 @@ import {
 } from 'react-admin'
 
 import { dataProvider } from './dataProvider'
-import { TagList, TagEdit, TagCreate } from './components/TagList'
-import { GenreList, GenreEdit, GenreCreate} from './components/GenreList'
+import { TagList, TagEdit, TagCreate } from './components/Tag'
+import { GenreList, GenreEdit, GenreCreate} from './components/Genre'
 import { UserCreate, UserEdit, UserList } from './components/User'
 import { VideogameEdit, VideogameList, VideogameCreate } from './components/VideoGame'
 import { TransactionList } from './components/Transaction'
