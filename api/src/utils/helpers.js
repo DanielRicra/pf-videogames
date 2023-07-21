@@ -11,8 +11,8 @@ const uploadVideogames = (Videogame) => {
       }, {})
     )
     uniqueArr.map(async (vg) => {
-      let randomPrice = Math.random() * (40 - 5) + 5;
-      let randomPriceRounded = randomPrice.toFixed(2);
+      let randomPrice = Math.random() * (40 - 5) + 5
+      let randomPriceRounded = randomPrice.toFixed(2)
       vg.price = randomPriceRounded
       vg.stock = true
       let newVg = await Videogame.create(vg)
@@ -51,8 +51,27 @@ const uploadGenres = (Genre) => {
   }
 }
 
+const validateUser = ({ name, email, nickname, banned }) => {
+  let error = ''
+  if (!name || !email || !nickname || !banned) {
+    error = 'Missing all fields'
+  } else if (
+    typeof name !== 'string' ||
+    typeof email !== 'string' ||
+    typeof nickname !== 'string' ||
+    typeof banned !== 'boolean'
+  ) {
+    error = 'Invalid type'
+  } else if (name.trim() === '' || email.trim() === '' || nickname.trim() === '') {
+    error = 'Empty fields'
+  }
+
+  return error
+}
+
 module.exports = {
   uploadVideogames,
   uploadTags,
   uploadGenres,
+  validateUser,
 }
