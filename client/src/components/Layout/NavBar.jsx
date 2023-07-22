@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom'
 import { HeartIcon, ShoppingCartIcon, UserIcon } from '../icons'
-import { IconBooks } from '@tabler/icons-react'
+import { IconBooks, IconDashboard } from '@tabler/icons-react'
 import SearchBar from '../SearchBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import LogoutButton from '../LogoutButton'
 import LoginButton from '../LoginButton'
 import { useSelector } from 'react-redux'
 import { getCartItems } from '../../redux/cart/cartSlice'
+import { selectUser } from '../../redux/user/userSlice'
 
 const NavBar = () => {
   const { isAuthenticated, isLoading, user } = useAuth0()
+  const userProfile = useSelector(selectUser)
   const cartItems = useSelector(getCartItems)
 
   return (
@@ -39,10 +41,10 @@ const NavBar = () => {
         {isAuthenticated ? (
           <div className='relative hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md group'>
             <img
-              src={user.picture}
+              src={userProfile.picture}
               alt='avatar'
-              title={user.name}
-              className='w-8 h-8 rounded-full cursor-pointer'
+              title={userProfile.name}
+              className='w-8 h-8 rounded-full cursor-pointer object-cover'
             />
 
             <div className='absolute top-[44px] hidden right-0 text-black bg-white flex-col py-2 rounded-lg box-border group-hover:flex'>
@@ -54,10 +56,11 @@ const NavBar = () => {
                 <span className='whitespace-nowrap'>See Profile</span>
               </Link>
               <Link
-                to='/create'
+                to='/dashboard/admin'
                 className='flex gap-2 hover:bg-purple-500 py-1 px-2'
               >
-                <span className='whitespace-nowrap'>Create Game</span>
+                <IconDashboard className='h-6 -ml-[1px]' />
+                <span className='whitespace-nowrap'>Dashboard</span>
               </Link>
               <LogoutButton className='w-full flex items-center hover:bg-purple-500 py-1 px-2' />
             </div>
