@@ -1,64 +1,53 @@
-import { useEffect, useState } from 'react'
-import { getUserById } from '../services/userService'
+import { useState } from 'react'
 import { addFriend } from '../services/friendService'
+import { useUserById } from '../hooks/useUser'
 
 const FriendCardSend = ({ userId, userEmail }) => {
-  const [friendDetails, setFriendDetails] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [isRequestSent, setIsRequestSent] = useState(false)
-
-  useEffect(() => {
-    const fetchFriendDetails = async () => {
-      try {
-        setLoading(true)
-        const response = await getUserById(userId)
-        setFriendDetails(response)
-        setLoading(false)
-      } catch (error) {
-        setError('Error fetching friend details')
-        setLoading(false)
-      }
-    }
-
-    fetchFriendDetails()
-  }, [userId])
+  const {
+    user: friendDetails,
+    isUserLoading: isFriendLoading,
+    userError: friendError,
+  } = useUserById(userId)
 
   const handleAddFriend = async () => {
     try {
-      const confirmAdd = window.confirm(`¿Deseas agregar a ${friendDetails.nickname} como amigo?`)
+      const confirmAdd = window.confirm(
+        `Do you want to add ${friendDetails.nickname} as a friend?`
+      )
       if (confirmAdd) {
-        await addFriend(userEmail, friendDetails.email) 
+        await addFriend(userEmail, friendDetails.email)
         setIsRequestSent(true)
       }
-    } catch (error) {
-      setError('Error adding friend')
-    }
+    } catch (error) { /* empty */ }
   }
 
-  if (loading) {
+  if (isFriendLoading) {
     return <p>Loading...</p>
   }
 
-  if (error) {
-    return <p>Error: {error}</p>
+  if (friendError) {
+    return <p>Error: {friendError.message ?? 'Something went wrong'}</p>
   }
 
   const { nickname, email } = friendDetails
 
   return (
-    <div className="flex items-center border rounded p-4 my-2">
-      <div className="flex flex-col">
-        <h3 className="font-medium text-xl">{nickname}</h3>
-        <p className="text-gray-600">{email}</p>
+    <div className='flex items-center border rounded p-4 my-2'>
+      <div className='flex flex-col'>
+        <h3 className='font-medium text-xl'>{nickname}</h3>
+        <p className='text-gray-300'>{email}</p>
       </div>
-      <div className="ml-auto">
+      <div className='ml-auto'>
         {!isRequestSent ? (
-          <button onClick={handleAddFriend} className="bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button
+            onClick={handleAddFriend}
+            className='bg-blue-500 text-white px-4 py-2 rounded-md'
+          >
             Add
           </button>
         ) : (
-          <p className="text-green-500">Request Sent</p>
+          <p className='text-green-500'>Request Sent</p>
         )}
       </div>
     </div>
