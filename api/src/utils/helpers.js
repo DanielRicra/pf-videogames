@@ -53,7 +53,7 @@ const uploadGenres = (Genre) => {
 
 const validateUser = ({ name, email, nickname, banned }) => {
   let error = ''
-  if (!name || !email || !nickname || !banned) {
+  if (!name || !email || !nickname || banned === undefined) {
     error = 'Missing all fields'
   } else if (
     typeof name !== 'string' ||
