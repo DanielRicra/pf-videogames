@@ -7,6 +7,7 @@ const initialState = {
   user: {},
   error: null,
   loading: 'idle',
+  pendingFriendRequests: [],
 }
 
 export const fetchUserByEmail = createAsyncThunk(
@@ -14,13 +15,24 @@ export const fetchUserByEmail = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const userData = await getUser(email)
-      const pendingFriendRequests = await getPendingFriendRequests(email) 
-      console.log('User Data:', userData)
-      console.log('Pending Friend Requests:', pendingFriendRequests)
-      return {
-        ...userData,
-        pendingFriendRequests,
+      return userData
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(
+          error.response?.data?.error ?? 'Something went wrong'
+        )
       }
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
+export const fetchUserPendingFriendRequests = createAsyncThunk(
+  'user/fetchUserPendingFriendRequests',
+  async (email, { rejectWithValue }) => {
+    try {
+      const pendingFriendRequests = await getPendingFriendRequests(email)
+      return pendingFriendRequests
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(
@@ -37,8 +49,8 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      state.user = {...state.user, ...action.payload}
-    }
+      state.user = { ...state.user, ...action.payload }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -53,10 +65,14 @@ const userSlice = createSlice({
         state.loading = 'idle'
         state.error = action.payload
       })
+      .addCase(fetchUserPendingFriendRequests.fulfilled, (state, action) => {
+        state.pendingFriendRequests = action.payload
+      })
   },
 })
 
 export const selectUser = (state) => state.user.user
+export const selectUserPendingFriendRequests = (state) => state.user.pendingFriendRequests
 
 export const { setUser, setLoading, setError, updateUser } = userSlice.actions
 export default userSlice.reducer

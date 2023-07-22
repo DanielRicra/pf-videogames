@@ -131,7 +131,7 @@ const getPendingFriendRequests = async ({ userEmail }) => {
 
         return pendingFriendRequests;
     } catch (error) {
-        return { error: error.message };
+        throw error
     }
 };
 

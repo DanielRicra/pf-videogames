@@ -1,96 +1,46 @@
-import { useEffect, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useMemo } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUserByEmail, selectUser } from '../redux/user/userSlice'
-import FriendCard from '../components/FriendCard'
-import FriendCardSend from '../components/FriendCardSend'
-import { getUsers } from '../services/userService'
-import { addFriend, getPendingFriendRequests } from '../services/friendService'
+import {
+  selectUser,
+  fetchUserPendingFriendRequests,
+  selectUserPendingFriendRequests,
+} from '../redux/user/userSlice'
+import { FriendCard, FriendCardSend } from '../components'
+import { useUsers } from '../hooks/useUsers'
 
 const Profile = () => {
   const userProfile = useSelector(selectUser)
   const { user, isAuthenticated } = useAuth0()
   const dispatch = useDispatch()
-  const userState = useSelector(selectUser)
-  const [pendingFriendRequests, setPendingFriendRequests] = useState([])
-  const [allUsers, setAllUsers] = useState([])
-  const [filteredUsers, setFilteredUsers] = useState([])
+  const pendingFriendRequests = useSelector(selectUserPendingFriendRequests)
+  const { users } = useUsers()
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
-      dispatch(fetchUserByEmail(user.email))
+      dispatch(fetchUserPendingFriendRequests(user.email))
     }
-  }, [dispatch, isAuthenticated, user])
-
-  useEffect(() => {
-    if (userState.pendingFriendRequests) {
-      setPendingFriendRequests(userState.pendingFriendRequests)
-    }
-  }, [userState.pendingFriendRequests])
-
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const response = await getUsers()
-        setAllUsers(response.results)
-
-        const filtered = response.results.filter(
-          (u) =>
-            u.email !== user.email &&
-            !userState.pendingFriendRequests.find(
-              (friend) => friend.userId === u.id
-            )
-        )
-        setFilteredUsers(filtered)
-      } catch (error) { /* empty */ }
-    }
-
-    fetchAllUsers()
-  }, [user.email, userState.pendingFriendRequests])
-
-  useEffect(() => {
-    const fetchPendingFriendRequests = async () => {
-      try {
-        if (isAuthenticated && user?.email) {
-          const requestsFromOthers = await getPendingFriendRequests(user.email)
-
-          const nonMirrorRequests = requestsFromOthers.filter(
-            (request) => !request.isMirror
-          )
-          setPendingFriendRequests(nonMirrorRequests || [])
-        }
-      } catch (error) {
-        console.error('Error fetching pending friend requests:', error)
-      }
-    }
-
-    fetchPendingFriendRequests()
   }, [isAuthenticated, user])
 
-  const handleAddFriend = async (friendEmail) => {
-    try {
-      const confirmAdd = window.confirm(
-        `¿Deseas agregar a ${friendEmail} como amigo?`
-      )
-      if (confirmAdd) {
-        await addFriend(user.email, friendEmail)
-        const updatedFilteredUsers = filteredUsers.filter(
-          (user) => user.email !== friendEmail
-        )
-        setFilteredUsers(updatedFilteredUsers)
-      }
-    } catch (error) {
-      console.error('Error adding friend:', error)
-    }
-  }
+  const filteredUsers = useMemo(
+    () =>
+      users?.results.filter(
+        (u) =>
+          u.email !== user?.email &&
+          !pendingFriendRequests.find((friend) => friend.userId === u.id)
+      ),
+    [users?.results, user?.email, pendingFriendRequests]
+  )
 
-  const filteredPendingRequests = pendingFriendRequests.filter(
-    (request) => !request.isMirror
+  const filteredPendingRequests = useMemo(
+    () => pendingFriendRequests.filter((request) => !request.isMirror),
+    [pendingFriendRequests]
   )
 
   return (
-    <div className='flex flex-col min-h-[calc(100vh-180px)] py-14'>
+    <div className='flex flex-col min-h-[calc(100vh-180px)] p-7 lg:p-14'>
       {isAuthenticated && (
         <>
           <div className='flex flex-col mx-auto rounded-xl bg-[#232428] text-white overflow-hidden 2xl:min-w-[800px] xl:min-w-[600px] lg:min-w-[500px] md:min-w-[560px] sm:min-w-[90%] min-w-[300px]'>
@@ -138,8 +88,8 @@ const Profile = () => {
         </>
       )}
 
-      <div className='flex my-8'>
-        <div className='w-1/2 pr-4'>
+      <div className='flex my-8 flex-wrap gap-4'>
+        <div className='pr-4 bg-[#232428] rounded-xl p-4 flex-1 min-w-[260px]'>
           <h3 className='text-xl font-medium mb-4'>Pending Friend Requests:</h3>
           {Array.isArray(filteredPendingRequests) &&
           filteredPendingRequests.length === 0 ? (
@@ -150,16 +100,16 @@ const Profile = () => {
             ))
           )}
         </div>
-        <div className='w-1/2 pl-4'>
+        <div className='pl-4 flex-1 bg-[#232428] rounded-xl p-4 min-w-[300px]'>
           <h3 className='text-xl font-medium mb-4'>Add Friends:</h3>
-          {filteredUsers.length === 0 ? (
+          {filteredUsers?.length === 0 ? (
             <p>No possible friends.</p>
           ) : (
-            filteredUsers.map((user) => (
+            filteredUsers?.map((user) => (
               <FriendCardSend
                 key={user.id}
                 userId={user.id}
-                userEmail={userState.email}
+                userEmail={userProfile.email}
               />
             ))
           )}
