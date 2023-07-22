@@ -58,7 +58,7 @@ const Search = () => {
   }, [genresFilter, tagsFilter])
 
   const { data, error, isLoading } = useSWRImmutable(
-    `${url}&name=${searchQuery}&page=${currentPage}&field=${sortType}&order=${sortOrder}`,
+    `${url}&name=${searchQuery}&page=${currentPage}&field=${sortType}&order=${sortOrder}&stock=true`,
     videoGameService.fetchVideogames
   )
 

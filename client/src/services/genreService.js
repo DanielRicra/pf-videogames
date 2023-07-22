@@ -6,6 +6,11 @@ const fetchGenres = async (url) => {
   return response.data
 }
 
+const getGenreById = async (url) => {
+  const response = await axios.get(url)
+  return response.data
+}
+
 const saveGenre = async (genre) => {
   const response = await api.post('genre', genre)
   return response.data
@@ -19,5 +24,6 @@ const updateGenre = async (id, newGenre) => {
 export {
   fetchGenres,
   saveGenre,
-  updateGenre
+  updateGenre,
+  getGenreById,
 }

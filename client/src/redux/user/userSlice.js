@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getUser } from '../../services/userService'
+import { getPendingFriendRequests } from '../../services/friendService'
 import { AxiosError } from 'axios'
 
 const initialState = {
@@ -12,12 +13,18 @@ export const fetchUserByEmail = createAsyncThunk(
   'user/fetchUserByEmail',
   async (email, { rejectWithValue }) => {
     try {
-      const data = await getUser(email)
-      return data
+      const userData = await getUser(email)
+      const pendingFriendRequests = await getPendingFriendRequests(email) 
+      console.log('User Data:', userData)
+      console.log('Pending Friend Requests:', pendingFriendRequests)
+      return {
+        ...userData,
+        pendingFriendRequests,
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(
-          error.response?.data?.error ?? 'Something when wrong'
+          error.response?.data?.error ?? 'Something went wrong'
         )
       }
       return rejectWithValue(error.message)
@@ -28,7 +35,11 @@ export const fetchUserByEmail = createAsyncThunk(
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    updateUser: (state, action) => {
+      state.user = {...state.user, ...action.payload}
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserByEmail.pending, (state) => {
@@ -47,5 +58,5 @@ const userSlice = createSlice({
 
 export const selectUser = (state) => state.user.user
 
-export const { setUser, setLoading, setError } = userSlice.actions
+export const { setUser, setLoading, setError, updateUser } = userSlice.actions
 export default userSlice.reducer

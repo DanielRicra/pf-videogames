@@ -8,8 +8,9 @@ const {
   updateUser,
   getUserByEmail,
   postFavorite,
-  deleteFavorite
+  deleteFavorite,
 } = require('../controllers/userController')
+const { validateUser } = require('../utils/helpers')
 
 // Obtener todo los usuarios
 userRouter.get('/', async (req, res) => {
@@ -28,8 +29,8 @@ userRouter.get('/:email', async (req, res) => {
   let users
   try {
     if (isNaN(email)) {
-      users = await getUserByEmail(email) 
-    } else { 
+      users = await getUserByEmail(email)
+    } else {
       users = await getUserById(email)
     }
 
@@ -40,15 +41,7 @@ userRouter.get('/:email', async (req, res) => {
 })
 
 // Obtener un usuario por su ID
-userRouter.get('/:id', async (req, res) => {
-  try {
-    const { id } = req.params
-    const user = await getUserById(id)
-    res.status(200).json(user)
-  } catch (error) {
-    res.status(404).send(error.message)
-  }
-})
+userRouter.get('/friend/:id', getUserById);
 
 // Crear un nuevo usuario
 userRouter.post('/', postUser)
@@ -66,14 +59,24 @@ userRouter.delete('/:id', async (req, res) => {
 
 // Modificar un usuario por su ID
 userRouter.put('/:id', async (req, res) => {
+  const { id } = req.params
+  const { name, email, nickname, banned, picture } = req.body
+
   try {
-    const { id } = req.params
-    const { name, email, password, banned } = req.body
-    const newData = { name, email, password, banned }
-    const message = await updateUser(id, newData)
-    res.status(200).send(message)
+
+    const error = validateUser({ name, email, nickname, banned })
+
+    if (error) {
+      return res.status(400).json({ message: error })
+    }
+    
+    const newData = { name, email, nickname, banned, picture }
+  
+    const response = await updateUser(id, newData)
+
+    res.status(response.status).send(response.data)
   } catch (error) {
-    res.status(400).send(error.message)
+    res.status(500).send(error.message ?? 'Something went wrong')
   }
 })
 

@@ -6,6 +6,11 @@ const fetchTags = async (url) => {
   return response.data
 }
 
+const getTagById = async (url) => {
+  const response = await api.get(url)
+  return response.data
+}
+
 const saveTag = async (tag) => {
   const response = await api.post('tag', tag)
   return response.data
@@ -19,5 +24,6 @@ const updateTag = async (id, newTag) => {
 export {
   fetchTags,
   saveTag,
-  updateTag
+  updateTag,
+  getTagById,
 }
