@@ -73,8 +73,9 @@ userRouter.put('/:id', async (req, res) => {
   try {
 
     const error = validateUser({ name, email, nickname, banned })
+
     if (error) {
-      return res.status(404).json({ message: error })
+      return res.status(400).json({ message: error })
     }
     
     const newData = { name, email, nickname, banned, picture }

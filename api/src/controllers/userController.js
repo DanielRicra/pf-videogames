@@ -60,7 +60,6 @@ const sendWelcomeEmail = async (email, name) => {
     }
 
     await sgMail.send(msg)
-    console.log('Correo electrónico de bienvenida enviado')
   } catch (error) {
     console.error('Error al enviar el correo electrónico de bienvenida:', error)
   }
@@ -105,6 +104,7 @@ const deleteUser = async (id) => {
 const updateUser = async (id, newData) => {
   try {
     const existingUser = await User.findByPk(id)
+
     if (!existingUser) return { data: { error: 'User not found' }, status: 404  }
 
     const pictureName = newData.email.split('@').join('')
