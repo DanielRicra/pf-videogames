@@ -35,7 +35,6 @@ const NavBar = () => {
         >
           <HeartIcon className='h-7 w-7' />
         </Link>
-
         {isLoading && !user && (
           <div className='w-8 h-8 rounded-full animate-pulse bg-gray-400' />
         )}
@@ -69,7 +68,6 @@ const NavBar = () => {
         ) : (
           <LoginButton className='gap-[2px] items-center hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md' />
         )}
-
         <Link
           to='/cart'
           className='hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md relative'
@@ -89,6 +87,10 @@ const NavBar = () => {
         ) : (
           <></>
         )}
+        <Link to='/chat' className='hover:bg-[rgba(0,0,0,0.4)] p-2 rounded-md'>
+          <IconBooks className='cursor-pointer w-7 h-7' />
+          chat
+        </Link>
       </div>
     </nav>
   )
