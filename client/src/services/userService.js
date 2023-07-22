@@ -20,7 +20,7 @@ export const updateUser = async ({ id, user }) => {
   return response.data
 }
 
-export const getUsers = async () => {
-  const response = await api.get('/user')
+export const getUsers = async (url) => {
+  const response = await api.get(url)
   return response.data
 }
