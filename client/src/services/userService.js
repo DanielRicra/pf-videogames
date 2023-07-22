@@ -21,6 +21,6 @@ export const updateUser = async ({ id, user }) => {
 }
 
 export const getUsers = async () => {
-  const response = await api.get(`/user`)
+  const response = await api.get('/user')
   return response.data
 }
