@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getUserById } from '../services/userService'
-import { useDispatch } from 'react-redux'
 import { addFriend } from '../services/friendService'
 
 const FriendCardSend = ({ userId, userEmail }) => {
@@ -8,7 +7,6 @@ const FriendCardSend = ({ userId, userEmail }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isRequestSent, setIsRequestSent] = useState(false)
-  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchFriendDetails = async () => {
