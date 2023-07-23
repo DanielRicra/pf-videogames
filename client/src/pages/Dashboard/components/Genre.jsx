@@ -8,8 +8,13 @@ import {
   TextInput,
 } from 'react-admin'
 
+const genreFilters = [
+  // eslint-disable-next-line react/jsx-key
+  <TextInput source='q' label='Search' alwaysOn />,
+]
+
 export const GenreList = () => (
-  <List>
+  <List filters={genreFilters}>
     <Datagrid rowClick='edit'>
       <TextField source='name' />
       <TextField source='id' />
