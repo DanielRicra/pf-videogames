@@ -10,6 +10,7 @@ import {
   FAQs,
   EditProfile,
 } from './pages'
+import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
 import { Layout, Loading } from './components'
 import Library from './pages/Library'
@@ -69,6 +70,8 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
+
+      <Toaster richColors />
     </div>
   )
 }
