@@ -25,11 +25,16 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', receiveMessage)
-
     return () => {
       socket.off('message', receiveMessage)
     }
   }, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToBottom.current.scrollIntoView({ behavior: 'smooth' })
+    }, 300)
+  }, [messages])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,6 +48,7 @@ const Chat = () => {
   }
 
   const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
+    socket.emit('join', idUser)
     setUserId(idUser)
     setFriendId(idFriend)
     setFriendShipId(friendShipId)
@@ -50,8 +56,6 @@ const Chat = () => {
     /* setFriendChat() */
     const message = await findOrCreateChat(friendShipId)
     setMessages(message[0].message)
-
-    socket.emit('join', userId)
   }
 
   const receiveMessage = (message) => {
