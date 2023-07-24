@@ -8,8 +8,8 @@ import ChatSideBar from './ChatSideBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getFriends } from '../../services/friendService'
 import { addMessageToChat, findOrCreateChat } from '../../services/chatSevice'
-
-const socket = io('http://localhost:3001/')
+const API_URL = import.meta.env.VITE_API_URL
+const socket = io(API_URL)
 
 const Chat = () => {
   const [messages, setMessages] = useState([])
