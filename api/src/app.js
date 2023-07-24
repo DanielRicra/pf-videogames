@@ -16,7 +16,7 @@ app.name = 'API'
 // Socket Io Connection
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'https://pf-videogames-production.up.railway.app/',
   },
 })
 
