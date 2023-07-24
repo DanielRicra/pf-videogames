@@ -16,7 +16,7 @@ app.name = 'API'
 // Socket Io Connection
 const io = new Server(server, {
   cors: {
-    origin: 'https://pf-videogames.vercel.app/',
+    origin: 'https://pf-videogames.vercel.app',
   },
 })
 
