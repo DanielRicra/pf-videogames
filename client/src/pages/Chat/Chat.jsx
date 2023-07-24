@@ -10,6 +10,8 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { getFriends } from '../../services/friendService'
 import { addMessageToChat, findOrCreateChat } from '../../services/chatSevice'
 
+import { toast } from 'sonner'
+
 const API_URL = import.meta.env.VITE_API_URL
 const socket = io(API_URL)
 
