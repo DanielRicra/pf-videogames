@@ -7,6 +7,7 @@ const initialState = {
   user: {},
   error: null,
   loading: 'idle',
+  favorites: [],
   pendingFriendRequests: [],
 }
 
@@ -48,6 +49,15 @@ const userSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
+    setFavorites: (state, action) => {
+      state.favorites = action.payload
+    },
+    addToFavorites: (state, action) => {
+      state.favorites.push(action.payload)
+    },
+    removeFromFavorites: (state, action) => {
+      state.favorites = state.favorites.filter((fav) => fav.id !== action.payload)
+    },
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload }
     },
@@ -72,7 +82,7 @@ const userSlice = createSlice({
 })
 
 export const selectUser = (state) => state.user.user
+export const selectFavorites = (state) => state.user.favorites
 export const selectUserPendingFriendRequests = (state) => state.user.pendingFriendRequests
-
-export const { setUser, setLoading, setError, updateUser } = userSlice.actions
+export const { setUser, setLoading, setError, updateUser, setFavorites, removeFromFavorites, addToFavorites } = userSlice.actions
 export default userSlice.reducer

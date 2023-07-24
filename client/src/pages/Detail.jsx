@@ -1,12 +1,16 @@
-import { useEffect } from 'react' 
+import { useEffect, useState } from 'react' 
 import { useSelector, useDispatch } from 'react-redux' 
 import { useParams, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
-import { IconHeart } from '@tabler/icons-react'
+import { IconHeart, IconHeartFilled } from '@tabler/icons-react'
 import { IconShoppingCartPlus } from '@tabler/icons-react'
 import { Loading, ReviewCard } from '../components'
 import { getVideogameById } from '../services/videoGameService'
-import { fetchReviews } from '../redux/actions/reviewAction' 
+import { fetchReviews } from '../redux/actions/reviewAction'
+import { saveFavorite, deleteFavorite } from '../services/favoriteService'
+import { removeFromFavorites, addToFavorites } from '../redux/user/userSlice'
+import { useAuth0 } from '@auth0/auth0-react'
+import { selectFavorites } from '../redux/user/userSlice'
 
 const Detail = () => {
   const { id } = useParams()
@@ -18,7 +22,31 @@ const Detail = () => {
     error,
     isLoading,
   } = useSWRImmutable(`videogames/${id}`, getVideogameById)
+  const favorites = useSelector(selectFavorites)
+  const [isFav, setIsFav] = useState(false)
+  const { user } = useAuth0()
 
+  const handleFavorite = async () => {
+    const isFavorite = favorites?.some((fav) => fav.id === game.id)
+    try {
+      if (isFavorite) {
+        await deleteFavorite(game.id)
+        dispatch(removeFromFavorites(game.id))
+      } else {
+        await saveFavorite(user.email, game.id)
+        dispatch(addToFavorites({ name: game.name, image: game.image, id: game.id }))
+      }
+    } catch (error) {
+    
+    }
+  };
+
+  useEffect(() => {
+    const isFavorite = favorites?.some((fav) => fav.id === game?.id)
+    setIsFav(isFavorite)
+  }, [favorites])
+
+  
   useEffect(() => {
        dispatch(fetchReviews(id))
       
@@ -56,19 +84,11 @@ const Detail = () => {
           />
 
           <div className='flex justify-between px-[23rem]'>
-            <button
-              className='h-[4.5rem] mx-[-19.5rem] my-[-4rem]'
-              onClick={() => navigate('/favorites')}
-            >
-              {' '}
-              <IconHeart className='w-full h-full hover:animate-pulse' />{' '}
+            <button className='h-[4.5rem] mx-[-19.5rem] my-[-4rem]' onClick={handleFavorite} >
+              {favorites?.find(fav => fav.id === game.id) ? <IconHeartFilled className='w-full h-full hover:animate-pulse' /> : <IconHeart className='w-full h-full hover:animate-pulse' />}
             </button>
-            <button
-              className='h-[4.5rem] mx-[13rem] my-[-4rem]'
-              onClick={() => navigate('/cart')}
-            >
-              {' '}
-              <IconShoppingCartPlus className='w-full h-full hover:animate-pulse' />{' '}
+            <button className='h-[4.5rem] mx-[13rem] my-[-4rem]' onClick={() => navigate(`/search/?query=${game.name}`)} >
+              <IconShoppingCartPlus className='w-full h-full hover:animate-pulse' />
             </button>
           </div>
 

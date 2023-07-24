@@ -10,6 +10,7 @@ import {
   AboutUs,
   FAQs,
   Dashboard,
+  Favorites,
   EditProfile,
 } from './pages'
 import Profile from './pages/Profile'
@@ -48,6 +49,7 @@ function App() {
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
             <Route path='/chat' element={<Chat />} />
+            <Route path='/favorites' element={<Favorites />} />
             <Route path='/profile/edit' element={<EditProfile />} />
           </Route>
           <Route path='/dashboard/admin/*' element={<Dashboard />} />
