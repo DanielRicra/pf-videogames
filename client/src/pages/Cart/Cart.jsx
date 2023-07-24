@@ -33,7 +33,6 @@ const Cart = () => {
       ),
     [cartItems, myVideogames]
   )
-  console.log('🚀 ~ file: Cart.jsx:36 ~ Cart ~ myItems:', myItems)
 
   useEffect(() => {
     if (sessionId) {
