@@ -9,6 +9,7 @@ import FAQs from './FAQs'
 import Chat from './Chat/Chat'
 import Dashboard from './Dashboard/Dashboard'
 import Favorites from './Favorites'
+import EditProfile from './EditProfile'
 
 export {
   Create,
@@ -22,4 +23,5 @@ export {
   FAQs,
   Dashboard,
   Favorites,
+  EditProfile,
 }

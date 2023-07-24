@@ -16,6 +16,7 @@ const Home = () => {
             name: user.name,
             email: user.email,
             nickname: user.nickname,
+            picture: user.picture,
           }
 
           await saveUser(postData)

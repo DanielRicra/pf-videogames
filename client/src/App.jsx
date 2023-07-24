@@ -11,6 +11,7 @@ import {
   FAQs,
   Dashboard,
   Favorites,
+  EditProfile,
 } from './pages'
 import Profile from './pages/Profile'
 import { Layout } from './components'
@@ -49,6 +50,7 @@ function App() {
             <Route path='/faqs' element={<FAQs />} />
             <Route path='/chat' element={<Chat />} />
             <Route path='/favorites' element={<Favorites />} />
+            <Route path='/profile/edit' element={<EditProfile />} />
           </Route>
           <Route path='/dashboard/admin/*' element={<Dashboard />} />
           <Route path='*' element={<NotFound />} />

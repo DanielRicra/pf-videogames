@@ -11,6 +11,7 @@ const {
   deleteFavorite,
   getUserFavorites,
 } = require('../controllers/userController')
+const { validateUser } = require('../utils/helpers')
 
 // Obtener todo los usuarios
 userRouter.get('/', async (req, res) => {
@@ -29,8 +30,8 @@ userRouter.get('/:email', async (req, res) => {
   let users
   try {
     if (isNaN(email)) {
-      users = await getUserByEmail(email) 
-    } else { 
+      users = await getUserByEmail(email)
+    } else {
       users = await getUserById(email)
     }
 
@@ -59,14 +60,24 @@ userRouter.delete('/:id', async (req, res) => {
 
 // Modificar un usuario por su ID
 userRouter.put('/:id', async (req, res) => {
+  const { id } = req.params
+  const { name, email, nickname, banned, picture } = req.body
+
   try {
-    const { id } = req.params
-    const { name, email, password, banned } = req.body
-    const newData = { name, email, password, banned }
-    const message = await updateUser(id, newData)
-    res.status(200).send(message)
+
+    const error = validateUser({ name, email, nickname, banned })
+
+    if (error) {
+      return res.status(400).json({ message: error })
+    }
+    
+    const newData = { name, email, nickname, banned, picture }
+  
+    const response = await updateUser(id, newData)
+
+    res.status(response.status).send(response.data)
   } catch (error) {
-    res.status(400).send(error.message)
+    res.status(500).send(error.message ?? 'Something went wrong')
   }
 })
 
