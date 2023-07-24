@@ -130,6 +130,7 @@ const postFavorite = async (email, videogameId) => {
     return favorite
     
   } catch (error) {
+    console.log(error)
     throw error
   }
 }
@@ -142,6 +143,25 @@ const deleteFavorite = async (id) => {
     }
 }
 
+const getUserFavorites = async (id) => {
+  try {
+    const response = await User.findOne({ where: { id }, include: [
+      {
+        model: Favorite,
+        include: [
+          {
+            model: Videogame,
+            attributes: ['id', 'image', 'name'],
+          },
+        ],
+      },
+    ] })
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   getUsers,
   getUserByEmail,
@@ -151,4 +171,5 @@ module.exports = {
   postFavorite,
   deleteFavorite,
   getUserById,
+  getUserFavorites
 }

@@ -7,6 +7,7 @@ const initialState = {
   user: {},
   error: null,
   loading: 'idle',
+  favorites: [],
 }
 
 export const fetchUserByEmail = createAsyncThunk(
@@ -35,7 +36,17 @@ export const fetchUserByEmail = createAsyncThunk(
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setFavorites: (state, action) => {
+      state.favorites = action.payload
+    },
+    addToFavorites: (state, action) => {
+      state.favorites.push(action.payload)
+    },
+    removeFromFavorites: (state, action) => {
+      state.favorites = state.favorites.filter((fav) => fav.id !== action.payload)
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserByEmail.pending, (state) => {
@@ -53,6 +64,7 @@ const userSlice = createSlice({
 })
 
 export const selectUser = (state) => state.user.user
+export const selectFavorites = (state) => state.user.favorites
 
-export const { setUser, setLoading, setError } = userSlice.actions
+export const { setUser, setLoading, setError, setFavorites, removeFromFavorites, addToFavorites } = userSlice.actions
 export default userSlice.reducer

@@ -8,7 +8,8 @@ const {
   updateUser,
   getUserByEmail,
   postFavorite,
-  deleteFavorite
+  deleteFavorite,
+  getUserFavorites,
 } = require('../controllers/userController')
 
 // Obtener todo los usuarios
@@ -84,6 +85,16 @@ userRouter.delete('/favorites/:id', async (req, res) => {
     const { id } = req.params
     await deleteFavorite(id)
     res.status(200).json({ message: 'Successfully deleted' })
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+})
+
+userRouter.get('/:id/favorites', async (req, res) => {
+  try {
+    const { id } = req.params
+    const userFavorites = await getUserFavorites(id)
+    res.status(200).send(userFavorites)
   } catch (error) {
     res.status(500).send(error.message)
   }
