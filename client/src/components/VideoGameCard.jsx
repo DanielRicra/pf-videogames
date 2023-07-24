@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingCartIcon } from './icons'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
+import { IconStarFilled, IconStar } from '@tabler/icons-react'
 import {
   addToCart,
   getCartItems,
@@ -35,6 +37,7 @@ const VideoGameCard = ({ videogame, user, owned }) => {
         }
         dispatch(addToCart(videogame))
         setIsOpen(true)
+        toast.success('Added to cart')
       } else {
         if (user) {
           await removeVideogameFromUserCart({
@@ -44,11 +47,24 @@ const VideoGameCard = ({ videogame, user, owned }) => {
         }
 
         dispatch(removeFromCart(videogame.id.toString()))
+        toast.success('Removed from cart')
       }
     } catch (error) {
-      /* empty */
+      toast.error('Something went wrong')
     }
   }
+
+  const stars = useMemo(() => {
+    const stars = []
+    for (let i = 0; i < 5; i++) {
+      if (i < videogame.rating) {
+        stars.push(true)
+      } else {
+        stars.push(false)
+      }
+    }
+    return stars
+  }, [videogame])
 
   useEffect(() => {
     setValue(cartItems)
@@ -95,13 +111,27 @@ const VideoGameCard = ({ videogame, user, owned }) => {
               </span>
             </button>
           </div>
-          <Link
-            to={`/detail/${videogame.id}`}
-            className='text-center font-normal text-sm'
-          >
-            See details
-            <span className='text-purple-600'> &rarr;</span>
-          </Link>
+
+          <div className='flex justify-between gap-2 py-1'>
+            <div className='starts flex'>
+              {stars.map((star, i) => (
+                <span key={i}>
+                  {star ? (
+                    <IconStarFilled className='text-yellow-500 h-5' />
+                  ) : (
+                    <IconStar className='text-yellow-500 h-5' />
+                  )}
+                </span>
+              ))}
+            </div>
+            <Link
+              to={`/detail/${videogame.id}`}
+              className='text-center font-normal text-sm'
+            >
+              See details
+              <span className='text-purple-600'> &rarr;</span>
+            </Link>
+          </div>
         </div>
       </div>
 

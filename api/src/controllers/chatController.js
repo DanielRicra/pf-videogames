@@ -35,8 +35,10 @@ const addMessages = async ({ message, friendShipId }) => {
         friendShipId: foundFriendship.id,
       },
     })
-    foundChatFriend.message = [...foundChatFriend.message, message]
-    await foundChatFriend.save()
+    if (message) {
+      foundChatFriend.message = [...foundChatFriend?.message, message]
+      await foundChatFriend.save()
+    }
 
     return foundChatUser
   } catch (error) {

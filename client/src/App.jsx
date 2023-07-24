@@ -6,18 +6,22 @@ import {
   Detail,
   Home,
   NotFound,
-  Search,
   AboutUs,
   FAQs,
-  Dashboard,
+  Favorites,
+  EditProfile,
 } from './pages'
+import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
-import { Layout } from './components'
+import { Layout, Loading } from './components'
 import Library from './pages/Library'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchUserByEmail } from './redux/user/userSlice'
 import { useAuth0 } from '@auth0/auth0-react'
+
+const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'))
+const Search = lazy(() => import('./pages/Search'))
 
 function App() {
   const dispatch = useDispatch()
@@ -39,7 +43,14 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
-            <Route path='/search' element={<Search />} />
+            <Route
+              path='/search'
+              element={
+                <Suspense fallback={<Loading />}>
+                  <Search />
+                </Suspense>
+              }
+            />
             <Route path='/detail/:id' element={<Detail />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/profile' element={<Profile />} />
@@ -47,11 +58,22 @@ function App() {
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
             <Route path='/chat' element={<Chat />} />
+            <Route path='/favorites' element={<Favorites />} />
+            <Route path='/profile/edit' element={<EditProfile />} />
           </Route>
-          <Route path='/dashboard/admin/*' element={<Dashboard />} />
+          <Route
+            path='/dashboard/admin/*'
+            element={
+              <Suspense fallback={<Loading />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
+
+      <Toaster richColors />
     </div>
   )
 }
