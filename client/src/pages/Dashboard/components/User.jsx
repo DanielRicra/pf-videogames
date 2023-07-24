@@ -1,15 +1,12 @@
 import {
-  ArrayField,
   BooleanField,
   BooleanInput,
-  ChipField,
   Create,
   Datagrid,
   Edit,
   EmailField,
   List,
   SimpleForm,
-  SingleFieldList,
   TextField,
   TextInput,
   useRecordContext,
@@ -22,12 +19,6 @@ export const UserList = () => (
       <TextField source='id' />
       <EmailField source='email' />
       <TextField source='nickname' />
-      <TextField source='friends' />
-      <ArrayField source='videogames'>
-        <SingleFieldList>
-          <ChipField source='name' size='small' />
-        </SingleFieldList>
-      </ArrayField>
       <BooleanField source='banned' />
     </Datagrid>
   </List>
