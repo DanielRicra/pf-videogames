@@ -41,7 +41,7 @@ const Detail = () => {
   const { videogames: myVideogames } = useSelector(selectUser)
 
   const {
-    data: { Favorites },
+    data: userWithFavorites,
     mutate: mutateFavorites,
   } = useSWRImmutable(`user/${user?.id}/favorites`, getUserFavorites)
 
@@ -50,13 +50,13 @@ const Detail = () => {
   }, [cartItems, game])
 
   const isFavorite = useMemo(() => {
-    return Favorites?.some((fav) => fav.videogame.id === game?.id)
-  }, [Favorites, game])
+    return userWithFavorites?.Favorites?.some((fav) => fav.videogame.id === game?.id)
+  }, [userWithFavorites, game])
 
   const handleFavorite = async () => {
     try {
       if (isFavorite) {
-        const favoriteId = Favorites.find(
+        const favoriteId = userWithFavorites?.Favorites?.find(
           (fav) => fav.videogame.id === game?.id
         ).id
         await deleteFavorite(favoriteId)
