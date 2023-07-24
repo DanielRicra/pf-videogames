@@ -1,7 +1,8 @@
-const { User, Videogame } = require('../db')
+const { User, Videogame, Favorite } = require('../db')
 const sgMail = require('@sendgrid/mail')
 const fs = require('fs')
 const path = require('path')
+const { uploadImage } = require('../utils/uploadImages')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const welcomeEmailPath = path.join(
@@ -16,9 +17,21 @@ const getUsers = async () => {
     const users = await User.findAll({
       include: Videogame,
     })
-    return users
+    return { results: users }
   } catch (error) {
-    throw new Error('Error al obtener los usuarios')
+    throw error
+  }
+}
+
+const getUserById = async (id) => {
+  try {
+    const user = await User.findByPk(id)
+    if (!user) {
+      throw new Error('User not found')
+    }
+    return user
+  } catch (error) {
+    throw error
   }
 }
 
@@ -47,7 +60,6 @@ const sendWelcomeEmail = async (email, name) => {
     }
 
     await sgMail.send(msg)
-    console.log('Correo electrónico de bienvenida enviado')
   } catch (error) {
     console.error('Error al enviar el correo electrónico de bienvenida:', error)
   }
@@ -56,24 +68,22 @@ const sendWelcomeEmail = async (email, name) => {
 // Crear un nuevo usuario
 const postUser = async (req, res) => {
   try {
-    const { email, name } = req.body
+    const { email, name, picture, nickname } = req.body
 
     const [user, created] = await User.findOrCreate({
       where: { email: email },
-      defaults: { name: req.body.name, email, nickname: req.body.nickname },
+      defaults: { name, email, nickname, picture },
     })
 
     if (created) {
-      // Enviar correo electrónico de bienvenida
       await sendWelcomeEmail(email, name)
 
-      return res.status(201).json({ user, message: 'Usuario creado' })
+      return res.status(201).json({ user, message: 'User created successfully' })
     } else {
-      return res.status(200).json({ user, message: 'Usuario existente' })
+      return res.status(200).json({ user, message: `User ${email} already exists` })
     }
   } catch (error) {
-    console.error('Error al crear o buscar el usuario:', error)
-    return res.status(500).send('Error al crear o buscar el usuario')
+    return res.status(500).json({ message: error.message ?? 'Something went wrong' })
   }
 }
 
@@ -91,17 +101,68 @@ const deleteUser = async (id) => {
   }
 }
 
-// Modificar un usuario por su ID
 const updateUser = async (id, newData) => {
   try {
-    const user = await User.findByPk(id)
-    if (!user) throw new Error('Usuario no encontrado')
+    const existingUser = await User.findByPk(id)
 
-    await user.update(newData)
+    if (!existingUser) return { data: { error: 'User not found' }, status: 404  }
 
-    return 'Usuario actualizado exitosamente'
+    const pictureName = newData.email.split('@').join('')
+    
+    if (newData.picture && (newData.picture !== existingUser.picture)) {
+      const result = await uploadImage({ imagePath: newData.picture, id: pictureName })
+      newData.picture = result.secure_url
+    }
+
+    const updatedUser = await existingUser.update(newData)
+
+    return { data: updatedUser, status: 200 }
   } catch (error) {
-    throw new Error('Error al modificar el usuario')
+    throw error
+  }
+}
+
+const postFavorite = async (email, videogameId) => {
+  try {
+    const user = await User.findOne({ where: { email } })
+    const videogame = await Videogame.findByPk(videogameId)
+
+    if (!user || !videogame) throw new Error('No se encontro usuario y/o videojuego')
+
+    const favorite = await Favorite.findOrCreate({ where: { userId: user.id, videogameId: videogame.id } })
+
+    return favorite
+    
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+const deleteFavorite = async (id) => {
+    try {
+        await Favorite.destroy({ where: { id } })
+    } catch (error) {
+        throw error
+    }
+}
+
+const getUserFavorites = async (id) => {
+  try {
+    const response = await User.findOne({ where: { id }, include: [
+      {
+        model: Favorite,
+        include: [
+          {
+            model: Videogame,
+            attributes: ['id', 'image', 'name'],
+          },
+        ],
+      },
+    ] })
+    return response
+  } catch (error) {
+    throw error
   }
 }
 
@@ -111,4 +172,8 @@ module.exports = {
   postUser,
   deleteUser,
   updateUser,
+  postFavorite,
+  deleteFavorite,
+  getUserById,
+  getUserFavorites
 }

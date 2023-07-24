@@ -1,7 +1,6 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-
   sequelize.define('user', {
     name: {
       type: DataTypes.STRING,
@@ -21,12 +20,17 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    friends: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
-      defaultValue: [],
+    banned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
     },
+    picture: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    }
   },
   {
-    timestamps: false
-  });
-};
+    timestamps: false,
+  })
+}

@@ -58,7 +58,7 @@ const Search = () => {
   }, [genresFilter, tagsFilter])
 
   const { data, error, isLoading } = useSWRImmutable(
-    `${url}&name=${searchQuery}&page=${currentPage}&field=${sortType}&order=${sortOrder}`,
+    `${url}&name=${searchQuery}&page=${currentPage}&field=${sortType}&order=${sortOrder}&stock=true`,
     videoGameService.fetchVideogames
   )
 
@@ -76,7 +76,7 @@ const Search = () => {
           <SortBar />
 
           <p className='text-xl font-semibold text-left mb-4'>
-            Showing {data?.totalVideogames} results
+            Showing {data?.totalResults} results
           </p>
 
 
@@ -92,7 +92,7 @@ const Search = () => {
             </div>
           ) : (
             <VideoGameCardList
-              videogames={data?.videogames ?? []}
+              videogames={data?.results ?? []}
               message={`There are no VideoGames with name: ${searchQuery}`}
             />
           )}
@@ -101,7 +101,7 @@ const Search = () => {
             {!error && (
               <PaginationBar
                 currentPage={currentPage}
-                totalPages={Math.round((data?.totalVideogames ?? 10) / 10)}
+                totalPages={Math.round((data?.totalResults ?? 10) / 10)}
                 paginate={paginate}
               />
             )}

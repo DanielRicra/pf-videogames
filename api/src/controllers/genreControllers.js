@@ -4,15 +4,61 @@ const { Op } = require('sequelize');
 const Sequelize = require('sequelize')
 const shortid = require('shortid')
 
-const getGenres = async () => {
+const getGenres = async ({ name = '', page = 1, limit = 10 }) => {
+  if (isNaN(page) || isNaN(limit)) {
+      throw new Error('Page or limit must be numbers')
+  }
+
+  try {
+      let foundedGenres = await Genre.findAll({
+          where: { name: { [Op.iLike]: `%${name}%` } },
+          offset: (page - 1) * limit,
+          limit,
+          order: [['id', 'ASC']],
+      })
+
+      const totalGenres = await Genre.count({
+          distinct: true,
+          col: 'id',
+          where: { name: { [Op.iLike]: `%${name}%` } },
+          order: [['id', 'ASC']],
+      });
+
+      const result = {
+          totalResults: totalGenres,
+          nextPage: null,
+          prevPage: null,
+          results: foundedGenres
+      };
+
+      const currentPage = parseInt(page)
+      const totalPages = Math.ceil(totalGenres / parseInt(limit));
+
+      if (currentPage < totalPages) {
+          result.nextPage = currentPage + 1;
+      }
+
+      if (currentPage > 1) {
+          result.prevPage = currentPage - 1;
+      }
+
+      return result
+  } catch (error) {
+      return { error: error.message }
+  }
+}
+
+const getManyGenres = async (ids) => {
     try {
-        let allGenres = await Genre.findAll();
+        let allGenres = await Genre.findAll({
+            where: { id: ids },
+        });
 
         return allGenres;
     } catch (error) {
         return {error: error.message}
     }
-};
+}
 
 
 const genreUpload = () => {
@@ -58,7 +104,48 @@ const genreUpload = () => {
       
 }
 
+const updateGenre = async ({ body, id }) => {
+  const { name } = body
+
+  if( !name ) {
+    throw new Error('Bad request, missing fields')
+  }
+
+  try {
+      const existingGenre = await Genre.findByPk(id)
+      if (!existingGenre) {
+          return { status: 404, message: 'Genre not found' }
+      }
+
+      await existingGenre.update({
+          name,
+      })
+
+      return existingGenre
+  } catch (error) {
+      throw new Error(error.message || 'Something went wrong')
+  }
+}
+
+const getGenreById = async ( id ) =>{
+  try{
+      let genre = await Genre.findByPk(id);
+
+      if (!genre) {
+        throw new Error('Genre not found');
+      }
+      
+      return genre
+  }
+  catch (error) {
+      throw new Error(error.message || 'Something went wrong')
+  }
+}
+
 module.exports = {
     getGenres,
-    postGenres
+    postGenres,
+    getManyGenres,
+    updateGenre,
+    getGenreById
 };

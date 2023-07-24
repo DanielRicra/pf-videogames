@@ -1,8 +1,7 @@
 const { Videogame, Genre, Tag } = require('../db')
 const { Op } = require('sequelize');
 
-const axios = require ('axios')
-const sharp = require('sharp');
+const { uploadImage } = require('../utils/uploadImages');
 const cloudinary = require('cloudinary').v2;
 const MAX_WIDTH = 1920; // Ancho máximo permitido
 const MAX_HEIGHT = 1080; // Alto máximo permitido
@@ -18,9 +17,7 @@ cloudinary.config({
   api_secret: `${API_SECRET}`
 });
 
-const videogame = require('../apiData/Videogame.json')
-
-const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter) => {
+const getAllVideogames = async (page, page_size, order, field, genreFilter, tagFilter, stock) => {
   try {
       const defaultPageSize = 10;
       const defaultPage = 1;
@@ -36,11 +33,14 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
                   where: {}
               }
           ],
+          where: {},
           order: [[field ? field : 'name', order ? order : 'ASC']],
           limit: page_size ? page_size : defaultPageSize,
           offset: page ? (page - 1) * (page_size ? page_size : defaultPageSize) : 0,
       };
-
+      if(stock){
+        videogameOptions.where.stock = stock
+      }
       if (genreFilter) {
           videogameOptions.include[0].where.name = genreFilter;
       }
@@ -61,7 +61,8 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
                   model: Tag,
                   where: tagFilter ? { name: tagFilter } : {}
               }
-          ]
+          ],
+          where: stock ? { stock:stock } : {}
       };
 
       const allVideogames = await Videogame.findAll(videogameOptions);
@@ -71,7 +72,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
           totalVideogames: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: allVideogames
+          results: allVideogames
       };
 
 
@@ -87,8 +88,7 @@ const getAllVideogames = async (page, page_size, order, field, genreFilter, tagF
       }
 
 
-      //return result;
-      return allVideogames;
+      return result;
   } catch (error) {
       return { error: error.message };
   }
@@ -111,8 +111,9 @@ const getVideogamesById = async ( searchedId ) =>{
     }
 }
 
-const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter ) =>{
+const getVideogamesByName = async ( searchedName,page, page_size, order, field, genreFilter, tagFilter, stock ) =>{
     try{
+
       const defaultPageSize = 10;
       const defaultPage = 1;
       const videogameOptions = {
@@ -135,6 +136,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
           limit: page_size ? page_size : 10,
           offset: page ? (page - 1) * (page_size ? page_size : 10) : 0,
       };
+
 
       if (genreFilter) {
           videogameOptions.include[0].where.name = genreFilter;
@@ -162,15 +164,20 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
             }
         ]
       };
-        
+
+      if(stock !== undefined){
+        videogameOptions.where.stock = stock
+        countOptions.where.stock = stock
+      }
+
       const videogamesFound = await Videogame.findAll(videogameOptions);
       const totalVideogames = await Videogame.count(countOptions);
 
       const result = {
-          totalVideogames: totalVideogames,
+          totalResults: totalVideogames,
           nextPage: null,
           prevPage: null,
-          videogames: videogamesFound
+          results: videogamesFound
       };
 
       
@@ -184,7 +191,7 @@ const getVideogamesByName = async ( searchedName,page, page_size, order, field, 
       if (currentPage > defaultPage) {
           result.prevPage = currentPage - 1;
       }
-      //return result;
+
       return result;
     }
     catch (error) {
@@ -221,6 +228,42 @@ const postVideogames = async (videogame) => {
         return {error: error.message};
     }
     
+}
+
+const updateVideogame = async ({ body, id }) => {
+    const { name, description, releaseDate, rating, genres, tags, price, stock } = body
+    let { image } = body
+
+    if(!name || !image || !description || !releaseDate || !price || !genres.length || !tags.length ) {
+      throw new Error('Bad request, missing fields')
+    }
+
+    try {
+        const existingVideogame = await Videogame.findByPk(id)
+        if (!existingVideogame) {
+            return { status: 404, message: 'Videogame not found' }
+        }
+
+        if (image !== existingVideogame.image) {
+            const result = await uploadImage({ imagePath: image, id })
+            image = result.secure_url
+        }
+
+        await existingVideogame.update({
+            name,
+            image,
+            description,
+            releaseDate,
+            rating,
+            price,
+            stock,
+        })
+        await existingVideogame.setGenres(genres)
+        await existingVideogame.setTags(tags)
+        return existingVideogame
+    } catch (error) {
+        throw new Error(error.message || 'Something went wrong')
+    }
 }
 
 /*videogamesUpload = async () => {
@@ -285,5 +328,6 @@ module.exports = {
     getVideogamesById,
     getVideogamesByName,
     postVideogames,
+    updateVideogame,
   };
   

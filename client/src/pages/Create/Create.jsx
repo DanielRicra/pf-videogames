@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { BoxInput, TextField } from '../../components'
 import { CloudUpload } from '../../components/icons'
 import * as videoGameService from '../../services/videoGameService'
-import { actionTypes, saveNewVideogame, INITIAL_STATE } from './fetchReducer'
+import { actionTypes, fetchData, INITIAL_STATE } from './fetchReducer'
 import { useGenres } from '../../hooks/useGenres'
 import { useTags } from '../../hooks/useTags'
 import { selectStyles } from './styles'
@@ -22,7 +22,7 @@ const Create = () => {
   } = useForm({ criteriaMode: 'all' })
   const navigate = useNavigate()
   const [image, setImage] = useState(null)
-  const [state, dispatch] = useReducer(saveNewVideogame, INITIAL_STATE)
+  const [state, dispatch] = useReducer(fetchData, INITIAL_STATE)
 
   const { genres, isGenresLoading } = useGenres()
   const { tags, isTagsLoading } = useTags()
@@ -35,10 +35,10 @@ const Create = () => {
       data.image = imgBase64
 
       dispatch({ type: actionTypes.FETCH_START })
-      const response = await videoGameService.saveNewVideogame(data)
+      await videoGameService.saveNewVideogame(data)
       dispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
       reset()
-      navigate(`/detail/${response.id}`)
+      navigate('/dashboard/admin/videogames')
     } catch (error) {
       dispatch({
         type: actionTypes.FETCH_ERROR,
@@ -196,12 +196,12 @@ const Create = () => {
                   name={name}
                   isMulti
                   options={
-                    genres?.map((genre) => ({
+                    genres?.results?.map((genre) => ({
                       value: genre.id,
                       label: genre.name,
                     })) ?? []
                   }
-                  value={genres.find((g) => g.id === value)}
+                  value={genres?.results?.find((g) => g.id === value)}
                   onChange={(e) =>
                     e.value
                       ? onChange(e.value)
@@ -234,12 +234,12 @@ const Create = () => {
                   isMulti
                   styles={selectStyles}
                   options={
-                    tags?.map((tag) => ({
+                    tags?.results?.map((tag) => ({
                       value: tag.id,
                       label: tag.name,
                     })) ?? []
                   }
-                  value={tags.find((g) => g.id === value)}
+                  value={tags?.results?.find((g) => g.id === value)}
                   onChange={(e) =>
                     e.value
                       ? onChange(e.value)

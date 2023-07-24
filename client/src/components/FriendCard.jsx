@@ -1,0 +1,62 @@
+import { acceptFriend, rejectFriend } from '../services/friendService'
+import { useUserById } from '../hooks/useUser'
+
+const FriendCard = ({ friend, onAccept, onReject }) => {
+  const { user } = friend
+  const { user: friendDetails, isUserLoading, userError } = useUserById(friend.userId)
+
+  const handleAcceptFriend = async () => {
+    try {
+      await acceptFriend(user.email, friendDetails.email)
+
+      onAccept(friend)
+    } catch (error) { /* empty */ }
+  }
+
+  const handleRejectFriend = async () => {
+    try {
+      await rejectFriend(user.email, friendDetails.email)
+
+      onReject(friend)
+    } catch (error) { /* empty */ }
+  }
+
+  if (isUserLoading) {
+    return <p>Loading...</p>
+  }
+
+  if (userError) {
+    return <p>Error: {userError.message ?? 'Something went wrong'}</p>
+  }
+
+  const { nickname, email } = friendDetails
+
+  return (
+    <div className='flex items-center border rounded p-4 my-2'>
+      <div className='flex flex-col'>
+        <h3 className='font-medium text-xl'>{nickname}</h3>
+        <p className='text-gray-300'>{email}</p>
+      </div>
+      <div className='ml-auto'>
+        {friend.status === 'Pending' && (
+          <>
+            <button
+              onClick={handleAcceptFriend}
+              className='bg-green-500 text-white px-4 py-2 rounded-md mr-2'
+            >
+              Accept
+            </button>
+            <button
+              onClick={handleRejectFriend}
+              className='bg-red-500 text-white px-4 py-2 rounded-md'
+            >
+              Reject
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default FriendCard

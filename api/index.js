@@ -1,4 +1,4 @@
-const server = require('./src/app.js')
+const { server } = require('./src/app.js')
 const { conn, Tag, Videogame, Genre } = require('./src/db.js')
 const {
   uploadVideogames,
@@ -9,11 +9,11 @@ const {
 const PORT = process.env.PORT || 3001
 
 conn.sync({ force: false }).then(() => {
-  //uploadGenres(Genre)
-  //uploadTags(Tag)
-  //uploadVideogames(Videogame)
+  // uploadGenres(Genre)
+  // uploadTags(Tag)
+  // uploadVideogames(Videogame)
 
-  server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server is running on https://pf-videogames-production.up.railway.app/`)
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on https://localhost:${PORT}`)
   })
 })

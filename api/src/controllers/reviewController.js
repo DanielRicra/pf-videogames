@@ -37,7 +37,7 @@ const getReviewsByVideogameId = async (req, res) => {
 
 
 // Crear una nueva review
-const postReview = async (score, text, videogameId, req, res) => {
+const postReview = async (score, text, videogameId, userId, req, res) => {
   try {
     // Verificar si el videojuego existe
     const videogame = await Videogame.findByPk(videogameId);
@@ -45,11 +45,12 @@ const postReview = async (score, text, videogameId, req, res) => {
       throw new Error('No se encontró el videojuego');
     }
 
-    // Crear la nueva reseña y establecer la relación con el videojuego
+
     const newReview = await Review.create({
       score,
       text,
       videogameId,
+      userId,
     });
 
     res.status(201).json(newReview);

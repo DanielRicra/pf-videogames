@@ -1,26 +1,110 @@
-import { useSelector } from 'react-redux'
+import { useEffect, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
-import { IconHeart } from '@tabler/icons-react'
+import { IconHeart, IconHeartFilled } from '@tabler/icons-react'
 import { IconShoppingCartPlus } from '@tabler/icons-react'
 import { Loading, ReviewCard } from '../components'
-// import { fetchReviews, postReview } from '../redux/actions/reviewAction'
 import { getVideogameById } from '../services/videoGameService'
+import { fetchReviews } from '../redux/actions/reviewAction'
+import {
+  saveFavorite,
+  deleteFavorite,
+  getUserFavorites,
+} from '../services/favoriteService'
+import { selectUser } from '../redux/user/userSlice'
+import { toast } from 'sonner'
+import {
+  addToCart,
+  getCartItems,
+  removeFromCart,
+} from '../redux/cart/cartSlice'
+import {
+  addVideogameToUserCart,
+  removeVideogameFromUserCart,
+} from '../services/cartService'
 
 const Detail = () => {
   const { id } = useParams()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const cartItems = useSelector(getCartItems)
   const reviews = useSelector((state) => state.review.reviews || [])
+  const user = useSelector(selectUser)
+
   const {
     data: game,
     error,
     isLoading,
   } = useSWRImmutable(`videogames/${id}`, getVideogameById)
+  const { videogames: myVideogames } = useSelector(selectUser)
 
-  // const handleSubmitReview = (review) => {
-  //   dispatch(postReview(review))
-  // }
+  const {
+    data: { Favorites },
+    mutate: mutateFavorites,
+  } = useSWRImmutable(`user/${user?.id}/favorites`, getUserFavorites)
+
+  const cartItem = useMemo(() => {
+    return cartItems.find((item) => item.id === game?.id)
+  }, [cartItems, game])
+
+  const isFavorite = useMemo(() => {
+    return Favorites?.some((fav) => fav.videogame.id === game?.id)
+  }, [Favorites, game])
+
+  const handleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        const favoriteId = Favorites.find(
+          (fav) => fav.videogame.id === game?.id
+        ).id
+        await deleteFavorite(favoriteId)
+        toast.success('Removed from favorites')
+      } else {
+        await saveFavorite(user.email, game.id)
+        toast.success('Added to favorites')
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    } finally {
+      mutateFavorites()
+    }
+  }
+
+  const handleClick = async () => {
+    try {
+      if (!cartItem) {
+        if (user) {
+          await addVideogameToUserCart({
+            userEmail: user.email,
+            videogameId: game.id,
+          })
+        }
+        dispatch(addToCart(game))
+        toast.success('Added to cart')
+        navigate('/cart')
+      } else {
+        if (user) {
+          await removeVideogameFromUserCart({
+            userEmail: user.email,
+            videogameId: game?.id,
+          })
+        }
+
+        dispatch(removeFromCart(game?.id.toString()))
+        toast.success('Removed from cart')
+      }
+    } catch (error) {
+      toast.error('Something went wrong')
+    }
+  }
+
+  useEffect(() => {
+    dispatch(fetchReviews(id)).catch(() => {
+      toast.error('Cannot fetch reviews')
+    })
+  }, [dispatch, id])
 
   if (isLoading) {
     return (
@@ -33,87 +117,94 @@ const Detail = () => {
   if (error) {
     return (
       <div className='flex items-center justify-center min-h-[calc(100vh-120px)]'>
-        <div className='text-2xl font-serif'>{error.message ?? 'Something went wrong'}</div>
+        <div className='text-2xl'>
+          {error.message ?? 'Something went wrong'}
+        </div>
       </div>
     )
   }
 
   return (
-    <div className='wrapper min-h-[calc(100vh-120px)]'>
-      <div className='flex'>
-        <div className='container1'>
-          <img
-            className='mx-[3rem] my-[5rem] h-[25rem] rounded-[1rem]'
-            src={game.image}
-            alt={game.name}
-            title={game.name}
-          />
+    <div className='wrapper min-h-[calc(100vh-120px)] p-7 lg:p-14'>
+      <div className='flex flex-wrap gap-4 lg:gap-8 flex-col md:flex-row'>
+        <div className='flex-1 w-full md:w-1/2 flex-col'>
+          <div className='overflow-hidden rounded-lg w-full mb-4'>
+            <img
+              className='w-full rounded-lg'
+              src={game.image}
+              alt={game.name}
+              title={game.name}
+            />
+          </div>
 
-          <div className='flex justify-between px-[23rem]'>
-            <button
-              className='h-[4.5rem] mx-[-19.5rem] my-[-4rem]'
-              onClick={() => navigate('/favorites')}
-            >
-              {' '}
-              <IconHeart className='w-full h-full hover:animate-pulse' />{' '}
+          <div className='flex justify-between'>
+            <button className='' onClick={handleFavorite}>
+              {isFavorite ? (
+                <IconHeartFilled className='w-14 h-14 hover:animate-pulse text-red-500' />
+              ) : (
+                <IconHeart className='w-14 h-14 hover:animate-pulse' />
+              )}
             </button>
+
             <button
-              className='h-[4.5rem] mx-[13rem] my-[-4rem]'
-              onClick={() => navigate('/cart')}
+              className='bg-purple-600 text-white px-4 text-lg lg:text-2xl p-2 rounded-lg hover:opacity-85 flex gap-1 justify-center items-center'
+              type='button'
+              onClick={handleClick}
             >
-              {' '}
-              <IconShoppingCartPlus className='w-full h-full hover:animate-pulse' />{' '}
+              <IconShoppingCartPlus className='w-7 h-7' />
+              <span>
+                {!cartItem
+                  ? !myVideogames?.some((vg) => vg.id === game?.id)
+                    ? 'Add to cart'
+                    : 'Gift to a friend'
+                  : 'Remove from cart'}
+              </span>
             </button>
           </div>
 
-          <div className='container flex p-[0.5rem] px-[1rem] mx-[4rem] my-[2rem] bg-black bg-opacity-50 border-[0.2rem] border-violet-500 rounded-[2rem] w-[42.5rem]'>
-            <div className='flex flex-col p-[0.7rem]'>
-              <div className='text-2xl font-serif'>Genres:</div>
-              {game.genres &&
-                game.genres.map((genre, index) => (
-                  <div
-                    key={index}
-                    className='text-1xl font-mono font-semibold text-white my-[0.2rem]'
-                  >
-                    - {genre.name}
-                  </div>
-                ))}
-            </div>
+          <div className='flex flex-col gap-4 p-4 mt-8 bg-gray-100 text-black rounded-xl'>
+            <div className='flex'>
+              <div className='flex flex-col flex-1'>
+                <div className='text-2xl'>Genres:</div>
+                {game.genres &&
+                  game.genres.map((genre, index) => (
+                    <div
+                      key={index}
+                      className='text-1xl font-semibold text-gray-800 my-[0.2rem]'
+                    >
+                      - {genre.name}
+                    </div>
+                  ))}
+              </div>
 
-            <div className='text-white mx-[6rem] p-[0.7rem]'>
-              <div>
-                <div className='text-2xl font-serif'>Released in:</div>
-                <div className='text-1xl font-mono font-semibold my-[0.2rem]'>
+              <div className='text-gray-800 flex-1'>
+                <div className='text-2xl'>Released in:</div>
+                <p className='text-1xl font-semibold my-[0.2rem]'>
                   - {game.releaseDate}
-                </div>
+                </p>
               </div>
             </div>
-
-            <div className='text-white p-[0.7rem]'>
-              <div>
-                <div className='text-2xl font-serif'>Price:</div>
-                <div className='text-1xl font-mono font-semibold my-[0.2rem]'>
-                  $ {game.price}
-                </div>
-              </div>
+            <div className='text-gray-800 flex gap-4 self-end mt-4'>
+              <div className='text-2xl'>Price:</div>
+              <p className='text-2xl font-semibold text-center'>$ {game.price}</p>
             </div>
           </div>
         </div>
 
-        <div className='container2 bg-black bg-opacity-50 p-8 w-[40rem] border-[0.2rem] border-violet-500 rounded-[2rem] mx-[5rem] my-[5rem]'>
-          <div className='text-6xl font-serif text-white text-center'>
-            {game.name}
-          </div>
-          <div className='text-1xl font-serif text-white mx-[2rem] my-[2rem]'>
+        <div className='flex-1 p-6 2xl:p-8 rounded-lg bg-gray-100 text-black'>
+          <div className='xl:text-3xl text-lg'>{game.name}</div>
+          <div className='text-1xl my-[2rem]'>
             {game.description &&
               game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g, '')}
           </div>
         </div>
       </div>
 
-      {/* <ReviewForm onSubmit={handleSubmitReview} videogameId={id} /> */}
-
-      <div className='flex flex-col mt-10'>
+      <div className='flex flex-col mt-10 bg-gray-100 rounded-lg text-black p-4'>
+        <h2 className='text-2xl'>Reviews</h2>
+        {reviews.length === 0 && (
+          <div className='text-center text-gray-800'>No reviews yet</div>
+        )}
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}
