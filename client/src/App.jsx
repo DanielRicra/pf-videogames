@@ -8,6 +8,7 @@ import {
   NotFound,
   AboutUs,
   FAQs,
+  Favorites,
   EditProfile,
 } from './pages'
 import { Toaster } from 'sonner'
@@ -57,6 +58,7 @@ function App() {
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
             <Route path='/chat' element={<Chat />} />
+            <Route path='/favorites' element={<Favorites />} />
             <Route path='/profile/edit' element={<EditProfile />} />
           </Route>
           <Route
