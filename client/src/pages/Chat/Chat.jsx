@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import io from 'socket.io-client'
 import { useEffect, useState } from 'react'
+import { IconSend } from '@tabler/icons-react'
 
 import Message from './Message'
 import ChatSideBar from './ChatSideBar'
@@ -91,12 +92,12 @@ const Chat = () => {
   }
 
   return (
-    <div className='min-h-[calc(100vh-120px)] flex bg-gray-100 text-black'>
-      <div className='flex flex-col w-1/4 p-4 h-full gap-2'>
+    <div className='min-h-[calc(100vh-120px)] p-2 m-2 flex bg-gray-100 text-black'>
+      <div className='flex flex-col w-1/6 p-4  h-auto gap-2 bg-white shadow-md shadow-'>
         <ChatSideBar friends={friends} handleJoinChat={handleJoinChat} />
       </div>
 
-      <div className='flex-1 flex flex-col h-[calc(100vh-120px)] justify-between overflow-hidden'>
+      <div className='flex-1 flex flex-col h-[calc(100vh-100px)] justify-between overflow-hidden py-3 px-4'>
         <div className='p-4 flex-1'>
           <div className='w-full flex flex-col items-center p-4'>
             <img
@@ -107,7 +108,7 @@ const Chat = () => {
             <h2>{user?.name}</h2>
           </div>
 
-          <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2'>
+          <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2 pr-3'>
             {messages.map((message, i) => (
               <Message key={i} message={message} friendId={friendId} />
             ))}
@@ -115,7 +116,7 @@ const Chat = () => {
           </div>
         </div>
 
-        <form className='flex'>
+        <form className='flex relative'>
           <textarea
             ref={messageRef}
             cols={1}
@@ -126,6 +127,10 @@ const Chat = () => {
                 sendMessage(e)
               }
             }}
+          />
+          <IconSend
+            className='absolute right-2 bottom-3 cursor-pointer text-purple-500'
+            onClick={(e) => sendMessage(e)}
           />
         </form>
       </div>
