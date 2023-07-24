@@ -8,8 +8,13 @@ import {
   TextInput,
 } from 'react-admin'
 
+const tagFilters = [
+  // eslint-disable-next-line react/jsx-key
+  <TextInput source='q' label='Search' alwaysOn />,
+]
+
 export const TagList = () => (
-  <List>
+  <List filters={tagFilters}>
     <Datagrid rowClick='edit'>
       <TextField source='name' />
       <TextField source='id' />
