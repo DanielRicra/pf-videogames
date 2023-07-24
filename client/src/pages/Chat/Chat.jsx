@@ -8,15 +8,18 @@ import ChatSideBar from './ChatSideBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getFriends } from '../../services/friendService'
 import { addMessageToChat, findOrCreateChat } from '../../services/chatSevice'
+
+import { toast } from 'sonner'
+
+
 const API_URL = import.meta.env.VITE_API_URL
 const socket = io(API_URL)
 
 const Chat = () => {
   const [messages, setMessages] = useState([])
   const [friends, setFriends] = useState([])
-  const [friendChat, setFriendChat] = useState([])
   const [friendId, setFriendId] = useState()
-  const [userId, setUserId] = useState()
+  const [userId, setUserId] = useState(null)
   const [friendShipId, setFriendShipId] = useState()
 
   const messageRef = useRef(null)
@@ -53,7 +56,6 @@ const Chat = () => {
     setFriendId(idFriend)
     setFriendShipId(friendShipId)
 
-    /* setFriendChat() */
     const message = await findOrCreateChat(friendShipId)
     setMessages(message[0].message)
   }
@@ -69,6 +71,9 @@ const Chat = () => {
 
   const sendMessage = (e) => {
     e.preventDefault()
+    if (userId === null) {
+      toast.error('select a Friend')
+    }
     let message = messageRef.current.value
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -81,7 +86,9 @@ const Chat = () => {
       },
     ])
     messageRef.current.value = ''
+
     socket.emit('message', { message, from: userId, to: friendId })
+
     addMessageToChat({
       message: {
         message,
@@ -124,6 +131,7 @@ const Chat = () => {
           <textarea
             ref={messageRef}
             cols={1}
+            disabled={userId === null ? true : false}
             placeholder='Type a message...'
             className='w-full p-2 px-4 border-2 border-purple-500 resize-none rounded-md max-h-12'
             onKeyDown={(e) => {
@@ -132,10 +140,13 @@ const Chat = () => {
               }
             }}
           />
-          <IconSend
-            className='absolute right-2 bottom-3 cursor-pointer text-purple-500'
+          <button
+            disabled={userId === null ? true : false}
             onClick={(e) => sendMessage(e)}
-          />
+            className='cursor-pointer disabled:cursor-not-allowed'
+          >
+            <IconSend className='absolute right-2 bottom-3 text-purple-500' />
+          </button>
         </form>
       </div>
     </div>
