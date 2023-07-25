@@ -27,7 +27,7 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', receiveMessage)
-    io.emit('userStatus', { userId, status: 'connected' }) // Emitir evento de estado de conexión
+    socket.emit('userStatus', { userId, status: 'connected' }) // Emitir evento de estado de conexión
     return () => {
       socket.off('message', receiveMessage)
     }
