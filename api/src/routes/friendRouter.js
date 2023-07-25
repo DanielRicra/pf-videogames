@@ -43,7 +43,7 @@ friendRouter.get('/', async (req, res) => {
     
         res.status(200).json(friends)
     } catch (error) {
-        res.status(404).send(error.message)
+        res.status(500).json({ error: error.message })
     }
 })
 
