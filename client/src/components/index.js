@@ -17,6 +17,7 @@ import LogoutButton from './LogoutButton'
 import LoginButton from './LoginButton'
 import FriendCardSend from './FriendCardSend'
 import FriendCard from './FriendCard'
+import ProtectedRoutes from './auth/ProtectedRoutes'
 
 export {
   FilterBar,
@@ -38,4 +39,5 @@ export {
   LoginButton,
   FriendCardSend,
   FriendCard,
+  ProtectedRoutes,
 }
