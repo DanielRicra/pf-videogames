@@ -31,3 +31,7 @@ export const getFriends = async (userEmail) => {
   return response.data
 }
 
+export const fetchFriends = async (url) => {
+  const response = await api.get(url)
+  return response.data
+}
