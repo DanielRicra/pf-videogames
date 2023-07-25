@@ -40,10 +40,6 @@ const ChatSideBar = ({
       </div>
       {friends?.map((friend) => {
         const message = messages[friend.id]
-        console.log(
-          '🚀 ~ file: ChatSideBar.jsx:44 ~ {friends?.map ~ message:',
-          message
-        )
         return (
           <div
             className='flex gap-2 items-start cursor-pointer p-2'
