@@ -126,7 +126,12 @@ const Chat = () => {
 
           <div className='flex flex-col overflow-y-auto max-h-[calc(100vh-320px)] gap-2 pr-3'>
             {messages.map((message, i) => (
-              <Message key={i} message={message} friendId={friendId} />
+              <Message
+                key={i}
+                message={message}
+                friendId={friendId}
+                userId={userId}
+              />
             ))}
             <div ref={scrollToBottom} />
           </div>

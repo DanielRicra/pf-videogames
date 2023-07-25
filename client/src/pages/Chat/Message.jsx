@@ -1,6 +1,10 @@
 import { formatDistance } from 'date-fns'
 
-const Message = ({ message, friendId }) => {
+const Message = ({ message, friendId, userId }) => {
+  if (message?.senderId !== friendId && message?.senderId !== userId) {
+    return null
+  }
+
   return (
     <div
       className={`py-2 px-4 ${
