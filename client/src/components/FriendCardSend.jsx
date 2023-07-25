@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { addFriend } from '../services/friendService'
 import { useUserById } from '../hooks/useUser'
+import { toast } from 'sonner'
 
-const FriendCardSend = ({ userId, userEmail }) => {
-  const [isRequestSent, setIsRequestSent] = useState(false)
+const FriendCardSend = ({ userId, userEmail, isPendingRequest, mutatePendingRequests }) => {
+  const [isRequestSent, setIsRequestSent] = useState(isPendingRequest)
   const {
     user: friendDetails,
     isUserLoading: isFriendLoading,
@@ -18,8 +19,12 @@ const FriendCardSend = ({ userId, userEmail }) => {
       if (confirmAdd) {
         await addFriend(userEmail, friendDetails.email)
         setIsRequestSent(true)
+        mutatePendingRequests()
+        toast.success('Friend request sent')
       }
-    } catch (error) { /* empty */ }
+    } catch (error) { 
+      toast.error('Something went wrong')
+    }
   }
 
   if (isFriendLoading) {

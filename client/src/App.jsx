@@ -13,7 +13,7 @@ import {
 } from './pages'
 import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
-import { Layout, Loading } from './components'
+import { Layout, Loading, ProtectedRoutes } from './components'
 import Library from './pages/Library'
 import { useEffect, lazy, Suspense } from 'react'
 import { useDispatch } from 'react-redux'
@@ -53,13 +53,15 @@ function App() {
             />
             <Route path='/detail/:id' element={<Detail />} />
             <Route path='/cart' element={<Cart />} />
-            <Route path='/profile' element={<Profile />} />
-            <Route path='/library' element={<Library />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/profile/edit' element={<EditProfile />} />
+              <Route path='/library' element={<Library />} />
+              <Route path='/chat' element={<Chat />} />
+              <Route path='/favorites' element={<Favorites />} />
+            </Route>
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
-            <Route path='/chat' element={<Chat />} />
-            <Route path='/favorites' element={<Favorites />} />
-            <Route path='/profile/edit' element={<EditProfile />} />
           </Route>
           <Route
             path='/dashboard/admin/*'

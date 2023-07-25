@@ -174,6 +174,7 @@ const Create = () => {
                 },
               })}
               id='image'
+              accept='image/*'
             />
           </label>
           <p className='text-red-600 text-sm ml-2'>{errors.image?.message}</p>

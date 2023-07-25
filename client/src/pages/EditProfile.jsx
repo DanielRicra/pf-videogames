@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, updateUser } from '../redux/user/userSlice'
 import { INITIAL_STATE, actionTypes, fetchData } from '../reducers/fetchReducer'
 import * as userService from '../services/userService'
+import { toast } from 'sonner'
 
 const EditProfile = () => {
   const {
@@ -34,10 +35,14 @@ const EditProfile = () => {
         data.picture = imgBase64
       }
       updateDispatch({ type: actionTypes.FETCH_START })
-      const updatedUser = await userService.updateUser({ id: user?.id, user: data })
+      const updatedUser = await userService.updateUser({
+        id: user?.id,
+        user: data,
+      })
       dispatch(updateUser(updatedUser))
       updateDispatch({ type: actionTypes.FETCH_SUCCESS, payload: {} })
       reset()
+      toast.success('Profile updated successfully')
       navigate('/profile')
     } catch (error) {
       updateDispatch({
@@ -153,6 +158,7 @@ const EditProfile = () => {
                     },
                   })}
                   id='picture'
+                  accept='image/*'
                 />
               </>
             )}
@@ -160,13 +166,25 @@ const EditProfile = () => {
           <p className='text-red-600 text-sm ml-2'>{errors.picture?.message}</p>
         </div>
 
-        <input
-          type='submit'
-          disabled={updateState.loading}
-          className='p-3 rounded-lg bg-purple-600 text-white hover:opacity-80 disabled:bg-purple-500 disabled:cursor-not-allowed'
-          value={updateState.loading ? 'Updating...' : 'Update'}
-        />
-        {updateState.error && <p className='text-red-600'>{updateState.error}</p>}
+        <div className='flex items-center justify-between'>
+          <input
+            type='button'
+            disabled={updateState.loading}
+            className='underline text-black hover:opacity-80 cursor-pointer'
+            value='Cancel'
+            onClick={() => navigate('/profile')}
+          />
+          <input
+            type='submit'
+            disabled={updateState.loading}
+            className='p-3 rounded-lg px-6 cursor-pointer bg-purple-600 text-white hover:opacity-80 disabled:bg-purple-500 disabled:cursor-not-allowed'
+            value={updateState.loading ? 'Updating...' : 'Update'}
+          />
+        </div>
+
+        {updateState.error && (
+          <p className='text-red-600'>{updateState.error}</p>
+        )}
       </form>
     </div>
   )
