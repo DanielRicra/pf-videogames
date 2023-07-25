@@ -57,7 +57,7 @@ const Chat = () => {
 
     const message = await findOrCreateChat(friendShipId)
     setMessages(message[0].message)
-    setLastMessage(message[0].message[message[0].message.length - 1])
+    setLastMessage(message[0]?.message[message[0]?.message.length - 1])
   }
 
   const receiveMessage = (message) => {
