@@ -39,15 +39,15 @@ const Chat = () => {
   }, [messages])
 
   useEffect(() => {
-    if (isAuthenticated) {
-      Friends()
+    const fetchFriends = async () => {
+      const { results } = await getFriends(user.email)
+      setFriends(results)
     }
-  }, [user])
 
-  const Friends = async () => {
-    const { results } = await getFriends(user.email)
-    setFriends(results)
-  }
+    if (isAuthenticated) {
+      fetchFriends()
+    }
+  }, [isAuthenticated, user])
 
   const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
     socket.emit('join', idUser)
