@@ -27,6 +27,7 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', receiveMessage)
+    io.emit('userStatus', { userId, status: 'connected' }) // Emitir evento de estado de conexión
     return () => {
       socket.off('message', receiveMessage)
     }
@@ -39,15 +40,14 @@ const Chat = () => {
   }, [messages])
 
   useEffect(() => {
-    const fetchFriends = async () => {
+    const friends = async () => {
       const { results } = await getFriends(user.email)
       setFriends(results)
     }
-
     if (isAuthenticated) {
-      fetchFriends()
+      friends()
     }
-  }, [isAuthenticated, user])
+  }, [user, isAuthenticated])
 
   const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
     socket.emit('join', idUser)
@@ -74,7 +74,7 @@ const Chat = () => {
     if (userId === null) {
       toast.error('select a Friend')
     }
-    let message = messageRef.current.value
+    let message = messageRef.current.value ?? ' '
     setMessages((prevMessages) => [
       ...prevMessages,
       {
