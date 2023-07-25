@@ -11,6 +11,8 @@ import { UserCreate, UserEdit, UserList } from './components/User'
 import { VideogameEdit, VideogameList, VideogameCreate } from './components/VideoGame'
 import { TransactionList } from './components/Transaction'
 import { Link } from 'react-router-dom'
+import authProvider from './authProvider'
+import LoginPage from './components/Login'
 
 const lightTheme = defaultTheme
 const darkTheme = { ...defaultTheme, palette: { mode: 'dark' } }
@@ -32,6 +34,8 @@ const Dashboard = () => {
       dataProvider={dataProvider}
       basename='/dashboard/admin'
       dashboard={DashboardHome}
+      authProvider={authProvider}
+      loginPage={LoginPage}
     >
       <Resource name='user' list={UserList} edit={UserEdit} create={UserCreate} />
       <Resource name='videogames' list={VideogameList} edit={VideogameEdit} create={VideogameCreate} />

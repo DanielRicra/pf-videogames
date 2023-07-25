@@ -60,7 +60,7 @@ const getFriends = async ({ userEmail, page = 1, limit = 10 }) => {
 
         return result
     } catch (error) {
-        return { error: error.message }
+        throw error
     }
 }
 

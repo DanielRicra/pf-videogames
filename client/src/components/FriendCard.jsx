@@ -1,24 +1,30 @@
 import { acceptFriend, rejectFriend } from '../services/friendService'
 import { useUserById } from '../hooks/useUser'
+import { toast } from 'sonner'
 
-const FriendCard = ({ friend, onAccept, onReject }) => {
+const FriendCard = ({ friend, mutatePendingRequests, mutateFriends }) => {
   const { user } = friend
   const { user: friendDetails, isUserLoading, userError } = useUserById(friend.userId)
 
   const handleAcceptFriend = async () => {
     try {
       await acceptFriend(user.email, friendDetails.email)
-
-      onAccept(friend)
-    } catch (error) { /* empty */ }
+      toast.success('Friend request accepted')
+      mutatePendingRequests()
+      mutateFriends()
+    } catch (error) { 
+      toast.error('Something went wrong')
+    }
   }
 
   const handleRejectFriend = async () => {
     try {
       await rejectFriend(user.email, friendDetails.email)
-
-      onReject(friend)
-    } catch (error) { /* empty */ }
+      toast.success('Friend request rejected')
+      mutatePendingRequests()
+    } catch (error) { 
+      toast.error('Something went wrong')
+    }
   }
 
   if (isUserLoading) {
@@ -42,13 +48,13 @@ const FriendCard = ({ friend, onAccept, onReject }) => {
           <>
             <button
               onClick={handleAcceptFriend}
-              className='bg-green-500 text-white px-4 py-2 rounded-md mr-2'
+              className='bg-green-600 text-white px-4 py-2 rounded-md mr-2 hover:opacity-90'
             >
               Accept
             </button>
             <button
               onClick={handleRejectFriend}
-              className='bg-red-500 text-white px-4 py-2 rounded-md'
+              className='bg-red-600 text-white px-4 py-2 rounded-md hover:opacity-90'
             >
               Reject
             </button>
