@@ -1,6 +1,9 @@
 import { IconPointFilled } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { findOrCreateChat } from '../../services/chatSevice'
+import { io } from 'socket.io-client'
+const API_URL = import.meta.env.VITE_API_URL
+const socket = io(API_URL)
 
 const ChatSideBar = ({
   friends,
@@ -9,6 +12,31 @@ const ChatSideBar = ({
   lastMessage,
 }) => {
   const [messages, setMessages] = useState({})
+  const [friendStatus, setFriendStatus] = useState({})
+
+  useEffect(() => {
+    socket.on('setStatus', updateUserStatus)
+    return () => {
+      socket.off('setStatus', updateUserStatus)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (friends) {
+      friends.forEach((friend) => {
+        getChat(friend.id)
+      })
+    }
+  }, [friends, lastMessage])
+
+  const updateUserStatus = ({ userId, status }) => {
+    // Actualiza el estado de conexión del amigo
+    setFriendStatus((prevStatus) => ({
+      ...prevStatus,
+      [userId]: status,
+    }))
+  }
+
   const getChat = async (idFriend) => {
     const messagesData = await findOrCreateChat(idFriend)
     const lastMessage =
@@ -19,13 +47,6 @@ const ChatSideBar = ({
     }))
   }
 
-  useEffect(() => {
-    if (friends) {
-      friends.forEach((friend) => {
-        getChat(friend.id)
-      })
-    }
-  }, [friends])
   return (
     <div className='flex flex-col gap-3 '>
       <div className='p-4'>

@@ -1,5 +1,6 @@
 module.exports = (io) => {
   let connectedUsers = []
+  let userStatus = []
 
   // Evento de conexión de Socket.IO
   io.on('connection', (socket) => {
@@ -14,6 +15,7 @@ module.exports = (io) => {
             id: socket.id,
             userId: userId,
           })
+
           io.emit('userList', getUserList(userId))
         }
       }
@@ -31,10 +33,32 @@ module.exports = (io) => {
       }
     })
 
+    socket.on('userStatus', (data) => {
+      const { userId, status } = data
+      const user = userStatus.find((e) => e.userId === userId)
+      if (!user) {
+        userStatus.push({ userId, status, id: socket.id })
+        io.emit('setStatus', { userId, status: 'connected' })
+      }
+    })
+
     // Evento de desconexión
     socket.on('disconnect', () => {
-      connectedUsers = connectedUsers.filter((user) => user.id !== socket.id)
-      console.log('Usuario desconectado')
+      let user = connectedUsers.filter((user) => user.id !== socket.id)
+      let UserStatus = userStatus.find((e) => e.id === socket.id)
+      if (UserStatus) {
+        console.log('lo sacooo')
+        userStatus = userStatus.filter((e) => e.id !== UserStatus.id)
+        console.log('🚀 ~ file: index.js:65 ~ socket.on ~ array:', userStatus)
+        io.emit('userStatus', {
+          userId: UserStatus.userId,
+          status: 'disconnected',
+        }) // Emitir evento de estado de desconexión
+      }
+      if (user) {
+        connectedUsers = connectedUsers.filter((user) => user.id !== socket.id)
+        console.log('Usuario desconectado')
+      }
     })
 
     // Obtener la lista de amigos de un usuario
