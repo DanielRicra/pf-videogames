@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import {
   ArrayField,
   ChipField,
@@ -12,12 +13,17 @@ import {
   WrapperField,
   Edit,
   Create,
+  TextInput,
 } from 'react-admin'
 import CreateVideogameForm from '../../Create/Create'
 import EditVideogameForm from './EditForm'
 
+const videogameFilters = [
+  <TextInput source='q' label='Search' alwaysOn />,
+]
+
 export const VideogameList = () => (
-  <List>
+  <List filters={videogameFilters}>
     <Datagrid rowClick='edit'>
       <TextField source='name' />
       <TextField source='id' />

@@ -1,10 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const http = require('http')
 const { Server } = require('socket.io')
-
 const routes = require('./routes/index')
 const socket = require('./socket')
 
@@ -12,11 +12,11 @@ const app = express()
 const server = http.createServer(app)
 
 app.name = 'API'
-
+const { URL_FRONT } = process.env
 // Socket Io Connection
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: URL_FRONT,
   },
 })
 

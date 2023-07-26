@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
+import Select from 'react-select'
+import useSWR from 'swr'
 
 import CartItems from './CartItems'
 import { checkoutCart } from '../../redux/actions/cartAction'
@@ -9,6 +11,8 @@ import { fetchCartByUserEmail, getCartItems } from '../../redux/cart/cartSlice'
 import { loadStripe } from '@stripe/stripe-js'
 import { selectUser } from '../../redux/user/userSlice'
 import CheckoutDetail from './CheckoutDetail'
+import { fetchFriends } from '../../services/friendService'
+import { toast } from 'sonner'
 const VITE_PUBLIC_KEY_STRIPE = import.meta.env.VITE_PUBLIC_KEY_STRIPE
 
 const Cart = () => {
@@ -20,6 +24,13 @@ const Cart = () => {
   const { sessionId, loadingCheckoutStatus } = useSelector(
     (status) => status.cart
   )
+  const {
+    data: friends,
+    isLoading: loadingFriends,
+    error: errorFriends,
+  } = useSWR(`/friend?userEmail=${user?.email ?? ''}`, fetchFriends)
+
+  const [selectedFriend, setSelectedFriend] = useState(null)
 
   const itemsToGift = useMemo(
     () =>
@@ -53,14 +64,20 @@ const Cart = () => {
     })
   }
 
-  const handleCheckout = async () => {
+  const handleCheckout = async ({ cartItems, userEmail, friendEmail = '' }) => {
     if (!isAuthenticated) {
       loginWithPopup({
         redirectUri: window.location.origin + '/cart',
       })
       return
     }
-    dispatch(checkoutCart({ myItems, email: user?.email }))
+
+    if (!userEmail) {
+      toast.error('Please login or select a friend for the gift')
+      return
+    }
+
+    dispatch(checkoutCart({ cartItems, email: userEmail, friendEmail }))
   }
 
   return (
@@ -76,7 +93,9 @@ const Cart = () => {
             <CartItems cartItems={myItems} />
 
             <CheckoutDetail
-              handleCheckout={handleCheckout}
+              handleCheckout={() =>
+                handleCheckout({ cartItems: myItems, userEmail: user?.email })
+              }
               items={myItems}
               loadingCheckoutStatus={loadingCheckoutStatus}
             />
@@ -86,10 +105,55 @@ const Cart = () => {
         {itemsToGift.length > 0 && (
           <div className='border-2 border-white rounded-lg p-2'>
             <h3 className='text-lg font-medium'>Gift Videogame</h3>
+            <div>
+              <p className=''>Select a friend to gift the game to him/her</p>
+              <Select
+                isSearchable
+                isLoading={loadingFriends}
+                options={
+                  friends?.results.map((friend) => ({
+                    value: friend.id,
+                    label: friend.friendUser.name,
+                  })) ?? []
+                }
+                placeholder='Select a friend'
+                onChange={(e) => setSelectedFriend(e?.value)}
+                className='max-w-[300px] outline-purple-500'
+                styles={{
+                  control: (styles) => ({
+                    ...styles,
+                    backgroundColor: 'transparent',
+                    border: '2px solid #9333ea',
+                    padding: '4px 2px',
+                  }),
+                }}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: '8px',
+                  colors: {
+                    ...theme.colors,
+                    primary25: '#ca9bf5',
+                    primary: '#9333ea',
+                    primary50: '#dbbcf8',
+                  },
+                })}
+              />
+              <p className='mt-2 text-red-700'>
+                {errorFriends && 'Something went wrong fetching friends'}
+              </p>
+            </div>
             <CartItems cartItems={itemsToGift} />
 
             <CheckoutDetail
-              handleCheckout={() => alert('Gift Videogame')}
+              handleCheckout={() =>
+                handleCheckout({
+                  cartItems: itemsToGift,
+                  userEmail: user?.email,
+                  friendEmail:
+                    friends?.results.find((f) => f.id === selectedFriend)
+                      ?.friendUser.email ?? null,
+                })
+              }
               items={itemsToGift}
               loadingCheckoutStatus={loadingCheckoutStatus}
             />

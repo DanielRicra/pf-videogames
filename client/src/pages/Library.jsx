@@ -1,20 +1,26 @@
 import { useEffect, useState } from 'react'
 import ReviewForm from '../components/ReviewForm'
 import { getReviewByVideogameId } from '../services/reviewService'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserByEmail, selectUser } from '../redux/user/userSlice'
+import { Link } from 'react-router-dom'
 
 const Library = () => {
-  const { videogames } = useSelector(selectUser)
+  const dispatch = useDispatch()
+  const user = useSelector(selectUser)
   const [selectedVideogame, setSelectedVideogame] = useState(null)
-  // eslint-disable-next-line no-unused-vars
-  const [reviews, setReviews] = useState([])
+  const [, setReviews] = useState([])
   const [hasReview, setHasReview] = useState({})
+
+  useEffect(() => {
+    dispatch(fetchUserByEmail(user.email))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const videogameIds = videogames?.map((item) => item.id) ?? []
+        const videogameIds = user.videogames?.map((item) => item.id) ?? []
         const reviewsPromises = videogameIds.map((id) => getReviewByVideogameId(id))
         const reviewsData = await Promise.all(reviewsPromises)
         const allReviews = reviewsData.flat()
@@ -31,7 +37,7 @@ const Library = () => {
     }
 
     fetchReviews()
-  }, [videogames])
+  }, [user])
 
   const handleReviewClick = (videogameId) => {
     setSelectedVideogame(videogameId)
@@ -47,17 +53,17 @@ const Library = () => {
         <h2 className='text-2xl font-semibold my-3 border-b-2 border-gray-400'>My Games</h2>
 
         <div className='flex flex-col gap-2 px-4'>
-          {videogames?.map((item) => (
+          {user.videogames?.map((item) => (
             <div
               key={item.id}
               className='flex items-center my-3 justify-between border-b-[1px] border-white pb-2'
             >
-              <div className='flex items-start gap-2'>
+              <Link to={`/detail/${item.id}`} className='flex items-start gap-2'>
                 <div className='flex items-center w-[80px] h-[102px] overflow-hidden'>
                   <img src={item.image} alt={item.name} className='w-full h-full object-cover' />
                 </div>
                 <p>{item.name}</p>
-              </div>
+              </Link>
 
               {!hasReview[item.id] && (
                 <button

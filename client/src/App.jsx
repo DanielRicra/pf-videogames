@@ -6,28 +6,40 @@ import {
   Detail,
   Home,
   NotFound,
-  Search,
   AboutUs,
   FAQs,
-  Dashboard,
+  Favorites,
+  EditProfile,
 } from './pages'
+import { Toaster, toast } from 'sonner'
 import Profile from './pages/Profile'
-import { Layout } from './components'
+import { Layout, Loading, ProtectedRoutes } from './components'
 import Library from './pages/Library'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { fetchUserByEmail } from './redux/user/userSlice'
+import { useEffect, lazy, Suspense } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserByEmail, selectUser } from './redux/user/userSlice'
 import { useAuth0 } from '@auth0/auth0-react'
+
+const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'))
+const Search = lazy(() => import('./pages/Search'))
 
 function App() {
   const dispatch = useDispatch()
-  const { isAuthenticated, user } = useAuth0()
+  const useProfile = useSelector(selectUser)
+  const { isAuthenticated, user, logout } = useAuth0()
 
   useEffect(() => {
     if (isAuthenticated && user) {
       dispatch(fetchUserByEmail(user.email))
     }
   }, [isAuthenticated, user])
+
+  useEffect(() => {
+    if (useProfile.banned) {
+      toast.error('Your account has been banned.')
+      logout({ returnTo: window.location.origin })
+    }
+  }, [useProfile])
 
   return (
     <div
@@ -39,19 +51,39 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path='/' element={<Home />} />
-            <Route path='/search' element={<Search />} />
+            <Route
+              path='/search'
+              element={
+                <Suspense fallback={<Loading />}>
+                  <Search />
+                </Suspense>
+              }
+            />
             <Route path='/detail/:id' element={<Detail />} />
             <Route path='/cart' element={<Cart />} />
-            <Route path='/profile' element={<Profile />} />
-            <Route path='/library' element={<Library />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/profile/edit' element={<EditProfile />} />
+              <Route path='/library' element={<Library />} />
+              <Route path='/chat' element={<Chat />} />
+              <Route path='/favorites' element={<Favorites />} />
+            </Route>
             <Route path='/about' element={<AboutUs />} />
             <Route path='/faqs' element={<FAQs />} />
-            <Route path='/chat' element={<Chat />} />
           </Route>
-          <Route path='/dashboard/admin/*' element={<Dashboard />} />
+          <Route
+            path='/dashboard/admin/*'
+            element={
+              <Suspense fallback={<Loading />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
+
+      <Toaster richColors />
     </div>
   )
 }

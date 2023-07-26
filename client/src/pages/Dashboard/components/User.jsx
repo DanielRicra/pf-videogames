@@ -1,17 +1,15 @@
 import {
-  ArrayField,
   BooleanField,
   BooleanInput,
-  ChipField,
   Create,
   Datagrid,
   Edit,
   EmailField,
   List,
   SimpleForm,
-  SingleFieldList,
   TextField,
   TextInput,
+  useRecordContext,
 } from 'react-admin'
 
 export const UserList = () => (
@@ -21,19 +19,18 @@ export const UserList = () => (
       <TextField source='id' />
       <EmailField source='email' />
       <TextField source='nickname' />
-      <TextField source='friends' />
-      <ArrayField source='videogames'>
-        <SingleFieldList>
-          <ChipField source='name' size='small' />
-        </SingleFieldList>
-      </ArrayField>
       <BooleanField source='banned' />
     </Datagrid>
   </List>
 )
 
+const EditTitle = () => {
+  const record = useRecordContext()
+  return <span>Edit user with email: {record ? record.email : ''}</span>
+}
+
 export const UserEdit = () => (
-  <Edit>
+  <Edit title={<EditTitle />}>
     <SimpleForm>
       <TextInput source='id' disabled={true} />
       <TextInput source='name' />

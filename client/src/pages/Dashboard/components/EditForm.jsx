@@ -255,6 +255,7 @@ const EditVideogameForm = () => {
                     },
                   })}
                   id='image'
+                  accept='image/*'
                 />
               </>
             )}

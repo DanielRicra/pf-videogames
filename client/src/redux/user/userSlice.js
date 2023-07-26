@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getUser } from '../../services/userService'
-import { getPendingFriendRequests } from '../../services/friendService'
 import { AxiosError } from 'axios'
 
 const initialState = {
   user: {},
   error: null,
   loading: 'idle',
+  favorites: [],
 }
 
 export const fetchUserByEmail = createAsyncThunk(
@@ -14,11 +14,7 @@ export const fetchUserByEmail = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const userData = await getUser(email)
-      const pendingFriendRequests = await getPendingFriendRequests(email) 
-      return {
-        ...userData,
-        pendingFriendRequests,
-      }
+      return userData
     } catch (error) {
       if (error instanceof AxiosError) {
         return rejectWithValue(
@@ -33,7 +29,22 @@ export const fetchUserByEmail = createAsyncThunk(
 const userSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    setFavorites: (state, action) => {
+      state.favorites = action.payload
+    },
+    addToFavorites: (state, action) => {
+      state.favorites.push(action.payload)
+    },
+    removeFromFavorites: (state, action) => {
+      state.favorites = state.favorites.filter(
+        (fav) => fav.id !== action.payload
+      )
+    },
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserByEmail.pending, (state) => {
@@ -51,6 +62,15 @@ const userSlice = createSlice({
 })
 
 export const selectUser = (state) => state.user.user
+export const selectFavorites = (state) => state.user.favorites
 
-export const { setUser, setLoading, setError } = userSlice.actions
+export const {
+  setUser,
+  setLoading,
+  setError,
+  updateUser,
+  setFavorites,
+  removeFromFavorites,
+  addToFavorites,
+} = userSlice.actions
 export default userSlice.reducer

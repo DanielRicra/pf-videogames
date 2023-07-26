@@ -1,9 +1,5 @@
 const chatRouter = require('express').Router()
-const {
-  CreateChat,
-  getChat,
-  addMessages,
-} = require('../controllers/chatController')
+const { getChat, addMessages } = require('../controllers/chatController')
 
 chatRouter.post('/', async (req, res) => {
   const { friendShipId } = req.query
