@@ -58,6 +58,13 @@ const Chat = () => {
     }
   }, [user, isAuthenticated])
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      setLastMessage(lastMessage)
+    }
+  }, [messages])
+
   const handleJoinChat = async ({ idUser, idFriend, friendShipId }) => {
     socket.emit('join', idUser)
     setUserId(idUser)
@@ -66,7 +73,9 @@ const Chat = () => {
 
     const message = await findOrCreateChat(friendShipId)
     setMessages(message[0].message)
-    setLastMessage(message[0]?.message[message[0]?.message.length - 1])
+    const lastMessage =
+    message[0]?.message[message[0]?.message.length - 1]
+    setLastMessage(lastMessage)
   }
 
   const receiveMessage = (message) => {
