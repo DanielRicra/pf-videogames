@@ -64,20 +64,20 @@ const Cart = () => {
     })
   }
 
-  const handleCheckout = async ({ cartItems, userEmail }) => {
+  const handleCheckout = async ({ cartItems, userEmail, friendEmail = '' }) => {
     if (!isAuthenticated) {
       loginWithPopup({
         redirectUri: window.location.origin + '/cart',
       })
       return
     }
-  
+
     if (!userEmail) {
       toast.error('Please login or select a friend for the gift')
       return
     }
-  
-    dispatch(checkoutCart({ cartItems, email: userEmail }))
+
+    dispatch(checkoutCart({ cartItems, email: userEmail, friendEmail }))
   }
 
   return (
@@ -148,7 +148,8 @@ const Cart = () => {
               handleCheckout={() =>
                 handleCheckout({
                   cartItems: itemsToGift,
-                  userEmail:
+                  userEmail: user?.email,
+                  friendEmail:
                     friends?.results.find((f) => f.id === selectedFriend)
                       ?.friendUser.email ?? null,
                 })
