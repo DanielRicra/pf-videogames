@@ -15,6 +15,7 @@ const getChat = async (friendShipId) => {
 
 const addMessages = async ({ message, friendShipId }) => {
   try {
+    if(!message) throw new Error ('No hay message')
     const foundChatUser = await Chat.findOne({
       where: {
         friendShipId: friendShipId,
@@ -43,7 +44,7 @@ const addMessages = async ({ message, friendShipId }) => {
       },
     });
 
-    if (message) {
+
       // Make sure foundChatFriend.message is an array
       const friendMessagesArray = Array.isArray(foundChatFriend.message)
         ? foundChatFriend.message
@@ -51,7 +52,7 @@ const addMessages = async ({ message, friendShipId }) => {
 
       foundChatFriend.message = [...friendMessagesArray, message];
       await foundChatFriend.save();
-    }
+
 
     return foundChatUser;
   } catch (error) {

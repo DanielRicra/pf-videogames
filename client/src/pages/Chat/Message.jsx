@@ -9,6 +9,7 @@ const Message = ({ message, friendId, userId }) => {
   ) {
     return null
   }
+
   return (
     <div
       className={`py-2 px-4 ${

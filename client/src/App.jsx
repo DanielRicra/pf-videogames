@@ -11,13 +11,13 @@ import {
   Favorites,
   EditProfile,
 } from './pages'
-import { Toaster } from 'sonner'
+import { Toaster, toast } from 'sonner'
 import Profile from './pages/Profile'
 import { Layout, Loading, ProtectedRoutes } from './components'
 import Library from './pages/Library'
 import { useEffect, lazy, Suspense } from 'react'
-import { useDispatch } from 'react-redux'
-import { fetchUserByEmail } from './redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserByEmail, selectUser } from './redux/user/userSlice'
 import { useAuth0 } from '@auth0/auth0-react'
 
 const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'))
@@ -25,13 +25,21 @@ const Search = lazy(() => import('./pages/Search'))
 
 function App() {
   const dispatch = useDispatch()
-  const { isAuthenticated, user } = useAuth0()
+  const useProfile = useSelector(selectUser)
+  const { isAuthenticated, user, logout } = useAuth0()
 
   useEffect(() => {
     if (isAuthenticated && user) {
       dispatch(fetchUserByEmail(user.email))
     }
   }, [isAuthenticated, user])
+
+  useEffect(() => {
+    if (useProfile.banned) {
+      toast.error('Your account has been banned.')
+      logout({ returnTo: window.location.origin })
+    }
+  }, [useProfile])
 
   return (
     <div
