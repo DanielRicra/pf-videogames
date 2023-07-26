@@ -6,11 +6,11 @@ import {
 } from '../cart/cartSlice'
 import { postPayment } from '../../services/paymentService'
 
-export const checkoutCart = ({ cartItems, email }) => {
+export const checkoutCart = ({ cartItems, email, friendEmail = '' }) => {
   return async (dispatch) => {
     dispatch(setLoadingCheckoutStatus(true))
     try {
-      const sessionId = await postPayment({ cartItems, email })
+      const sessionId = await postPayment({ cartItems, email, friendEmail })
       dispatch(setLoadingCheckoutStatus(false))
       dispatch(setSessionId(sessionId))
       dispatch(cleanCart())
