@@ -23,7 +23,7 @@ const ReviewCard = ({ review }) => {
   }, [isAuthenticated, user]);
 
   return (
-    <div className="bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex w-1/2">
+    <div className="bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex w-1">
       <div className="flex flex-grow w-85"> {/* Aquí ajustamos el tamaño de la caja del texto */}
         <div className="flex flex-col flex-grow">
           {nickname && (
