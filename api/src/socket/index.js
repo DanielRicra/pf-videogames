@@ -19,7 +19,6 @@ module.exports = (io) => {
           io.emit('userList', getUserList(userId))
         }
       }
-
     })
 
     // Evento para enviar un mensaje
@@ -37,7 +36,7 @@ module.exports = (io) => {
       const user = userStatus.find((e) => e.userId === userId)
       if (!user) {
         userStatus.push({ userId, status, id: socket.id })
-        io.emit('setStatus', { userId, status: 'connected' })
+        io.emit('setStatus', userStatus)
       }
     })
 

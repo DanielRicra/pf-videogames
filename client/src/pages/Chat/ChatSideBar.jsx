@@ -29,8 +29,9 @@ const ChatSideBar = ({
     }
   }, [friends, lastMessage])
 
-  const updateUserStatus = ({ userId, status }) => {
+  const updateUserStatus = (userStatus) => {
     // Actualiza el estado de conexión del amigo
+
     setFriendStatus((prevStatus) => ({
       ...prevStatus,
       [userId]: status,
@@ -94,7 +95,16 @@ const ChatSideBar = ({
               </div>
 
               <div className='flex flex-col justify-between'>
-                <IconPointFilled size={'15px'} style={{ color: 'green' }} />
+                <IconPointFilled
+                  size={'15px'}
+                  style={{
+                    color: `${
+                      friendStatus[friend.userId] === 'connected'
+                        ? 'green'
+                        : 'gray'
+                    }`,
+                  }}
+                />
                 <p className='text-xs'> 2h</p>
               </div>
             </div>
