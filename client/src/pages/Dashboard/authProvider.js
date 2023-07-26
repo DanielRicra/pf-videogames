@@ -2,7 +2,7 @@ const authProvider = {
   login: ({ username, password }) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (username === 'admin' && password === 'admin') {
+        if (username === 'admin1' && password === '$admin1') {
           resolve('fake-jwt-token')
         } else {
           reject('Invalid username or password')
