@@ -27,7 +27,7 @@ const ChatSideBar = ({
         getChat(friend.id)
       })
     }
-  }, [friends, lastMessage])
+  }, [friends, lastMessage, messages])
 
   const updateUserStatus = ({ userId, status }) => {
     // Actualiza el estado de conexión del amigo
