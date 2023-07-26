@@ -227,19 +227,6 @@ const Detail = () => {
         </div>
       </div>
 
-      {/*
-      const [expanded, setExpanded] = useState(false)
-      const truncated = game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).length > 890
-      const truncatedDescription = truncated ? game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).slice(0, 890) : game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g)
-
-      const handleExpanded = () => {
-        setExpanded(!expanded)
-      } */}
-
-
-
-
-
       <div className='flex flex-col mt-10 bg-gray-100 rounded-lg text-black p-4'>
         <h2 className='text-2xl'>Reviews</h2>
         {reviewError && (
