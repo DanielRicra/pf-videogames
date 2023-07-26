@@ -1,7 +1,12 @@
 import { formatDistance } from 'date-fns'
 
 const Message = ({ message, friendId, userId }) => {
-  if (message?.senderId !== friendId && message?.senderId !== userId) {
+  if (
+    message?.senderId !== friendId &&
+    message?.senderId !== userId &&
+    message?.from !== friendId &&
+    message?.from !== userId
+  ) {
     return null
   }
 
