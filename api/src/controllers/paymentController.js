@@ -130,14 +130,17 @@ const webhook = (req, res) => {
           where: { email: customer.metadata.email },
         })
         let userFriend = null
-        if (customer.metadata.friendEmail !== '') {
+        if (customer.metadata.friendEmail) {
           userFriend = await User.findOne({
             where: { email: customer.metadata.friendEmail },
           })
         }
 
         const cartFound = await Cart.findOne({
-          where: { userId: userFound.id, status: true },
+          where: {
+            userId: userFound.id || userFound.dataValues.id,
+            status: true,
+          },
           include: Videogame,
         })
 
