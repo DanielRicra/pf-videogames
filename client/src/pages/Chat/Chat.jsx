@@ -9,6 +9,7 @@ import ChatSideBar from './ChatSideBar'
 import { useAuth0 } from '@auth0/auth0-react'
 import { getFriends } from '../../services/friendService'
 import { addMessageToChat, findOrCreateChat } from '../../services/chatSevice'
+import { getUser } from '../../services/userService'
 
 const API_URL = import.meta.env.VITE_API_URL
 const socket = io(API_URL)
@@ -20,6 +21,7 @@ const Chat = () => {
   const [userId, setUserId] = useState(null)
   const [friendShipId, setFriendShipId] = useState()
   const [lastmessage, setLastMessage] = useState(null)
+  const [friendStatus, setFriendStatus] = useState(null)
 
   const messageRef = useRef(null)
   const scrollToBottom = useRef(null)
@@ -27,7 +29,6 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', receiveMessage)
-    socket.emit('userStatus', { userId, status: 'connected' }) // Emitir evento de estado de conexión
     return () => {
       socket.off('message', receiveMessage)
     }
@@ -38,6 +39,14 @@ const Chat = () => {
       scrollToBottom.current.scrollIntoView({ behavior: 'smooth' })
     }, 300)
   }, [messages])
+
+  useEffect(() => {
+    const User = async () => {
+      let results = await getUser(user.email)
+      socket.emit('userStatus', { userId: results.id, status: 'connected' })
+    }
+    User()
+  }, [])
 
   useEffect(() => {
     const friends = async () => {
@@ -110,6 +119,7 @@ const Chat = () => {
           handleJoinChat={handleJoinChat}
           selecteFriend={friendId}
           lastMessage={lastmessage}
+          friendStatus={friendStatus}
         />
       </div>
 
