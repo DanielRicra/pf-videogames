@@ -20,7 +20,6 @@ module.exports = (io) => {
         }
       }
 
-      console.log('🚀 ~ file: index.js:3 ~ connectedUsers:', connectedUsers)
     })
 
     // Evento para enviar un mensaje
@@ -49,7 +48,6 @@ module.exports = (io) => {
       if (UserStatus) {
         console.log('lo sacooo')
         userStatus = userStatus.filter((e) => e.id !== UserStatus.id)
-        console.log('🚀 ~ file: index.js:65 ~ socket.on ~ array:', userStatus)
         io.emit('userStatus', {
           userId: UserStatus.userId,
           status: 'disconnected',
