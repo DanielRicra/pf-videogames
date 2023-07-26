@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserByEmail, selectUser } from '../redux/user/userSlice'
 import { FriendCard, FriendCardSend } from '../components'
 import { useUsers } from '../hooks/useUsers'
 import { useUserFriends } from '../hooks/useUserFriends'
 import { useUserPendingRequests } from '../hooks/useUserPendingRequest'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const Profile = () => {
   const userProfile = useSelector(selectUser)
+  const dispatch = useDispatch()
   const { pendingRequests, mutate } = useUserPendingRequests({
     email: userProfile.email,
   })
@@ -17,6 +19,8 @@ const Profile = () => {
   const { friends, mutate: mutateFriends  } = useUserFriends({
     email: userProfile.email,
   })
+
+  const { user } = useAuth0()
 
   const nonFriendsUsers = useMemo(
     () =>
@@ -36,6 +40,12 @@ const Profile = () => {
   const mutatePendingRequests = () => {
     mutate()
   }
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchUserByEmail(user?.email))
+    }
+  }, [user])
 
   return (
     <div className='flex flex-col min-h-[calc(100vh-180px)] p-7 lg:p-14'>
