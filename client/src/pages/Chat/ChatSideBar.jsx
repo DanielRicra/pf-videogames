@@ -31,11 +31,12 @@ const ChatSideBar = ({
 
   const updateUserStatus = (userStatus) => {
     // Actualiza el estado de conexión del amigo
-
-    setFriendStatus((prevStatus) => ({
-      ...prevStatus,
-      [userId]: status,
-    }))
+    userStatus.map((user) => {
+      setFriendStatus((prevStatus) => ({
+        ...prevStatus,
+        [user?.userId]: user.status,
+      }))
+    })
   }
 
   const getChat = async (idFriend) => {
@@ -99,7 +100,7 @@ const ChatSideBar = ({
                   size={'15px'}
                   style={{
                     color: `${
-                      friendStatus[friend.userId] === 'connected'
+                      friendStatus[friend?.userId] === 'connected'
                         ? 'green'
                         : 'gray'
                     }`,
