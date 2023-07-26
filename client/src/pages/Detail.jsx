@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
@@ -45,6 +45,16 @@ const Detail = () => {
     error,
     isLoading,
   } = useSWRImmutable(`videogames/${id}`, getVideogameById)
+
+  const [expanded, setExpanded] = useState(false)
+  const videogameDescription = game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g)
+  const truncated = videogameDescription?.length > 1700
+  const truncatedDescription = truncated ? videogameDescription.slice(0, 1700) : videogameDescription
+
+  const handleExpanded = () => {
+    setExpanded(!expanded)
+  }
+
   const { videogames: myVideogames } = useSelector(selectUser)
 
   const { data: userWithFavorites, mutate: mutateFavorites } = useSWRImmutable(
@@ -204,12 +214,31 @@ const Detail = () => {
 
         <div className='flex-1 p-6 2xl:p-8 rounded-lg bg-gray-100 text-black'>
           <div className='xl:text-3xl text-lg'>{game.name}</div>
-          <div className='text-1xl my-[2rem]'>
-            {game.description &&
-              game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g, '')}
+          <div>
+            <p className='text-1xl my-[2rem]'>
+              {expanded ? game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g) : truncatedDescription}
+            </p>
+            {truncated && (
+              <button onClick={handleExpanded} className='text-purple-500'>
+                {expanded ? 'Read less...' : 'Read more...'}
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/*
+      const [expanded, setExpanded] = useState(false)
+      const truncated = game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).length > 890
+      const truncatedDescription = truncated ? game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).slice(0, 890) : game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g)
+
+      const handleExpanded = () => {
+        setExpanded(!expanded)
+      } */}
+
+
+
+
 
       <div className='flex flex-col mt-10 bg-gray-100 rounded-lg text-black p-4'>
         <h2 className='text-2xl'>Reviews</h2>
