@@ -1,70 +1,82 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { postReview } from '../redux/actions/reviewAction'
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { IconX } from '@tabler/icons-react'
-import { useAuth0 } from '@auth0/auth0-react'
-import { getUser } from '../services/userService'
-import useSWRImmutable from 'swr/immutable'
-import { getReviewByVideogameId } from '../services/reviewService'
+import useSWR from 'swr'
+import { toast } from 'sonner'
 
-const ReviewForm = ({ videogameId, closeForm, onReviewSubmitted }) => {
+import {
+  getReviewByVideogameId,
+  saveReview,
+  updateReview,
+} from '../services/reviewService'
+import { selectUser } from '../redux/user/userSlice'
+
+const ReviewForm = ({ videogameId, closeForm }) => {
+  const userProfile = useSelector(selectUser)
   const [score, setScore] = useState(1)
   const [text, setText] = useState('')
-  const dispatch = useDispatch()
-  const { isAuthenticated, user } = useAuth0()
-  const [userId, setUserId] = useState(null)
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      if (isAuthenticated && user.email) {
-        try {
-          const userData = await getUser(user.email)
-          setUserId(userData.id)
-        } catch (error) {
-          console.log('Error al obtener el userId:', error)
-        }
-      }
-    }
-
-    fetchUserId()
-  }, [isAuthenticated, user])
-
-  const { data: reviews, error: reviewError } = useSWRImmutable(videogameId, getReviewByVideogameId)
+  const {
+    data: reviews,
+    error: reviewError,
+    mutate,
+  } = useSWR(videogameId, getReviewByVideogameId)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const userReview = reviews?.find((review) => review.userId === userId)
+    const existingUserReview = reviews?.find(
+      (review) => review.userId === userProfile.id
+    )
 
-    if (userReview) {
-      setIsFormOpen(false)
-    } else {
-      const review = {
-        videogameId,
-        score,
-        text,
-        userId,
-      }
+    try {
+      if (existingUserReview) {
+        await updateReview({ id: existingUserReview.id, data: { score, text } })
+        toast.success('Review updated successfully')
+      } else {
+        const review = {
+          videogameId,
+          score,
+          text,
+          userId: userProfile.id,
+        }
 
-      try {
-        await dispatch(postReview(review))
+        await saveReview(review)
         setScore(1)
         setText('')
+        toast.success('Review submitted successfully')
         closeForm()
-        onReviewSubmitted(true) // notifica a la libreria que se ha hecho submit de una review 
-      } catch (error) {
-        console.log('Error submitting review:', error)
       }
+    } catch (error) {
+      toast.error('Something went wrong, try again later')
+    } finally {
+      mutate()
+      closeForm()
     }
   }
 
+  useEffect(() => {
+    const existingUserReview = reviews?.find(
+      (review) => review.userId === userProfile.id
+    )
+
+    if (existingUserReview) {
+      setScore(existingUserReview.score)
+      setText(existingUserReview.text)
+    }
+  }, [userProfile, reviews])
+
   if (reviewError) {
-    return <div>Error al cargar las revisiones del videojuego.</div>
+    return (
+      <div className='text-red-600 p-4 rounded-md'>
+        Something went wrong, try again later
+      </div>
+    )
   }
 
   return (
-    <div className='w-full bg-transparent py-8'>
-      <div className='max-w-3xl mx-auto px-4 relative'>
+    <div className='w-full bg-transparent'>
+      <div className='max-w-3xl mx-auto px-4 py-4 relative'>
         <button
           className='absolute top-2 right-2 text-red-600 hover:text-red-700 border-red-600 border-2 rounded-lg p-2'
           onClick={closeForm}
@@ -72,18 +84,23 @@ const ReviewForm = ({ videogameId, closeForm, onReviewSubmitted }) => {
           <IconX className='w-8 h-8' />
         </button>
         <h2 className='text-3xl font-semibold text-center mb-6'>Review</h2>
-        <form onSubmit={handleSubmit} className='bg-white p-6 rounded-lg shadow-md'>
+        <form
+          onSubmit={handleSubmit}
+          className='bg-white p-6 rounded-lg shadow-md'
+        >
           <div className='flex items-center justify-center'>
             <input
               type='range'
               min='1'
-              max='10'
+              max='5'
               value={score}
               onChange={(e) => setScore(e.target.value)}
               className='w-64'
             />
             <span
-              className={`text-${score === '10' ? '4xl' : '2xl'} font-semibold text-black ml-2`}
+              className={`text-${
+                score === '10' ? '4xl' : '2xl'
+              } font-semibold text-black ml-2`}
             >
               {score}
             </span>

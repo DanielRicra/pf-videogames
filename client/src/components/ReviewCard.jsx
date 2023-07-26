@@ -1,50 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { useAuth0 } from '@auth0/auth0-react';
-import { getUser } from '../services/userService';
+import { useMemo } from 'react'
+import { useUserById } from '../hooks/useUser'
+import { IconStar, IconStarFilled } from '@tabler/icons-react'
 
 const ReviewCard = ({ review }) => {
-  const { score, text, userId, createdAt } = review;
-  const [nickname, setNickname] = useState("");
-  const { isAuthenticated, user } = useAuth0();
+  const { score, text, userId } = review
 
-  useEffect(() => {
-    const fetchNickname = async () => {
-      if (isAuthenticated && user.email) {
-        try {
-          const userData = await getUser(user.email);
-          setNickname(userData.nickname);
-        } catch (error) {
-          console.log('Error al obtener el nickname:', error);
-        }
+  const { user, isUserLoading } = useUserById(userId)
+
+  const stars = useMemo(() => {
+    const stars = []
+    for (let i = 0; i < 5; i++) {
+      if (i < score) {
+        stars.push(true)
+      } else {
+        stars.push(false)
       }
-    };
+    }
+    return stars
+  }, [score])
 
-    fetchNickname();
-  }, [isAuthenticated, user]);
+  if (isUserLoading) {
+    return (
+      <div>
+        <p className='animate-pulse h-4 w-full' />
+      </div>
+    )
+  }
 
   return (
-    <div className="bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex w-1">
-      <div className="flex flex-grow w-85"> {/* Aquí ajustamos el tamaño de la caja del texto */}
-        <div className="flex flex-col flex-grow">
-          {nickname && (
-            <span className="text-white text-xl font-bold mb-1">{nickname}</span>
-          )}
-          <div className="bg-white bg-opacity-20 rounded-lg p-2">
-            <p className="text-white font-bold">{text}</p>
-          </div>
-          <span className="text-white text-sm mt-1">
-            {createdAt && new Date(createdAt).toLocaleDateString()}
+    <div className='bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex'>
+      <div className='flex flex-grow w-85'>
+        <div className='flex flex-col flex-grow'>
+          <span className='text-white text-xl font-bold mb-1'>
+            {user.nickname}
           </span>
+
+          <div className='bg-white bg-opacity-20 rounded-lg p-2'>
+            <p className='text-white font-bold'>{text}</p>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-end text-white text-xl font-bold ml-4">
-        {/* Agregamos una caja invisible para el score */}
-        <div className="invisible">{`Score: ${score}`}</div>
-        {/* Luego, podemos mostrar el score aquí */}
-        {score}
+      <div className='flex flex-col justify-center items-end text-white text-xl font-bold ml-4'>
+        <div className='starts flex'>
+          {stars.map((star, i) => (
+            <span key={i}>
+              {star ? (
+                <IconStarFilled className='text-yellow-500 h-5' />
+              ) : (
+                <IconStar className='text-yellow-500 h-5' />
+              )}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ReviewCard;
+export default ReviewCard
+
