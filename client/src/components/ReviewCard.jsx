@@ -28,7 +28,7 @@ const ReviewCard = ({ review }) => {
   }
 
   return (
-    <div className='bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex w-1/2'>
+    <div className='bg-violet-900 p-4 mb-4 border border-violet-700 rounded-lg shadow-md flex'>
       <div className='flex flex-grow w-85'>
         <div className='flex flex-col flex-grow'>
           <span className='text-white text-xl font-bold mb-1'>
@@ -58,3 +58,4 @@ const ReviewCard = ({ review }) => {
 }
 
 export default ReviewCard
+
