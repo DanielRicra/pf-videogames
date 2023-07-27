@@ -30,11 +30,12 @@ const ChatSideBar = ({
   }, [friends, lastMessage])
 
   const updateUserStatus = (userStatus) => {
+    console.log('aquiiiiiiiiiiiiiiii', userStatus)
     // Actualiza el estado de conexión del amigo
     userStatus.map((user) => {
       setFriendStatus((prevStatus) => ({
         ...prevStatus,
-        [user?.userId]: user.status,
+        [user?.userId]: user.connected ? true : false,
       }))
     })
   }
@@ -50,7 +51,7 @@ const ChatSideBar = ({
   }
 
   return (
-    <div className='flex flex-col gap-3 '>
+    <div className='flex flex-col gap-3 overflow-hidden'>
       <div className='p-4'>
         <h2 className='text-2xl'>Chats</h2>
         <div className='my-2 border-b-2'>
@@ -92,7 +93,9 @@ const ChatSideBar = ({
                 <p className='text-[12px] font-bold'>
                   {friend.friendUser.name}
                 </p>
-                <p className='text-xs'>{message?.message}</p>
+                <p className='text-xs truncate max-w-[70px] lg:max-w-[120px]'>
+                  {message?.message}
+                </p>
               </div>
 
               <div className='flex flex-col justify-between'>
@@ -100,9 +103,7 @@ const ChatSideBar = ({
                   size={'15px'}
                   style={{
                     color: `${
-                      friendStatus[friend?.userId] === 'connected'
-                        ? 'green'
-                        : 'gray'
+                      friendStatus[friend?.friendId] === true ? 'green' : 'gray'
                     }`,
                   }}
                 />
