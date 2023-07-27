@@ -30,7 +30,6 @@ const ChatSideBar = ({
   }, [friends, lastMessage])
 
   const updateUserStatus = (userStatus) => {
-    console.log('aquiiiiiiiiiiiiiiii', userStatus)
     // Actualiza el estado de conexión del amigo
     userStatus.map((user) => {
       setFriendStatus((prevStatus) => ({
@@ -100,7 +99,7 @@ const ChatSideBar = ({
 
               <div className='flex flex-col justify-between'>
                 <IconPointFilled
-                  size={'15px'}
+                  size={'20px'}
                   style={{
                     color: `${
                       friendStatus[friend?.friendId] === true ? 'green' : 'gray'
