@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
@@ -23,6 +23,7 @@ import {
   addVideogameToUserCart,
   removeVideogameFromUserCart,
 } from '../services/cartService'
+import { getReviewByVideogameId } from '../services/reviewService'
 
 const Detail = () => {
   const { id } = useParams()
@@ -30,7 +31,13 @@ const Detail = () => {
   const navigate = useNavigate()
 
   const cartItems = useSelector(getCartItems)
-  const reviews = useSelector((state) => state.review.reviews || [])
+
+  const {
+    data: reviews,
+    error: reviewError,
+    isLoading: reviewsLoading,
+  } = useSWRImmutable(id, getReviewByVideogameId)
+
   const user = useSelector(selectUser)
 
   const {
@@ -38,19 +45,31 @@ const Detail = () => {
     error,
     isLoading,
   } = useSWRImmutable(`videogames/${id}`, getVideogameById)
+
+  const [expanded, setExpanded] = useState(false)
+  const videogameDescription = game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g)
+  const truncated = videogameDescription?.length > 1700
+  const truncatedDescription = truncated ? videogameDescription.slice(0, 1700) : videogameDescription
+
+  const handleExpanded = () => {
+    setExpanded(!expanded)
+  }
+
   const { videogames: myVideogames } = useSelector(selectUser)
 
-  const {
-    data: userWithFavorites,
-    mutate: mutateFavorites,
-  } = useSWRImmutable(`user/${user?.id}/favorites`, getUserFavorites)
+  const { data: userWithFavorites, mutate: mutateFavorites } = useSWRImmutable(
+    `user/${user?.id}/favorites`,
+    getUserFavorites
+  )
 
   const cartItem = useMemo(() => {
     return cartItems.find((item) => item.id === game?.id)
   }, [cartItems, game])
 
   const isFavorite = useMemo(() => {
-    return userWithFavorites?.Favorites?.some((fav) => fav.videogame.id === game?.id)
+    return userWithFavorites?.Favorites?.some(
+      (fav) => fav.videogame.id === game?.id
+    )
   }, [userWithFavorites, game])
 
   const handleFavorite = async () => {
@@ -186,28 +205,59 @@ const Detail = () => {
             </div>
             <div className='text-gray-800 flex gap-4 self-end mt-4'>
               <div className='text-2xl'>Price:</div>
-              <p className='text-2xl font-semibold text-center'>$ {game.price}</p>
+              <p className='text-2xl font-semibold text-center'>
+                $ {game.price}
+              </p>
             </div>
           </div>
         </div>
 
         <div className='flex-1 p-6 2xl:p-8 rounded-lg bg-gray-100 text-black'>
           <div className='xl:text-3xl text-lg'>{game.name}</div>
-          <div className='text-1xl my-[2rem]'>
-            {game.description &&
-              game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g, '')}
+          <div>
+            <p className='text-1xl my-[2rem]'>
+              {expanded ? game.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g) : truncatedDescription}
+            </p>
+            {truncated && (
+              <button onClick={handleExpanded} className='text-purple-500'>
+                {expanded ? 'Read less...' : 'Read more...'}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
+      {/*
+      const [expanded, setExpanded] = useState(false)
+      const truncated = game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).length > 890
+      const truncatedDescription = truncated ? game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g).slice(0, 890) : game?.description.replace(/<\/?p>|<br\s?\/?>|<\/?h3>/g)
+
+      const handleExpanded = () => {
+        setExpanded(!expanded)
+      } */}
+
+
+
+
+
       <div className='flex flex-col mt-10 bg-gray-100 rounded-lg text-black p-4'>
         <h2 className='text-2xl'>Reviews</h2>
-        {reviews.length === 0 && (
-          <div className='text-center text-gray-800'>No reviews yet</div>
+        {reviewError && (
+          <div className='text-center text-gray-800'>
+            <p>Something went wrong fetching reviews</p>
+          </div>
         )}
-        {reviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
+        {reviewsLoading ? (
+          <div className='text-center text-gray-800 animate-pulse'>
+            Loading reviews...
+          </div>
+        ) : reviews?.length === 0 ? (
+          <div className='text-center text-gray-800'>No reviews yet</div>
+        ) : (
+          reviews?.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))
+        )}
       </div>
     </div>
   )
