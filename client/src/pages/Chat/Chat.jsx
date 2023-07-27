@@ -43,9 +43,12 @@ const Chat = () => {
   useEffect(() => {
     const User = async () => {
       let results = await getUser(user.email)
-      socket.emit('userStatus', { userId: results.id, status: 'connected' })
+      socket.emit('userStatus', { userId: results.id, connected: true })
     }
     User()
+    return () => {
+      socket.emit('userStatus', { userId: User.id, connected: false })
+    }
   }, [])
 
   useEffect(() => {

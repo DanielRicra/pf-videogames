@@ -32,26 +32,34 @@ module.exports = (io) => {
     })
 
     socket.on('userStatus', (data) => {
-      const { userId, status } = data
-      const user = userStatus.find((e) => e.userId === userId)
-      if (!user) {
-        userStatus.push({ userId, status, id: socket.id })
-        io.emit('setStatus', userStatus)
+      const { userId, connected } = data
+      if (connected) {
+        const user = userStatus.find((e) => e.userId === userId)
+        if (!user) {
+          userStatus.push({ userId, connected, id: socket.id })
+          io.emit('setStatus', userStatus)
+        } else {
+          userStatus.forEach((e, index) => {
+            if (e.userId === userId) {
+              e.connected = true
+              e.id = socket.id
+            }
+          })
+          io.emit('setStatus', userStatus)
+        }
       }
     })
 
     // Evento de desconexión
     socket.on('disconnect', () => {
       let user = connectedUsers.filter((user) => user.id !== socket.id)
-      let UserStatus = userStatus.find((e) => e.id === socket.id)
-      if (UserStatus) {
-        console.log('lo sacooo')
-        userStatus = userStatus.filter((e) => e.id !== UserStatus.id)
-        io.emit('userStatus', {
-          userId: UserStatus.userId,
-          status: 'disconnected',
-        }) // Emitir evento de estado de desconexión
-      }
+      console.log('userStatus:', userStatus)
+      userStatus.forEach((e) => {
+        if (e.id === socket.id) {
+          e.connected = false
+        }
+      })
+      io.emit('setStatus', userStatus) // Emitir evento de estado de desconexión
       if (user) {
         connectedUsers = connectedUsers.filter((user) => user.id !== socket.id)
         console.log('Usuario desconectado')
